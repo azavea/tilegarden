@@ -1,0 +1,6 @@
+version: '2.1'
+services:
+  database:
+    image: quay.io/azavea/postgis:2.3-postgres9.6-slim
+    expose:
+      - "5432"
