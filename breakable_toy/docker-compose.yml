@@ -12,6 +12,8 @@ services:
     command: "server/server.js"
     volumes:
       - ${PWD}/server:/opt/windshaft/server
+    ports:
+      - "5000:5000"
   database:
     image: quay.io/azavea/postgis:2.3-postgres9.6-slim
     expose:

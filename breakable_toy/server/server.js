@@ -53,7 +53,7 @@ var config = {
           metatile: 4,
           bufferSize:64
         },
-        redis: {host: '127.0.0.1', port: 6379},
+        // redis: {host: '127.0.0.1', port: 6379},
         // this two filters are optional
         beforeTileRender: function(req, res, callback) {
             callback(null);
