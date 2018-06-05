@@ -1,5 +1,17 @@
 version: '2.1'
 services:
+  windshaft:
+    build:
+      context:
+        .
+      dockerfile: Dockerfile-windshaft
+    image: quay.io/azavea/windshaft:latest
+    depends_on:
+      database:
+        condition: service_started
+    command: "server/server.js"
+    volumes:
+      - ${PWD}/server:/opt/windshaft/server
   database:
     image: quay.io/azavea/postgis:2.3-postgres9.6-slim
     expose:
