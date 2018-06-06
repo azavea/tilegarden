@@ -2,8 +2,7 @@ version: '2.1'
 services:
   windshaft:
     build:
-      context:
-        .
+      context: .
       dockerfile: Dockerfile-windshaft
     image: quay.io/azavea/windshaft:latest
     depends_on:
@@ -30,3 +29,16 @@ services:
     image: redis:3.2
     expose:
     - "6379"
+  leaflet:
+    depends_on:
+      windshaft:
+        condition:
+          service_started
+    # docker image from https://github.com/KyleAMathews/docker-nginx
+    image: kyma/docker-nginx
+    volumes:
+      - ${PWD}/demo:/var/www
+    command: "nginx"
+    ports:
+      - "80:80"
+
