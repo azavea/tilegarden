@@ -42,7 +42,7 @@ var config = {
         },
         grainstore: {
           datasource: {
-            user:'postgres', host: '127.0.0.1',
+            user:'postgres', host: 'database',
         		port: 5432
           }
         }, //see grainstore npm for other options
@@ -53,7 +53,7 @@ var config = {
           metatile: 4,
           bufferSize:64
         },
-        // redis: {host: '127.0.0.1', port: 6379},
+        redis: {host: 'redis', port: 6379},
         // this two filters are optional
         beforeTileRender: function(req, res, callback) {
             callback(null);
