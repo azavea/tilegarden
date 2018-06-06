@@ -23,3 +23,14 @@ services:
     image: redis:3.2
     expose:
     - "6379"
+  leaflet:
+    depends_on:
+      - windshaft
+    # docker image from https://github.com/KyleAMathews/docker-nginx
+    image: kyma/docker-nginx
+    volumes:
+      - ./webpage:/var/www
+    command: "nginx"
+    ports:
+      - "80:80"
+
