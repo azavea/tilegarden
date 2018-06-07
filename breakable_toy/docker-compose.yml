@@ -17,7 +17,7 @@ services:
     volumes:
       # map this directory's server folder to
       # /opt/windshaft/server on the container
-      - ${PWD}/server:/opt/windshaft/server
+      - ${PWD}/windshaft:/opt/windshaft/server
     ports:
       # serve port 5000 on the container as port 5000 on the machine
       - "5000:5000"
