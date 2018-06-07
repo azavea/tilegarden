@@ -27,6 +27,7 @@ RUN set -ex \
   && apt-get update && apt-get install -y ${buildDeps} ${deps} --no-install-recommends \
   && rm -rf /var/lib/apt/lists/* \
   && npm install --unsafe-perm windshaft@${WINDSHAFT_VERSION} \
+  && npm install fs \
   && apt-get purge -y --auto-remove ${buildDeps}
 
 EXPOSE 5000

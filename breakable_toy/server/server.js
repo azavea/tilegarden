@@ -4,6 +4,8 @@
  */
 
 var Windshaft = require('windshaft');
+var fs = require('fs');
+var styles = fs.readFileSync('server/styles.mss', { encoding: 'utf8' });
 
 // Configure pluggable URLs
 // =========================
@@ -38,13 +40,16 @@ var config = {
         base_url: '/database/:dbname/table/:table',
         base_url_mapconfig: '/database/:dbname/layergroup',
         req2params: function(req, callback){
+          // handle styling
+          req.params.style = styles;
+
           callback(null,req)
         },
         grainstore: {
           datasource: {
             user:'postgres', host: 'database',
         		port: 5432
-          }
+          },
         }, //see grainstore npm for other options
         renderCache: {
           ttl: 60000, // seconds
