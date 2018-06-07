@@ -4,7 +4,7 @@ services:
     image: quay.io/azavea/windshaft:latest
     depends_on:
       - redis
-      - database
+      - db
     # run server entrypoint script on startup
     command: "server/server.js"
     volumes:
@@ -14,7 +14,7 @@ services:
     ports:
       # serve port 5000 on the container as port 5000 on the machine
       - "5000:5000"
-  database:
+  db:
     image: quay.io/azavea/postgis:2.3-postgres9.6-slim
     expose:
       # expose port 5432 to other containers in docker-compose
