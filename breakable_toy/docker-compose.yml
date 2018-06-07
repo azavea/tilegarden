@@ -1,17 +1,10 @@
-version: '2.1'
+version: '3.1'
 services:
   windshaft:
-    build:
-      context:
-        .
-      dockerfile: Dockerfile-windshaft
     image: quay.io/azavea/windshaft:latest
     depends_on:
-      redis:
-        condition:
-          service_started
-      database:
-        condition: service_started
+      - redis
+      - database
     # run server entrypoint script on startup
     command: "server/server.js"
     volumes:
