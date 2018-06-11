@@ -1,5 +1,6 @@
 version: '3.1'
 services:
+
   windshaft:
     image: quay.io/azavea/windshaft:latest
     depends_on:
@@ -14,11 +15,15 @@ services:
     ports:
       # serve port 5000 on the container as port 5000 on the machine
       - "5000:5000"
+
+
   db:
     image: quay.io/azavea/postgis:2.3-postgres9.6-slim
     expose:
       # expose port 5432 to other containers in docker-compose
       - "5432"
+
+
   redis:
     image: redis:3.2
     expose:

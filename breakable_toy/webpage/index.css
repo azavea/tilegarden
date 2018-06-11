@@ -1,0 +1,12 @@
+#map {
+    border: 1px solid rgba(0, 0, 0, 0);
+    border-radius: 6px;
+    display: inline-block;
+}
+
+.container {
+    width: 100%;
+    margin-top: 30px;
+    align-content: center;
+    text-align: center;
+}
