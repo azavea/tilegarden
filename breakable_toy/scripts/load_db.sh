@@ -7,7 +7,7 @@ POSTGRES_PASSWORD="${POSTGRES_DB:-mysecretpassword}"
 POSTGRES_DB="${POSTGRES_DB:-$POSTGRES_USER}"
 
 # Execute psql commands on the database container for performance reasons.
-PSQL="docker exec -i $(docker-compose ps -q database) gosu ${POSTGRES_USER} psql -d ${POSTGRES_DB}"
+PSQL="docker exec -i $(docker-compose ps -q db) gosu ${POSTGRES_USER} psql -d ${POSTGRES_DB}"
 # echo "psql command: ${PSQL}"
 
 function usage() {

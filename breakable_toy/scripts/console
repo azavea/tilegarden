@@ -1,0 +1,40 @@
+#!/bin/bash
+set -eu
+
+
+function usage() {
+    echo -n \
+"Usage: $(basename $0) SERVICE
+
+Create interactive console for any of the services in the project.
+
+COMMAND can be any service name as specified in docker-compose.yml.
+"
+}
+
+
+function main() {
+
+    if [ "${1}" = "windshaft" ]
+    then
+        docker-compose exec windshaft bash
+    elif [ "${1}" = "db" ]
+    then
+        docker-compose exec -u postgres db psql -d postgres
+    else
+        docker-compose exec ${1} bash
+    fi
+}
+
+
+if [ "${BASH_SOURCE[0]}" = "${0}" ]
+then
+    if [ "${1:-}" = "--help" ]
+    then
+        usage
+    else
+        SERVER_COMMAND=${1:-start}
+        main $SERVER_COMMAND
+    fi
+    exit
+fi

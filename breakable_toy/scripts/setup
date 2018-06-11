@@ -18,7 +18,7 @@ then
         docker-compose -f docker-compose.yml build
 
         # Launch database container so we can populate it.
-        docker-compose up -d database
+        docker-compose up -d db
 
         # Load data fixtures.
         ./scripts/load_db.sh
