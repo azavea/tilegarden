@@ -1,0 +1,19 @@
+{
+  "name": "tilegarden",
+  "version": "1.0.0",
+  "description": "Port of azavea/lambnik to NodeJS | AWS Lambda mapnik renderer",
+  "main": "main.js",
+  "author": "Matt DelSordo",
+  "license": "MIT",
+  "files": [
+    "main.js"
+  ],
+  "scripts": {
+    "start": "claudia create --name hello-world --region us-east-1 --handler main.handler",
+    "test": "claudia test-lambda",
+    "deploy": "claudia update"
+  },
+  "devDependencies": {
+    "claudia": "^5.0.0"
+  }
+}
