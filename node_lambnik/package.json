@@ -3,14 +3,26 @@
   "version": "1.0.0",
   "description": "Port of azavea/lambnik to NodeJS | AWS Lambda mapnik renderer",
   "main": "main.js",
-  "author": "Matt DelSordo",
+  "contributors": [
+    { "name": "Matt DelSordo" },
+    { "name": "Klaas Hoekema" },
+    { "name": "Matthew McFarland" }
+  ],
   "license": "MIT",
+  "private": true,
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/azavea/tilegarden.git"
+  },
+  "engines": { "node": "8.10"},
   "files": [
     "main.js"
   ],
   "scripts": {
     "start": "claudia create --region us-east-1 --role lambnik-tiler-dev --api-module main --name hello-world-${USER}",
     "test": "claudia test-lambda",
+    "start": "claudia create --name tilegarden-dev --region us-east-1 --role lambnik-tiler-dev --handler main.handler",
+    "test": "claudia test-lambda --event event.json",
     "deploy": "claudia update"
   },
   "devDependencies": {
