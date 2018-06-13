@@ -9,8 +9,8 @@
     "main.js"
   ],
   "scripts": {
-    "start": "claudia create --name hello-world --region us-east-1 --handler main.handler",
-    "test": "claudia test-lambda",
+    "start": "claudia create --name hello-world --region us-east-1 --role lambnik-tiler-dev --handler main.handler",
+    "test": "claudia test-lambda --event event.json",
     "deploy": "claudia update"
   },
   "devDependencies": {
