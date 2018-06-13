@@ -4,28 +4,34 @@
   "description": "Port of azavea/lambnik to NodeJS | AWS Lambda mapnik renderer",
   "main": "main.js",
   "contributors": [
-    { "name": "Matt DelSordo" },
-    { "name": "Klaas Hoekema" },
-    { "name": "Matthew McFarland" }
+    {
+      "name": "Matt DelSordo"
+    },
+    {
+      "name": "Klaas Hoekema"
+    },
+    {
+      "name": "Matthew McFarland"
+    }
   ],
   "license": "MIT",
   "private": true,
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/azavea/tilegarden.git"
+    "type": "git",
+    "url": "https://github.com/azavea/tilegarden.git"
   },
-  "engines": { "node": "8.10"},
   "files": [
-    "main.js"
+    "bin"
   ],
   "scripts": {
     "start": "claudia create --region us-east-1 --role lambnik-tiler-dev --api-module main --name hello-world-${USER}",
     "test": "claudia test-lambda",
-    "start": "claudia create --name tilegarden-dev --region us-east-1 --role lambnik-tiler-dev --handler main.handler",
-    "test": "claudia test-lambda --event event.json",
-    "deploy": "claudia update"
+    "transpile": "babel src -d bin",
+    "deploy": "yarn transpile && claudia update"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "claudia": "^5.0.0"
   },
   "dependencies": {
