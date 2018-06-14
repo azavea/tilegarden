@@ -24,11 +24,12 @@
     "bin"
   ],
   "scripts": {
-    "start": "claudia create --region us-east-1 --role lambnik-tiler-dev --api-module main --name hello-world-${USER}",
+    "deploy-new": "yarn transpile && claudia create --region us-east-1 --role lambnik-tiler-dev --api-module bin/api --name tilegarden-${USER}",
     "test": "claudia test-lambda",
     "lint": "eslint src",
     "transpile": "babel src -d bin",
     "local": "yarn transpile && claudia-local-api --api-module bin/api | bunyan -o short",
+    "dev": "nodemon --ignore bin --exec yarn local",
     "deploy": "yarn transpile && claudia update"
   },
   "devDependencies": {
@@ -39,7 +40,8 @@
     "claudia-local-api": "^2.0.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.12.0"
+    "eslint-plugin-import": "^2.12.0",
+    "nodemon": "^1.17.5"
   },
   "dependencies": {
     "claudia-api-builder": "^4.1.0"
