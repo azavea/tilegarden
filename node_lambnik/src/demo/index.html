@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" rel="stylesheet" type="text/css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet-src.js"></script>
+<script src="https://danzel.github.io/Leaflet.utfgrid/src/leaflet.utfgrid.js"></script>
+  <meta charset="utf-8">
+  <title>Lambnik</title>
+  <style>
+    #map {
+      width:100%;
+      height:500px;
+    }
+  </style>
+</head>
+<body>
+    <select id="inlet-type">
+        <option value='all'>All</option>
+        <option value='a'>A</option>
+        <option value='b'>B</option>
+        <option value='c'>C</option>
+        <option value='d'>D</option>
+    </select>
+  <div id='map'></div>
+
+
+  <script>
+
+    // var LAMBNIK_DOMAIN = 'https://d1y4se194ujvw1.cloudfront.net';
+    // If you're running locally and want to test, use this host instead
+    var LAMBNIK_DOMAIN = 'http://localhost:9001';
+
+    var center = new L.LatLng(39.95, -75.15),
+        map = new L.Map('map', {center: center, zoom: 13}),
+        baselayer = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png').addTo(map),
+        tileLayer = L.tileLayer(LAMBNIK_DOMAIN + '/tile/{z}/{x}/{y}?type={type}', {
+            type: function() {
+                return document.getElementById('inlet-type').value;
+        }}).addTo(map);
+
+     var grid = new L.UtfGrid(LAMBNIK_DOMAIN + '/grid/{z}/{x}/{y}?type={type}', {
+            useJsonP: false,
+            type: function() {
+                return document.getElementById('inlet-type').value;
+            }
+     });
+
+     map.addLayer(grid);
+
+     grid.on('click', function(e) {
+       if (e.data) {
+         alert(e.data.inlettype);
+       }
+     });
+
+      document.addEventListener('DOMContentLoaded',function() {
+
+            document.getElementById('inlet-type').onchange = function(e) {
+                map.removeLayer(tileLayer);
+                map.removeLayer(grid);
+                map.addLayer(tileLayer);
+                map.addLayer(grid);
+            };
+      });
+  </script>
+  <style>
+    html, body {
+      height: 100%;
+    }
+  </style>
+</body>
+</html>
