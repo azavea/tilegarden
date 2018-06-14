@@ -4,4 +4,4 @@ COPY . usr/src
 WORKDIR /usr/src/tiler
 
 RUN yarn install
-ENTRYPOINT ["yarn", "local"]
+CMD ["yarn", "dev"]

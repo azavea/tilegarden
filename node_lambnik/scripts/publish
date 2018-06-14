@@ -12,9 +12,12 @@ Options:
 }
 
 function main() {
+#   TODO: Append "-- --set-env POSTGRES_PASSWORD=${TILEGARDEN_PASSWORD}"
+#   TODO: to the end of the deployment calls to set the password in
+#   TODO: AWS, if necessary
     if [ "${1}" = "--new" ]
     then
-        docker-compose run tiler bash -c "yarn start"
+        docker-compose run tiler bash -c "yarn deploy-new"
     else
         docker-compose run tiler bash -c "yarn deploy"
     fi
