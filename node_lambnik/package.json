@@ -28,12 +28,15 @@
     "test": "claudia test-lambda",
     "lint": "eslint src",
     "transpile": "babel src -d bin",
+    "local": "yarn transpile && claudia-local-api --api-module bin/api | bunyan -o short",
     "deploy": "yarn transpile && claudia update"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
+    "bunyan": "^1.8.12",
     "claudia": "^5.0.0",
+    "claudia-local-api": "^2.0.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.12.0"
