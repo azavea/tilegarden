@@ -24,5 +24,8 @@ then
 
         # Load data fixtures.
         ./scripts/updatedb
+
+        # install node modules
+        cd src/tiler && yarn install
     fi
 fi
