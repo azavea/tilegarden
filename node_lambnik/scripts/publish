@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -e
+
+function usage() {
+    echo -n "Usage: $(basename "${0}") [OPTION]
+Login to a running Docker container's shell.
+Options:
+    --new     Deploy as a new lambda
+    --help      Display this help text
+"
+}
+
+function main() {
+    if [ "${1}" = "--new" ]
+    then
+        docker-compose run tiler bash -c "yarn start"
+    else
+        docker-compose run tiler bash -c "yarn deploy"
+    fi
+
+}
+
+if [ "${BASH_SOURCE[0]}" = "${0}" ]
+then
+    if [ "${1:-}" = "--help" ]
+    then
+        usage
+    else
+        SERVER_COMMAND=${1:-start}
+        main $SERVER_COMMAND
+    fi
+    exit
+fi
