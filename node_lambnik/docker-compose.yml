@@ -27,7 +27,7 @@ services:
       context: ./src/tiler
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "9000:3000"
     environment:
       - POSTGRES_USER=lamb
       - POSTGRES_PASSWORD=lamb
