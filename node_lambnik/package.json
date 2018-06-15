@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "start": "claudia create --region us-east-1 --role lambnik-tiler-dev --api-module main --name hello-world-${USER}",
-    "test": "claudia test-lambda --event event.json",
+    "test": "claudia test-lambda",
     "deploy": "claudia update"
   },
   "devDependencies": {
