@@ -115,6 +115,10 @@ chownr@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.0.1.tgz#e2a75042a9551908bebd25b8523d5f9769d79181"
 
+claudia-api-builder@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/claudia-api-builder/-/claudia-api-builder-4.1.0.tgz#173a6079a5472cc19921693052546b2f9a0ca904"
+
 claudia@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/claudia/-/claudia-5.0.0.tgz#cf0002221b4e4aea12eb61c27890444c28171e44"
