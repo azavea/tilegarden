@@ -33,6 +33,7 @@ services:
       - POSTGRES_PASSWORD=lamb
       - POSTGRES_DB=lambnik-test
       - POSTGRES_HOST=database.lambnik.azavea.com
+    env_file: .env
     links:
       - database:database.lambnik.azavea.com
     volumes:
