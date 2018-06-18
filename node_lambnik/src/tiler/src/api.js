@@ -6,6 +6,7 @@ import APIBuilder from 'claudia-api-builder'
 import fs from 'fs'
 import util from 'util'
 import path from 'path'
+import mapnik from 'mapnik'
 
 const promiseReadFile = util.promisify(fs.readFile)
 
@@ -34,6 +35,8 @@ api.get(
         },
     },
 )
+
+api.get('/map', () => new mapnik.Map(25, 25, '+init=epsg:3857'))
 
 // not es6-ic, but necessary for claudia to find the api
 module.exports = api
