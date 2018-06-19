@@ -12,7 +12,6 @@ const promiseReadFile = util.promisify(fs.readFile)
 const api = new APIBuilder()
 
 api.get('/', () => 'Hello, world!')
-api.get('/test', () => 'testaroony')
 
 api.get('/greet/{name}', request => `Hello, ${request.pathParams.name}!`)
 
