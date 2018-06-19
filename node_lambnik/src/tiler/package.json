@@ -43,6 +43,7 @@
     "nodemon": "^1.17.5"
   },
   "dependencies": {
+    "@mapbox/sphericalmercator": "^1.1.0",
     "claudia-api-builder": "^4.1.0",
     "mapnik": "^3.7.2"
   }
