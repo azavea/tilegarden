@@ -29,7 +29,7 @@
     "lint": "eslint src",
     "local": "yarn transpile && claudia-local-api --api-module bin/api | bunyan -o short",
     "test": "claudia test-lambda",
-    "transpile": "babel src -d bin"
+    "transpile": "babel src -d bin --copy-files"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
