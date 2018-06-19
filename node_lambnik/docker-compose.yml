@@ -1,4 +1,4 @@
-version: '2.1'
+version: '3.1'
 services:
   proxy:
     image: tile-proxy
@@ -37,5 +37,11 @@ services:
     links:
       - database:database.lambnik.azavea.com
     volumes:
-      - ./src:/usr/src
+      - ./src/tiler:/home/tiler
+      - node_modules:/home/tiler/node_modules
+      - bin:/home/tiler/bin
       - $HOME/.aws:/root/.aws:ro
+
+volumes:
+  node_modules:
+  bin:
