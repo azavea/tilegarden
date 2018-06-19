@@ -24,7 +24,7 @@
   ],
   "scripts": {
     "deploy": "yarn transpile && claudia update --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER}",
-    "deploy-new": "yarn transpile && claudia create --region us-east-1 --role lambnik-tiler-dev --api-module bin/api --name tilegarden-${USER} --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER}",
+    "deploy-new": "yarn transpile && claudia create --region us-east-1 --role lambnik-tiler-dev --api-module bin/api --name tilegarden-dev-${USER} --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER}",
     "dev": "nodemon --ignore bin/ --exec yarn local",
     "lint": "eslint src",
     "local": "yarn transpile && claudia-local-api --api-module bin/api | bunyan -o short",

@@ -1,3 +1,8 @@
+# Import values from local environment
+# If you want to set them specifically, change them to assignments
+USER
+AWS_PROFILE
+
 # Enter your database credentials here:
 TILEGARDEN_DB=
 TILEGARDEN_DB_HOST=
