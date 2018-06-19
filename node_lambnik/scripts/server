@@ -1,0 +1,57 @@
+#!/bin/bash
+set -eu
+
+
+function usage() {
+    echo -n \
+"Usage: $(basename $0) [COMMAND]
+
+Start/stop/restart/get status of services.
+
+COMMAND can be one of [start, stop, restart, status]. Default is start.
+"
+}
+
+
+function restart_services() {
+    SERVICES=${@:2}
+
+    echo "Restarting service(s) in background..."
+    docker-compose restart ${SERVICES}
+    echo "Waiting for services to restart..."
+    sleep 5
+}
+
+
+function main() {
+
+    if [ "${1}" = "start" ]
+    then
+        docker-compose up
+    elif [ "${1}" = "stop" ]
+    then
+        docker-compose stop
+    elif [ "${1}" = "restart" ]
+    then
+        docker-compose restart
+    elif [ "${1}" = "status" ]
+    then
+        docker-compose ps
+    else
+        echo "Unknown option ${1}! Must be one of [start, stop, restart, status ]."
+        exit 1
+    fi
+}
+
+
+if [ "${BASH_SOURCE[0]}" = "${0}" ]
+then
+    if [ "${1:-}" = "--help" ]
+    then
+        usage
+    else
+        SERVER_COMMAND=${1:-start}
+        main $SERVER_COMMAND
+    fi
+    exit
+fi
