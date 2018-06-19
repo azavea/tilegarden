@@ -1,0 +1,47 @@
+version: '3.1'
+services:
+  proxy:
+    image: tile-proxy
+    build:
+      context: ./src/proxy
+      dockerfile: Dockerfile
+    ports:
+      - "9001:80"
+    links:
+      - tiler:tiler.lambnik.azavea.com
+
+  database:
+    image: quay.io/azavea/postgis:2.3-postgres9.6-slim
+    environment:
+      - POSTGRES_USER=lamb
+      - POSTGRES_PASSWORD=lamb
+      - POSTGRES_DB=lambnik-test
+    expose:
+      - "5432"
+    volumes:
+      - /opt/dbdata/lambnik:/var/lib/postgresql/data
+
+  tiler:
+    image: tiler
+    build:
+      context: ./src/tiler
+      dockerfile: Dockerfile
+    ports:
+      - "9000:3000"
+    environment:
+      - POSTGRES_USER=lamb
+      - POSTGRES_PASSWORD=lamb
+      - POSTGRES_DB=lambnik-test
+      - POSTGRES_HOST=database.lambnik.azavea.com
+    env_file: .env
+    links:
+      - database:database.lambnik.azavea.com
+    volumes:
+      - ./src/tiler:/home/tiler
+      - node_modules:/home/tiler/node_modules
+      - bin:/home/tiler/bin
+      - $HOME/.aws:/root/.aws:ro
+
+volumes:
+  node_modules:
+  bin:

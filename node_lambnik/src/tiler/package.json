@@ -1,0 +1,48 @@
+{
+  "name": "tilegarden",
+  "version": "1.0.0",
+  "description": "Port of azavea/lambnik to NodeJS | AWS Lambda mapnik renderer",
+  "contributors": [
+    {
+      "name": "Matt DelSordo"
+    },
+    {
+      "name": "Klaas Hoekema"
+    },
+    {
+      "name": "Matthew McFarland"
+    }
+  ],
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azavea/tilegarden.git"
+  },
+  "files": [
+    "bin"
+  ],
+  "scripts": {
+    "deploy": "yarn transpile && claudia update --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER}",
+    "deploy-new": "yarn transpile && claudia create --region us-east-1 --role lambnik-tiler-dev --api-module bin/api --name tilegarden-dev-${USER} --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER}",
+    "dev": "nodemon --ignore bin/ --exec yarn local",
+    "lint": "eslint src",
+    "local": "yarn transpile && claudia-local-api --api-module bin/api | bunyan -o short",
+    "test": "claudia test-lambda",
+    "transpile": "babel src -d bin"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "bunyan": "^1.8.12",
+    "claudia": "^5.0.0",
+    "claudia-local-api": "^2.0.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.12.0",
+    "nodemon": "^1.17.5"
+  },
+  "dependencies": {
+    "claudia-api-builder": "^4.1.0"
+  }
+}
