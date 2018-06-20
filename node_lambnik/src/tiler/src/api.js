@@ -27,20 +27,24 @@ api.get('/', () => home())
 /**
  * TEST ONLY
  */
-api.get('/test/{z}/{x}/{y}', (req) => {
-    try {
-        // Handle url params
-        const inlet = req.queryString.inlet
-        const z = Number(req.pathParams.z)
-        const x = Number(req.pathParams.x)
-        const y = Number(req.pathParams.y)
+api.get(
+    '/test/{z}/{x}/{y}',
+    (req) => {
+        try {
+            // Handle url params
+            const inlet = req.queryString.inlet
+            const z = Number(req.pathParams.z)
+            const x = Number(req.pathParams.x)
+            const y = Number(req.pathParams.y)
 
-        // create grid
-        return serveTile(z, x, y, inlet)
-    } catch (e) {
-        return e.toString()
-    }
-})
+            // create grid
+            return serveTile(z, x, y, inlet)
+        } catch (e) {
+            return e.toString()
+        }
+    },
+    IMAGE_RESPONSE
+)
 
 
 // Get utf grid for some zxy bounds
