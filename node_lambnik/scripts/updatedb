@@ -6,12 +6,9 @@ POSTGRES_USER="${POSTGRES_USER:-postgres}"
 POSTGRES_PASSWORD="${POSTGRES_DB:-mysecretpassword}"
 POSTGRES_DB="${POSTGRES_DB:-$POSTGRES_USER}"
 
-PSQL="docker exec -i $(docker-compose ps -q database) gosu ${POSTGRES_USER} psql -d ${POSTGRES_DB}"
-
 # Execute psql commands on the database container for performance reasons.
-#CONTAINER_ID=$(docker-compose -f docker-compose.yml ps -q database)
-#PSQL="docker exec -i $CONTAINER_ID gosu postgres psql -d lambnik-test"
-# PSQL="psql -d lambnik_test -h rds-lambnik-test.cpz8rmcptx2k.us-east-1.rds.amazonaws.com -U lambnik -W"
+PSQL="docker exec -i $(docker-compose ps -q database) gosu ${POSTGRES_USER} psql -d ${POSTGRES_DB}"
+# echo "psql command: ${PSQL}"
 
 function usage() {
     echo -n \
@@ -42,21 +39,16 @@ function load() {
 
 function table_exists() {
     table=${1}
-    if [ "$force_reload" = true ]; then
-        echo "Table $table will be created or reloaded"
-        return 1
-    else
-        ${PSQL} -c "SELECT 1 FROM $table LIMIT 1" &>/dev/null
-    fi
+    ${PSQL} -c "SELECT 1 FROM $table LIMIT 1" &>/dev/null
 }
 
 # Source: https://github.com/azavea/raster-foundry/blob/develop/scripts/setup#L17
 function check_database() {
-	echo "Checking for database"
+    echo "checking for database"
     # Check if database is set up to continue
     max=21 # 1 minute
     counter=1
- 	sleep 3 # wait briefly becuase it sometimes blinks out for a moment right after start-up
+    sleep 3  # wait briefly becuase it sometimes blinks out for a moment right after start-up
     while true; do
         if [[ ${counter} -gt 1 ]]; then
             echo "Checking if database is up yet (attempt ${counter})..."
@@ -65,7 +57,7 @@ function check_database() {
         ${PSQL} -c "SELECT 1" &>/dev/null
         status_check=$?
         if [ $status_check == 0 ]; then
-        	echo "database is up"
+            echo "database is up"
             return
         fi
         set -e
@@ -96,20 +88,22 @@ while getopts ":hf" opt; do
         \?) usage; exit 1;;
     esac
 done
+shift $(($OPTIND - 1))
+
 
 check_database;
 check_postgis_install;
 
-tablename="${1:-pwd_inlets}"
+tablename="${1:-pa_gardens}"
 
 if table_exists "${tablename}"; then
     if [ "$force_reload" = true ]; then
-    	drop ${tablename}
+        drop ${tablename}
         load "data/${tablename}.sql.gz"
     else
         echo "table ${tablename} exists"
     fi
 else
-	echo "Loading ${tablename}"
+    echo "Loading ${tablename}"
     load "data/${tablename}.sql.gz"
 fi
