@@ -7,13 +7,6 @@ import mapnik from 'mapnik'
 import SphericalMercator from '@mapbox/sphericalmercator'
 import path from 'path'
 
-const TYPES = {
-    a: 'INLCTY4',
-    b: 'INLCTYC3',
-    c: 'INLOMG4',
-    d: 'INLOMG6',
-}
-
 const TILE_HEIGHT = 256
 const TILE_WIDTH = 256
 
