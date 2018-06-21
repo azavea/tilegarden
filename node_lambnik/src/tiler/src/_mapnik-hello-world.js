@@ -6,7 +6,6 @@ import mapnik from 'mapnik'
 import SphericalMercator from '@mapbox/sphericalmercator'
 import path from 'path'
 import fs from 'fs'
-import mercator from './_mercator'
 
 const POSTGIS_SETTINGS = {
     host: process.env.POSTGRES_HOST,
@@ -42,7 +41,8 @@ export const serveTile = (z, x, y, inlet) => {
     // console.log(`### Fields: ${JSON.stringify(postgis.fields())}`)
     // console.log(`### Extent: ${JSON.stringify(postgis.extent())}`)
     // console.log(`### Featureset: ${JSON.stringify(postgis.featureset())}`)
-    const bbox = mercator.xyz_to_envelope(x, y, z, false)// new SphericalMercator().bbox(x, y, z, false)
+    const bbox = new SphericalMercator().bbox(x, y, z, false, '900913')
+    // console.log(`library bbox is ${library_bbox}, should be ${bbox}.`)
     // console.log(`Initial bounding box: ${JSON.stringify(bbox)}`)
     // console.log('Created constants.')
 
