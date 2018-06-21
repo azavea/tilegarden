@@ -30,7 +30,7 @@ api.get(
 
 // Get tile for some zxy bounds
 api.get(
-    '/tile/{z}/{x}/{y}.png',
+    '/tile/{z}/{x}/{y}',
     req => getImage(req),
     IMAGE_RESPONSE,
 )
