@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@mapbox/sphericalmercator": "^1.1.0",
+    "babel-runtime": "6",
     "claudia-api-builder": "^4.1.0",
     "mapnik": "^3.7.2"
   }
