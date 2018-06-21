@@ -33,25 +33,27 @@
     var center = new L.LatLng(39.95, -75.15),
         map = new L.Map('map', {center: center, zoom: 13}),
         baselayer = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png').addTo(map),
-        tileLayer = L.tileLayer(LAMBNIK_DOMAIN + '/tile/{z}/{x}/{y}?type={type}', {
+        tileLayer = L.tileLayer(LAMBNIK_DOMAIN + '/test/{z}/{x}/{y}.png', {
             type: function() {
                 return document.getElementById('inlet-type').value;
         }}).addTo(map);
 
-     var grid = new L.UtfGrid(LAMBNIK_DOMAIN + '/grid/{z}/{x}/{y}?type={type}', {
-            useJsonP: false,
-            type: function() {
-                return document.getElementById('inlet-type').value;
-            }
-     });
+     // var grid = new L.UtfGrid(LAMBNIK_DOMAIN + '/grid/{z}/{x}/{y}?type={type}', {
+     //        useJsonP: false,
+     //        type: function() {
+     //            return document.getElementById('inlet-type').value;
+     //        }
+     // });
 
-     map.addLayer(grid);
+     //map.addLayer(grid);
 
-     grid.on('click', function(e) {
-       if (e.data) {
-         alert(e.data.inlettype);
-       }
-     });
+     // grid.on('click', function(e) {
+     //   if (e.data) {
+     //     alert(e.data.inlettype);
+     //   }
+     // });
+
+    map.addLayer(baselayer);
 
       document.addEventListener('DOMContentLoaded',function() {
 

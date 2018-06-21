@@ -28,8 +28,9 @@ api.get('/', () => home())
  * TEST ONLY
  */
 api.get(
-    '/test/{z}/{x}/{y}',
+    '/test/{z}/{x}/{y}.png',
     (req) => {
+        console.log('Handling request')
         try {
             // Handle url params
             const inlet = req.queryString.inlet
@@ -37,9 +38,11 @@ api.get(
             const x = Number(req.pathParams.x)
             const y = Number(req.pathParams.y)
 
+            // console.log('calling serve tile')
             // create grid
             return serveTile(z, x, y, inlet)
         } catch (e) {
+            // console.log(`it do an error`)
             return e.toString()
         }
     },
