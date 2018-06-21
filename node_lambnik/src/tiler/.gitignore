@@ -2,3 +2,4 @@
 claudia.json
 # ignore the folder of transpiled es6
 /bin/
+tiles/

@@ -30,7 +30,7 @@ services:
       - "9000:3000"
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=lamb
+      - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
       - POSTGRES_HOST=database.lambnik.azavea.com
     env_file: .env
