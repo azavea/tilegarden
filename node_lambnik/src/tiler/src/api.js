@@ -30,7 +30,7 @@ api.get('/', () => home())
 api.get(
     '/test/{z}/{x}/{y}.png',
     (req) => {
-        console.log('Handling request')
+        // console.log('Handling request')
         try {
             // Handle url params
             const inlet = req.queryString.inlet
