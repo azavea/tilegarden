@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>PA Gardens</title>
+
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+
+    <!-- Add the Leaflet JavaScript library -->
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+
+    <!-- Script to load map into map div -->
+    <script src="index.js"></script>
+
+    <!-- Custom stylesheet -->
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="container">
+        <h3>PA Gardens</h3>
+        <div id="map" style="width: 705px; height: 375px"></div>
+    </div>
+<style>
+    #map {
+        border: 1px solid rgba(0, 0, 0, 0);
+        border-radius: 6px;
+        display: inline-block;
+    }
+
+    .container {
+        width: 100%;
+        margin-top: 30px;
+        align-content: center;
+        text-align: center;
+    }
+</style>
+<script>
+    "use-strict"
+
+    document.addEventListener('DOMContentLoaded', function onload() {
+        // create map object
+        var map = L.map('map', {
+            center: [41, -77.5], zoom: 7
+        })
+
+        // add basemap
+        //L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+
+        // add garden map
+        L.tileLayer('http://localhost:9001/test/{z}/{x}/{y}.png').addTo(map)
+    })
+
+</script>
+</body>
+
+</html>
