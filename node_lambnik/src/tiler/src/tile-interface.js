@@ -6,11 +6,14 @@
  */
 
 import Bunyan from 'bunyan'
+import path from 'path'
+import fs from 'fs'
 
 import { image, grid } from './tiler'
 
 // Configure logging
 const log = Bunyan.createLogger({ name: 'Tilegarden' })
+
 
 // TODO: flesh out how errors are handled
 const handleException = (e) => {
@@ -25,7 +28,7 @@ export const home = () => {
     return 'Hello, world!'
 }
 
-export const getGrid = (req) => {
+export const getGrid = async (req) => {
     log.debug('Serving grid')
 
     try {
@@ -36,13 +39,13 @@ export const getGrid = (req) => {
         const y = Number(req.pathParams.y)
 
         // create grid
-        return grid(z, x, y, inlet)
+        return await grid(z, x, y, inlet)
     } catch (e) {
         return handleException(e)
     }
 }
 
-export const getTile = (req) => {
+export const getImage = async (req) => {
     log.debug('Serving tile')
 
     try {
@@ -52,8 +55,18 @@ export const getTile = (req) => {
         const x = Number(req.pathParams.x)
         const y = Number(req.pathParams.y)
 
-        // create grid
-        return image(z, x, y, inlet)
+        // get tile buffer
+        const tile = await image(z, x, y, inlet)
+
+        // DEBUG: write buffer to file
+        const dir = path.join(__dirname, '../tiles/')
+        if ( !fs.existsSync(dir)) fs.mkdirSync(dir)
+        fs.writeFileSync(`${dir}tile${z}${x}${y}.png`, tile)
+        console.log(`Wrote tile ${z}/${x}/${y}.png to ${dir}`)
+
+        // send buffer to client
+        return tile
+
     } catch (e) {
         return handleException(e)
     }
