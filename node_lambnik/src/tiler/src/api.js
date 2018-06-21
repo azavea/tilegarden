@@ -4,9 +4,7 @@
 
 import APIBuilder from 'claudia-api-builder'
 
-import { home, getGrid, getTile } from './tile-interface'
-import { serveTile } from './_mapnik-hello-world'
-import {grid} from "./tiler"
+import { home, getGrid, getImage } from './tile-interface'
 
 const IMAGE_RESPONSE = {
     success: {
@@ -23,33 +21,6 @@ api.setBinaryMediaTypes(['image/png'])
 
 api.get('/', () => home())
 
-
-/**
- * TEST ONLY
- */
-api.get(
-    '/test/{z}/{x}/{y}.png',
-    (req) => {
-        // console.log('Handling request')
-        try {
-            // Handle url params
-            const inlet = req.queryString.inlet
-            const z = Number(req.pathParams.z)
-            const x = Number(req.pathParams.x)
-            const y = Number(req.pathParams.y)
-
-            // console.log('calling serve tile')
-            // create grid
-            return serveTile(z, x, y, inlet)
-        } catch (e) {
-            // console.log(`it do an error`)
-            return e.toString()
-        }
-    },
-    IMAGE_RESPONSE
-)
-
-
 // Get utf grid for some zxy bounds
 // TODO: in the original implementation this alone uses cors: why?
 api.get(
@@ -59,8 +30,8 @@ api.get(
 
 // Get tile for some zxy bounds
 api.get(
-    '/tile/{z}/{x}/{y}',
-    req => getTile(req),
+    '/tile/{z}/{x}/{y}.png',
+    req => getImage(req),
     IMAGE_RESPONSE,
 )
 
