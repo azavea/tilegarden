@@ -14,8 +14,6 @@ services:
     image: quay.io/azavea/postgis:2.3-postgres9.6-slim
     expose:
       - "5432"
-    volumes:
-      - /opt/dbdata/lambnik:/var/lib/postgresql/data
 
   tiler:
     image: tiler
