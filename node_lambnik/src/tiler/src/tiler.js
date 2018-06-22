@@ -121,13 +121,11 @@ const createMap = (z, x, y) => {
     layer.styles = ['point']
 
     // Attach datasource to layer
-    // TODO: configure custom queries
     const postgis = getDatasource()
     layer.datasource = postgis
     map.add_layer(layer)
 
     // Load styles from XML
-    // TODO: configure custom styles
     map.loadSync(path.join(__dirname, 'point-vector.xml'), { strict: true })
 
     return map

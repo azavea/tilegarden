@@ -22,7 +22,7 @@ api.setBinaryMediaTypes(['image/png'])
 api.get('/', () => home())
 
 // Get utf grid for some zxy bounds
-// TODO: in the original implementation this alone uses cors: why?
+// in the original implementation this alone uses cors: why?
 api.get(
     '/grid/{z}/{x}/{y}',
     req => getGrid(req),
@@ -36,7 +36,6 @@ api.get(
 )
 
 // Handles favicon
-// TODO: make one?
 api.get('/favicon.ico', () => {
     // pass
 })
