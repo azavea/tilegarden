@@ -10,14 +10,11 @@ import fs from 'fs'
 
 import { image, grid } from './tiler'
 
-
-// TODO: flesh out how errors are handled
 const handleException = (e) => {
     return e.toString()
 }
 
 // default landing page response
-// TODO: have this return usage instructions?
 export const home = () => {
     return 'Hello, world!'
 }
