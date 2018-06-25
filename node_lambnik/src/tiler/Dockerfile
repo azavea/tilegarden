@@ -1,7 +1,7 @@
 FROM node:8.10-slim
 
 # Copy files needed for installing packages first
-COPY package.json yarn.lock /home/tiler/
+COPY package.json yarn.lock claudia-local-api/ /home/tiler/
 WORKDIR /home/tiler
 
 # install node modules
