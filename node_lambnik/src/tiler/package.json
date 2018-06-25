@@ -28,7 +28,8 @@
     "dev": "nodemon --ignore bin/ --exec yarn local",
     "lint": "eslint src",
     "local": "yarn transpile && claudia-local-api --api-module bin/api | bunyan -o short",
-    "test": "claudia test-lambda",
+    "test-local": "curl localhost:9001/tile/8/74/96.png \"Accept: image/png\" > test-local.png",
+    "test-deploy": "curl https://ufe5hv3dxa.execute-api.us-east-1.amazonaws.com/latest/tile/8/74/96.png -H \"Accept: image/png\" > test-deploy.png",
     "transpile": "babel src -d bin --copy-files"
   },
   "devDependencies": {
@@ -37,7 +38,7 @@
     "babel-preset-env": "^1.7.0",
     "bunyan": "^1.8.12",
     "claudia": "^5.0.0",
-    "claudia-local-api": "^2.0.0",
+    "claudia-local-api": "./claudia-local-api",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.12.0",

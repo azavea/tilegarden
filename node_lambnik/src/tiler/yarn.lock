@@ -1035,14 +1035,15 @@ claudia-api-builder@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/claudia-api-builder/-/claudia-api-builder-4.1.0.tgz#173a6079a5472cc19921693052546b2f9a0ca904"
 
-claudia-local-api@^2.0.0:
+claudia-local-api@./claudia-local-api:
   version "2.0.0"
-  resolved "https://registry.yarnpkg.com/claudia-local-api/-/claudia-local-api-2.0.0.tgz#f16bb31ab64659cdfa03f6c6f9453a17d15298a7"
   dependencies:
     body-parser "^1.0.0"
     bunyan "^1.0.0"
     commander "^2.13.0"
     express "^4.16.1"
+    fs "^0.0.1-security"
+    lodash "^4.17.10"
     path-parser "^4.0.4"
 
 claudia@^5.0.0:
@@ -1810,6 +1811,10 @@ fs-readdir-recursive@^1.0.0:
 fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
+
+fs@^0.0.1-security:
+  version "0.0.1-security"
+  resolved "https://registry.yarnpkg.com/fs/-/fs-0.0.1-security.tgz#8a7bd37186b6dddf3813f23858b57ecaaf5e41d4"
 
 fsevents@^1.0.0, fsevents@^1.1.2:
   version "1.2.4"

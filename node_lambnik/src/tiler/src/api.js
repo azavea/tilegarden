@@ -3,6 +3,8 @@
  */
 
 import APIBuilder from 'claudia-api-builder'
+import fs from 'fs'
+import path from 'path'
 
 import { home, getGrid, getImage } from './tile-interface'
 
@@ -17,9 +19,19 @@ const IMAGE_RESPONSE = {
 const api = new APIBuilder()
 
 // Add pngs to binary media types
-api.setBinaryMediaTypes(['image/png'])
+//api.setBinaryMediaTypes(['image/png'])
 
 api.get('/', () => home())
+
+// Test whether images will ACTUALLY SERVE OR WHAT
+api.get('/img', () => {
+    return new Promise((resolve, reject) => {
+        fs.readFile(path.join(__dirname, 'img.png'), (err, data) => {
+            if (err) reject(err)
+            else resolve(data)
+        })
+    })
+}, { success: { contentType: 'image/png', contentHandling: 'CONVERT_TO_BINARY'}});
 
 // Get utf grid for some zxy bounds
 // in the original implementation this alone uses cors: why?
