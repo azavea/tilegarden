@@ -47,16 +47,18 @@ export const getImage = async (req) => {
         // get tile buffer
         const tile = await image(z, x, y, inlet)
 
-        // DEBUG: write buffer to file
-        const dir = path.join(__dirname, '../tiles/')
-        if ( !fs.existsSync(dir)) fs.mkdirSync(dir)
-        fs.writeFileSync(`${dir}tile${z}${x}${y}.png`, tile)
-        console.log(`Wrote tile ${z}/${x}/${y}.png to ${dir}`)
-
         // send buffer to client
         return tile
 
     } catch (e) {
         return handleException(e)
     }
+}
+
+// For debugging: write image buffer to file
+const saveTiletoFile = (buffer, path) => {
+    const dir = path.join(__dirname, '../tiles/')
+    if ( !fs.existsSync(dir)) fs.mkdirSync(dir)
+    fs.writeFileSync(`${dir}${path}`, buffer)
+    console.log(`Wrote tile ${path} to ${dir}`)
 }
