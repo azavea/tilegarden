@@ -48,8 +48,11 @@
         }).addTo(map);
 
 
-        // add garden map
-        L.tileLayer('http://localhost:9001/tile/{z}/{x}/{y}.png').addTo(map)
+        // add tileserver
+        // un-comment out the path that you want to test
+        // var TILESERVER_PATH = 'https://ufe5hv3dxa.execute-api.us-east-1.amazonaws.com/latest/tile/{z}/{x}/{y}.png'
+        var TILESERVER_PATH = 'http://localhost:9001/tile/{z}/{x}/{y}.png'
+        L.tileLayer(TILESERVER_PATH).addTo(map)
     })
 
 </script>
