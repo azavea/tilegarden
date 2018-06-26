@@ -19,6 +19,14 @@ export const home = () => {
     return 'Hello, world!'
 }
 
+// img endpoint to verify binary content serving
+export const img = () => new Promise((resolve, reject) => {
+    fs.readFile(path.join(__dirname, 'res/img.png'), (err, data) => {
+        if (err) reject(err)
+        else resolve(data)
+    })
+})
+
 export const getGrid = async (req) => {
     try {
         // Handle url params
