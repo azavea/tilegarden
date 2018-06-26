@@ -94,7 +94,7 @@ shift $(($OPTIND - 1))
 check_database;
 check_postgis_install;
 
-tablename="${1:-pa_gardens}"
+tablename="${1:-pwd_inlets}"
 
 if table_exists "${tablename}"; then
     if [ "$force_reload" = true ]; then

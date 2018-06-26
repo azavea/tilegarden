@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>PA Gardens</title>
+    <title>PWD Inlets</title>
 
     <!-- External Stylesheets -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
@@ -14,7 +14,7 @@
 
 <body>
     <div class="container">
-        <h3>PA Gardens</h3>
+        <h3>PWD Inlets</h3>
         <div id="map" style="width: 705px; height: 375px"></div>
     </div>
 <style>
@@ -37,7 +37,7 @@
     document.addEventListener('DOMContentLoaded', function onload() {
         // create map object
         var map = L.map('map', {
-            center: [41, -77.5], zoom: 7
+            center: [39.96, -75.15], zoom: 13
         })
 
         // add basemap
@@ -50,7 +50,7 @@
 
         // add tileserver
         // un-comment out the path that you want to test
-        // var TILESERVER_PATH = 'https://ufe5hv3dxa.execute-api.us-east-1.amazonaws.com/latest/tile/{z}/{x}/{y}.png'
+        // TILESERVER_PATH = 'https://adzvdcdhi4.execute-api.us-east-1.amazonaws.com/latest/tile/{z}/{x}/{y}.png'
         var TILESERVER_PATH = 'http://localhost:9001/tile/{z}/{x}/{y}.png'
         L.tileLayer(TILESERVER_PATH).addTo(map)
     })
