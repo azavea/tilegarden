@@ -20,11 +20,11 @@ const POSTGIS_SETTINGS = {
     host: process.env.POSTGRES_HOST,
     port: '5432',
     dbname: process.env.POSTGRES_DB,
-    table: 'pa_gardens',
+    table: process.env.DB_TABLE,
     user: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
     type : 'postgis',
-    geometry_field: 'the_geom_webmercator',
+    geometry_field: process.env.GEOMETRY_FIELD,
 }
 
 /**
@@ -49,7 +49,7 @@ const getDatasource = () => {
  * @param y
  * @returns {*}
  */
-const tileBounds = (z, x, y) => new SphericalMercator().bbox(x, y, z, false, '900913')
+const tileBounds = (z, x, y) => new SphericalMercator().bbox(x, y, z, false, process.env.EPSG)
 
 /**
  * Return a promise that renders a utf grid for a given map coordinate
