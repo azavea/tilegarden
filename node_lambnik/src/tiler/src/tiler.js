@@ -126,7 +126,7 @@ const createMap = (z, x, y) => {
     map.add_layer(layer)
 
     // Load styles from XML
-    map.loadSync(path.join(__dirname, 'point-vector.xml'), { strict: true })
+    map.loadSync(path.join(__dirname, 'res/point-vector.xml'), { strict: true })
 
     return map
 }
