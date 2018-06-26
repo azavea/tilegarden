@@ -26,7 +26,7 @@ api.get('/', () => home())
 // Test whether images will ACTUALLY SERVE OR WHAT
 api.get('/img', () => {
     return new Promise((resolve, reject) => {
-        fs.readFile(path.join(__dirname, 'img.png'), (err, data) => {
+        fs.readFile(path.join(__dirname, 'res/img.png'), (err, data) => {
             if (err) reject(err)
             else resolve(data)
         })
