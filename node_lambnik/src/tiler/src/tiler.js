@@ -60,20 +60,21 @@ const tileBounds = (z, x, y) => new SphericalMercator().bbox(x, y, z, false, '90
  */
 export const grid = (z, x, y) => {
     const grd = new mapnik.Grid(TILE_WIDTH, TILE_HEIGHT)
-    const map = createMap(z, x, y)
 
-    return new Promise((success, fail) => {
-        map.render(grd, {
-            layer: 0,
-            fields: ['inlettype'],
-        }, (err, _grd) => {
-            if (err) fail(err)
+    return createMap(z, x, y)
+        .then((map) => new Promise((resolve, reject) => {
+            map.render(grd, {
+                layer: 0,
+                fields: ['inlettype'],
+            }, (err, _grd) => {
+                if (err) fail(err)
 
-            return _grd.encode('utf', {
-                resolution: 4,
+                return _grd.encode('utf', {
+                    resolution: 4,
+                })
             })
-        })
-    })
+        }))
+
 }
 
 /**
@@ -87,20 +88,26 @@ export const image = (z, x, y) => {
     // create mapnik image
     const img = new mapnik.Image(TILE_WIDTH, TILE_HEIGHT)
 
-    // get map
-    const map = createMap(z, x, y)
-
     // render map to image
     // return asynchronous rendering method as a promise
-    return new Promise((success, fail) => {
-        map.render(img, {}, (err, _img) => {
-            if (err) fail(err)
-
-            const buffer = _img.encodeSync('png')
-            success(buffer)
+    return createMap(z, x, y)
+        .then((map) => {
+            return new Promise((resolve, reject) => {
+                map.render(img, {}, (err, result) => {
+                    if (err) reject(err)
+                    else resolve(result)
+                })
+            })
         })
-    })
+        .then(encodeAsPNG)
 }
+
+const encodeAsPNG = (renderedTile) => new Promise((resolve, reject) => {
+    renderedTile.encode('png', {}, (err, result) => {
+        if (err) reject(err)
+        else resolve(result)
+    })
+})
 
 /**
  * Creates a map based on configured datasource and style information
@@ -125,8 +132,13 @@ const createMap = (z, x, y) => {
     layer.datasource = postgis
     map.add_layer(layer)
 
-    // Load styles from XML
-    map.loadSync(path.join(__dirname, 'res/point-vector.xml'), { strict: true })
-
-    return map
+    // Asynchronously load tiles from XML and return
+    return new Promise((resolve, reject) => {
+        map.load(path.join(__dirname, 'res/point-vector.xml'), { strict: true }, (err, result) => {
+            if (err) reject(err)
+            else resolve(result)
+        })
+    })
+    //
+    // return map
 }
