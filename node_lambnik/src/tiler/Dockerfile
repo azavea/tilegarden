@@ -1,7 +1,11 @@
 FROM node:8.10-slim
 
+# Install git for git dependencies
+RUN apt-get update -y
+RUN apt-get install git -y
+
 # Copy files needed for installing packages first
-COPY package.json yarn.lock claudia-local-api/ /home/tiler/
+COPY package.json yarn.lock /home/tiler/
 WORKDIR /home/tiler
 
 # install node modules
