@@ -1,0 +1,38 @@
+#!/bin/bash
+
+set -e
+
+function usage() {
+    echo -n "Usage: $(basename "${0}") [TEST]
+Run specified test.
+Options:
+    --help      Display this help text
+"
+}
+
+function main() {
+	mkdir -p test-results
+
+    if [ "${1}" = "local-tile" ]
+    then
+        curl http://localhost:9001/tile/13/2385/3102.png "Accept: image/png" > test-results/local-tile.png
+    elif [ "${1}" = "prod-tile" ]
+    then
+        curl https://adzvdcdhi4.execute-api.us-east-1.amazonaws.com/latest/tile/13/2385/3102.png -H "Accept: image/png" > test-results/prod-tile.png
+    else
+    	usage
+    fi
+
+}
+
+if [ "${BASH_SOURCE[0]}" = "${0}" ]
+then
+    if [ "${1:-}" = "--help" ]
+    then
+        usage
+    else
+        SERVER_COMMAND=${1:-start}
+        main $SERVER_COMMAND
+    fi
+    exit
+fi
