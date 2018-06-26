@@ -9,6 +9,7 @@ import path from 'path'
 import fs from 'fs'
 
 import { image, grid } from './tiler'
+import { TILE_PATH, GRID_PATH } from './path-config'
 
 const handleException = (e) => {
     return e.toString()
@@ -16,7 +17,21 @@ const handleException = (e) => {
 
 // default landing page response
 export const home = () => {
-    return 'Hello, world!'
+    return `
+        <html>
+            <head>
+            <title>Tilegarden</title>
+            </head>
+            <body>
+                <h2>Tilegarden Usage:</h2>
+                <ul>
+                    <li>Render tile at zoom/x/y: <code>${TILE_PATH}</code></li>
+                    <li>UTF grid at zoom/x/y: <code>${GRID_PATH}</code></li>
+                </ul>
+                <a href="https://github.com/azavea/tilegarden">See on GitHub</a>
+            </body>
+        </html>
+    `
 }
 
 // img endpoint to verify binary content serving

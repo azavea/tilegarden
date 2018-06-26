@@ -5,6 +5,7 @@
 import APIBuilder from 'claudia-api-builder'
 
 import { home, img, getGrid, getImage } from './tile-interface'
+import * as Endpoints from './path-config'
 
 const IMAGE_RESPONSE = {
     success: {
@@ -13,32 +14,34 @@ const IMAGE_RESPONSE = {
     },
 }
 
+const HTML_RESPONSE = { success: { contentType: 'text/html' } }
+
 // Create new lambda API
 const api = new APIBuilder()
 
 // Add pngs to binary media types
 //api.setBinaryMediaTypes(['image/png'])
 
-api.get('/', () => home())
+api.get(Endpoints.USAGE_PATH, () => home(), HTML_RESPONSE)
 
-api.get('/img', () => img(), IMAGE_RESPONSE);
+api.get(Endpoints.IMAGE_TEST_PATH, () => img(), IMAGE_RESPONSE)
 
 // Get utf grid for some zxy bounds
 // in the original implementation this alone uses cors: why?
 api.get(
-    '/grid/{z}/{x}/{y}',
+    Endpoints.GRID_PATH,
     req => getGrid(req),
 )
 
 // Get tile for some zxy bounds
 api.get(
-    '/tile/{z}/{x}/{y}',
+    Endpoints.TILE_PATH,
     req => getImage(req),
     IMAGE_RESPONSE,
 )
 
 // Handles favicon
-api.get('/favicon.ico', () => {
+api.get(Endpoints.FAVICON_PATH, () => {
     // pass
 })
 
