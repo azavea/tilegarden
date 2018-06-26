@@ -36,7 +36,7 @@
     "babel-preset-env": "^1.7.0",
     "bunyan": "^1.8.12",
     "claudia": "^5.0.0",
-    "claudia-local-api": "./claudia-local-api",
+    "claudia-local-api": "https://github.com/mattdelsordo/claudia-local-api.git",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.12.0",
