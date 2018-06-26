@@ -23,13 +23,11 @@
     "bin"
   ],
   "scripts": {
-    "deploy": "yarn transpile && claudia update --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER}",
-    "deploy-new": "yarn transpile && claudia create --region us-east-1 --role lambnik-tiler-dev --api-module bin/api --name tilegarden-dev-${USER} --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER}",
+    "deploy": "yarn transpile && claudia update --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER},DB_TABLE=${DB_TABLE},GEOMETRY_FIELD=${GEOMETRY_FIELD},EPSG=${EPSG} --timeout ${TIMEOUT}",
+    "deploy-new": "yarn transpile && claudia create --region us-east-1 --role lambnik-tiler-dev --api-module bin/api --name tilegarden-dev-${USER} --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER}DB_TABLE=${DB_TABLE},GEOMETRY_FIELD=${GEOMETRY_FIELD},EPSG=${EPSG}",
     "dev": "nodemon -e js,xml,mss,json --ignore bin/ --exec yarn local",
     "lint": "eslint src",
     "local": "yarn transpile && claudia-local-api --api-module bin/api | bunyan -o short",
-    "test-local": "curl localhost:9001/tile/8/74/96.png \"Accept: image/png\" > test-local.png",
-    "test-deploy": "curl https://ufe5hv3dxa.execute-api.us-east-1.amazonaws.com/latest/tile/8/74/96.png -H \"Accept: image/png\" > test-deploy.png",
     "transpile": "babel src -d bin --copy-files"
   },
   "devDependencies": {
