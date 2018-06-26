@@ -43,34 +43,29 @@ export const img = () => new Promise((resolve, reject) => {
 })
 
 export const getGrid = (req) => {
-    try {
-        // Handle url params
-        const z = Number(req.pathParams.z)
-        const x = Number(req.pathParams.x)
-        const y = Number(req.pathParams.y)
+    // Handle url params
+    const z = Number(req.pathParams.z)
+    const x = Number(req.pathParams.x)
+    const y = Number(req.pathParams.y)
 
-        // create grid
-        return grid(z, x, y)
-    } catch (e) {
-        return handleException(e)
-    }
+    // create grid
+    return grid(z, x, y)
+        .then(result => result)
+        .catch(e => JSON.stringify(e))
 }
 
 export const getImage = async (req) => {
-    try {
-        // Handle url params
-        const z = Number(req.pathParams.z)
-        const x = Number(req.pathParams.x)
-        // strip .png off of y
-        const preY = req.pathParams.y
-        const y = Number(preY.substr(0, preY.lastIndexOf('.')) || preY)
+    // Handle url params
+    const z = Number(req.pathParams.z)
+    const x = Number(req.pathParams.x)
+    // strip .png off of y
+    const preY = req.pathParams.y
+    const y = Number(preY.substr(0, preY.lastIndexOf('.')) || preY)
 
-        // return tile buffer to client
-        return image(z, x, y)
-
-    } catch (e) {
-        return handleException(e)
-    }
+    // return tile buffer to client
+    return image(z, x, y)
+        .then(result => result)
+        .catch(e => JSON.stringify(e))
 }
 
 // For debugging: write image buffer to file

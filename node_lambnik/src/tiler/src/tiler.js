@@ -74,6 +74,11 @@ export const grid = (z, x, y) => {
                 })
             })
         }))
+        .then(result => result)
+        .catch((e) => {
+            console.log(e)
+            throw e
+        })
 
 }
 
@@ -100,6 +105,10 @@ export const image = (z, x, y) => {
             })
         })
         .then(encodeAsPNG)
+        .catch((e) => {
+            console.log(e)
+            throw e
+        })
 }
 
 const encodeAsPNG = (renderedTile) => new Promise((resolve, reject) => {
