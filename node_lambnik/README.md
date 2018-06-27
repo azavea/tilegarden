@@ -9,3 +9,10 @@
  	* Generate a UTF grid: `/grid/{z}/{x}/{y}`
  * To publish, make sure you have specified valid AWS credentials and have listed the proper database credentials in a `.env` file in the root of the project. The format for this file can be copied from `env-template`. You can then run `./scripts/publish` to publish to AWS Lambda.
  * API Gateway has trouble serving images, so you need to configure some sort of proxy (e.g. using a CloudFront distribution) that sets an `Accept:image/png` header on all lambda requests.
+
+### Debugging
+ The local development server exposes a websocket to a node inspector that can be attached to your IDE of choice to step through and debug your code. Here are instructions on how to do so using Google Chrome's Dev Tools:
+  * Start the development server with `./scripts/server`.
+  * Open Google Chrome and navigate to `about:inspect`.
+  * There should be an option listed as something along the lines of "Target (v8.10.0)" with the Node.js logo and a path like `file:///home/tiler/node_modules/claudia-local-api/bin/claudia-local-api`. Click "inspect", underneath.
+ * A new window will open up. Type `ctrl+p` to open a search bar that lets you navigate to your source code. The transpiled code in `tiler/bin/` is what is actually being tracked by the debugger.
