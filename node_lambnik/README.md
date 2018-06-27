@@ -8,3 +8,4 @@
  	* Generate a map tile: `/tile/{z}/{x}/{y}.png` serves tiles.
  	* Generate a UTF grid: `/grid/{z}/{x}/{y}`
  * To publish, make sure you have specified valid AWS credentials and have listed the proper database credentials in a `.env` file in the root of the project. The format for this file can be copied from `env-template`. You can then run `./scripts/publish` to publish to AWS Lambda.
+ * API Gateway has trouble serving images, so you need to configure some sort of proxy (e.g. using a CloudFront distribution) that sets an `Accept:image/png` header on all lambda requests.
