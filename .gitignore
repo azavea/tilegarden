@@ -66,3 +66,7 @@ typings/
 
 # directory of test results
 test-results
+
+# misc config files
+*.prod.mml
+*.env

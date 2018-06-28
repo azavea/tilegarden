@@ -5,7 +5,7 @@
 import APIBuilder from 'claudia-api-builder'
 
 import { home, img, getGrid, getImage } from './tile-interface'
-import * as Endpoints from './path-config'
+import * as Endpoints from './util/path-config'
 
 const IMAGE_RESPONSE = {
     success: {

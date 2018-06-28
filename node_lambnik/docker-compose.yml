@@ -7,6 +7,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "9001:80"
+    depends_on:
+      - tiler
     links:
       - tiler:tiler.lambnik.azavea.com
 
@@ -24,15 +26,13 @@ services:
       - "9000:3000"
       - "9229:9229"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
-      - POSTGRES_HOST=database.lambnik.azavea.com
-    env_file: .env
+      - NODE_ENV=development
+    env_file: config/aws-config.env
     links:
       - database:database.lambnik.azavea.com
     volumes:
       - ./src/tiler:/home/tiler
+      - ./config/mapnik:/home/tiler/src/config
       - node_modules:/home/tiler/node_modules
       - bin:/home/tiler/bin
       - $HOME/.aws:/root/.aws:ro

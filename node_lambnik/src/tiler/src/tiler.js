@@ -6,8 +6,10 @@
 import mapnik from 'mapnik'
 import SphericalMercator from '@mapbox/sphericalmercator'
 import path from 'path'
-import fs from 'fs'
 import carto from 'carto'
+
+import { readFile } from './util/fs-promise'
+import findConfigPath from './util/find-config'
 
 const TILE_HEIGHT = 256
 const TILE_WIDTH = 256
@@ -16,36 +18,6 @@ const PROJECTION = '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0
 
 // Register plugins
 mapnik.register_default_input_plugins()
-
-/**
- * Defines PostGIS connection information
- * @type {{host: *, port: string, dbname: *, table: string, user: *, password: *, type: string, geometry_field: string}}
- */
-const POSTGIS_SETTINGS = {
-    host: process.env.POSTGRES_HOST,
-    port: '5432',
-    dbname: process.env.POSTGRES_DB,
-    table: process.env.DB_TABLE,
-    user: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
-    type : 'postgis',
-    geometry_field: process.env.GEOMETRY_FIELD,
-}
-
-/**
- * Verifies that datasource plugins are registered
- * and returns a Datasource object if so
- * @returns {mapnik.Datasource}
- */
-const getDatasource = () => {
-    // register postgis plugin
-    if (mapnik.register_default_input_plugins) {
-        mapnik.register_default_input_plugins()
-    }
-
-    // TODO: what happens if register_default_input_plugins is undefined?
-    return new mapnik.Datasource(POSTGIS_SETTINGS)
-}
 
 /**
  * Converts z/x/y coordinates to a bounding box that can be used by a mapnik map
@@ -134,62 +106,64 @@ const encodeAsPNG = (renderedTile) => new Promise((resolve, reject) => {
  * @param z
  * @param x
  * @param y
- * @returns {mapnik.Map}
+ * @returns {Promise<mapnik.Map>}
  */
-const createMap = async (z, x, y) => {
-    const huh = await renderMMLtoXML('res/map-config.mml')
-    console.log(`XML?? ${JSON.stringify(huh)}`)
-
-    // Get latlng bounds for zxy tile
-    const bounds = tileBounds(z, x, y)
-
-    // Create a webmercator map
+const createMap = (z, x, y) => {
+    // Create a webmercator map with specified bounds
     const map = new mapnik.Map(TILE_WIDTH, TILE_HEIGHT, PROJECTION)
     map.bufferSize = 64
-    map.extent = bounds
-    // const layer = new mapnik.Layer('tile', PROJECTION)
-    // layer.styles = ['point']
+    map.extent = tileBounds(z, x, y)
 
-    // Attach datasource to layer
-    // const postgis = getDatasource()
-    // layer.datasource = postgis
-    // map.add_layer(layer)
-
-    // Asynchronously load tiles from XML and return
-    // return new Promise((resolve, reject) => {
-    //     map.load(path.join(__dirname, 'res/point-vector.xml'), { strict: true }, (err, result) => {
-    //         if (err) reject(err)
-    //         else resolve(result)
-    //     })
-    // })
-
-    return new Promise((resolve, reject) => {
-        map.fromString(huh, (err, result) => {
-            if (err) reject(err)
-            else resolve(result)
+    // load in mml and render to xml
+    return renderMMLtoXML(findConfigPath())
+        .then((xml) => {
+            return new Promise((resolve, reject) => {
+                // Load map specification from xml string
+                map.fromString(xml, (err, result) => {
+                    if (err) reject(err)
+                    else resolve(result)
+                })
+            })
         })
-    })
+        .then(result => result)
+        .catch((e) => {
+            console.log(e)
+            throw e
+        })
 }
 
+/**
+ * Convert a mml file to an xml string that mapnik can consume
+ * @param mmlPath
+ * @returns {Promise<any>}
+ */
 const renderMMLtoXML = (mmlPath) => {
-    const fullPath = path.join(__dirname, mmlPath)
-    return new Promise((resolve, reject) => {
-        fs.readFile(fullPath, 'utf-8', (err, data) => {
-            if (err) reject(err)
-            else resolve(data)
-        })
-    })
+    return readFile(mmlPath, 'utf-8')
         .then((mmlString) => {
             return new Promise((resolve, reject) => {
                 const mml = new carto.MML({})
-                mml.load(path.dirname(fullPath), mmlString, (err, data) => {
+                // Carto CAN read MSSs from file, which is why it
+                // needs the directory of the MML file (for relative path calculation)
+                mml.load(path.dirname(mmlPath), mmlString, (err, data) => {
                     if (err) reject(err)
                     else resolve(data)
                 })
             })
         })
         .then((mml) => {
-            return new carto.Renderer({}).render(mml).data
+            // MML.load is asynchronous, but render is NOT, and you have to
+            // manually check for errors by checking the members of the result
+            const jsonResponse = new carto.Renderer({}).render(mml)
+
+            if (jsonResponse.msg) {
+                jsonResponse.msg.forEach(m => console.log(carto.Util.getMessageToPrint(m)))
+            }
+
+            if (jsonResponse.data) return jsonResponse.data
+
+            // Actually throw an error if no data result
+            console.log(jsonResponse)
+            throw new Error('Error: could not render MML to XML, no result from render()')
         })
         .catch((e) => {
             console.log(e)
