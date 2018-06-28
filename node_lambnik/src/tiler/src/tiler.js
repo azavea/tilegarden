@@ -6,11 +6,16 @@
 import mapnik from 'mapnik'
 import SphericalMercator from '@mapbox/sphericalmercator'
 import path from 'path'
+import fs from 'fs'
+import carto from 'carto'
 
 const TILE_HEIGHT = 256
 const TILE_WIDTH = 256
 
 const PROJECTION = '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over'
+
+// Register plugins
+mapnik.register_default_input_plugins()
 
 /**
  * Defines PostGIS connection information
@@ -131,7 +136,10 @@ const encodeAsPNG = (renderedTile) => new Promise((resolve, reject) => {
  * @param y
  * @returns {mapnik.Map}
  */
-const createMap = (z, x, y) => {
+const createMap = async (z, x, y) => {
+    const huh = await renderMMLtoXML('res/map-config.mml')
+    console.log(`XML?? ${JSON.stringify(huh)}`)
+
     // Get latlng bounds for zxy tile
     const bounds = tileBounds(z, x, y)
 
@@ -139,19 +147,52 @@ const createMap = (z, x, y) => {
     const map = new mapnik.Map(TILE_WIDTH, TILE_HEIGHT, PROJECTION)
     map.bufferSize = 64
     map.extent = bounds
-    const layer = new mapnik.Layer('tile', PROJECTION)
-    layer.styles = ['point']
+    // const layer = new mapnik.Layer('tile', PROJECTION)
+    // layer.styles = ['point']
 
     // Attach datasource to layer
-    const postgis = getDatasource()
-    layer.datasource = postgis
-    map.add_layer(layer)
+    // const postgis = getDatasource()
+    // layer.datasource = postgis
+    // map.add_layer(layer)
 
     // Asynchronously load tiles from XML and return
+    // return new Promise((resolve, reject) => {
+    //     map.load(path.join(__dirname, 'res/point-vector.xml'), { strict: true }, (err, result) => {
+    //         if (err) reject(err)
+    //         else resolve(result)
+    //     })
+    // })
+
     return new Promise((resolve, reject) => {
-        map.load(path.join(__dirname, 'res/point-vector.xml'), { strict: true }, (err, result) => {
+        map.fromString(huh, (err, result) => {
             if (err) reject(err)
             else resolve(result)
         })
     })
+}
+
+const renderMMLtoXML = (mmlPath) => {
+    const fullPath = path.join(__dirname, mmlPath)
+    return new Promise((resolve, reject) => {
+        fs.readFile(fullPath, 'utf-8', (err, data) => {
+            if (err) reject(err)
+            else resolve(data)
+        })
+    })
+        .then((mmlString) => {
+            return new Promise((resolve, reject) => {
+                const mml = new carto.MML({})
+                mml.load(path.dirname(fullPath), mmlString, (err, data) => {
+                    if (err) reject(err)
+                    else resolve(data)
+                })
+            })
+        })
+        .then((mml) => {
+            return new carto.Renderer({}).render(mml).data
+        })
+        .catch((e) => {
+            console.log(e)
+            throw e
+        })
 }
