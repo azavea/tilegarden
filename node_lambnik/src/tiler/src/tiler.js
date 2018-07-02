@@ -148,6 +148,4 @@ const createMap = (z, x, y) => {
             else resolve(result)
         })
     })
-    //
-    // return map
 }
