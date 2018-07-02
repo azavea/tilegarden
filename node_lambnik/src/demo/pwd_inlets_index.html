@@ -54,14 +54,14 @@
         L.tileLayer(TILESERVER_PATH + '/tile/{z}/{x}/{y}.png').addTo(map);
 
         // add utf grid
-        var grid = new L.UtfGrid(TILESERVER_PATH + "/grid/owner/{z}/{x}/{y}", {
+        var grid = new L.UtfGrid(TILESERVER_PATH + "/grid/{z}/{x}/{y}?utfFields=inlettype,owner", {
             useJsonP: false
         });
 
         map.addLayer(grid);
         grid.on('click', function(e) {
             if (e.data) {
-                alert("This inlet is owned by: " + e.data.owner);
+                alert("This inlet is owned by: " + e.data.owner + " and has type " + e.data.inlettype);
                 console.log(JSON.stringify(e.data))
             }
         });
