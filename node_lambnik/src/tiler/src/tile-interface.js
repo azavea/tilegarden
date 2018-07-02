@@ -6,7 +6,7 @@
  */
 
 import path from 'path'
-import { readFile } from './util/fsPromise'
+import { readFile } from './util/fs-promise'
 
 import { image, grid } from './tiler'
 import { TILE_PATH, GRID_PATH } from './util/path-config'
