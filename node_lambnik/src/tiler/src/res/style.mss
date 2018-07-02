@@ -1,5 +1,5 @@
 #pwd_inlets {
-    marker-type: ellipse;
-    marker-fill: blue;
+    marker-fill: red;
+    marker-width: 4;
     marker-allow-overlap: true;
 }

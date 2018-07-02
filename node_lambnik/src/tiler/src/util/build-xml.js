@@ -10,11 +10,13 @@ import { readFile, writeFile } from './fs-promise'
 
 const IN_FILE = process.argv[2]
 const OUT_FILE = process.argv[3]
+const NODE_ENV = process.env.NODE_ENV === 'production'
+console.log(`Production mode=${NODE_ENV}`)
 
 // Takes in a string and templates in the proper env variables
 const fillTemplate = (mmlString) => {
     return mmlString.replace(/\$\{[a-z0-9_]+\}/gi, (match) => {
-        const varName = match.slice(2, match.length -1)
+        const varName = `${(NODE_ENV) ? 'PROD_' : 'DEV_'}${match.slice(2, match.length -1)}`
         return `"${process.env[varName]}"`
     })
 }
