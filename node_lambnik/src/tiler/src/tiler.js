@@ -113,8 +113,9 @@ const createMap = (z, x, y) => {
     map.bufferSize = 64
     map.extent = tileBounds(z, x, y)
 
+
     // load in mml and render to xml
-    return renderMMLtoXML(path.join(__dirname, 'res/map-config.mml'))
+    return readFile(path.join(__dirname, 'res/map-config.xml'), 'utf-8')
         .then((xml) => {
             return new Promise((resolve, reject) => {
                 // Load map specification from xml string
