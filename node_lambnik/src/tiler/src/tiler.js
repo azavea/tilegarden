@@ -8,8 +8,7 @@ import SphericalMercator from '@mapbox/sphericalmercator'
 import path from 'path'
 import carto from 'carto'
 
-import { readFile } from './util/fs-promise'
-import findConfigPath from './util/find-config'
+import { readFile } from './util/fsPromise'
 
 const TILE_HEIGHT = 256
 const TILE_WIDTH = 256
@@ -115,7 +114,7 @@ const createMap = (z, x, y) => {
     map.extent = tileBounds(z, x, y)
 
     // load in mml and render to xml
-    return renderMMLtoXML(findConfigPath())
+    return renderMMLtoXML(path.join(__dirname, 'res/map-config.mml'))
         .then((xml) => {
             return new Promise((resolve, reject) => {
                 // Load map specification from xml string
