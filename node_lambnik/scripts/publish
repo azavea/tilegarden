@@ -4,7 +4,7 @@ set -e
 
 function usage() {
     echo -n "Usage: $(basename "${0}") [OPTION]
-Login to a running Docker container's shell.
+Publish lambdas to AWS Lambda
 Options:
     --new     Deploy as a new lambda
     --help      Display this help text

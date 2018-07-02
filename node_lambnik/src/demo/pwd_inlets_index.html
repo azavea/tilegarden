@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>PWD Inlets</title>
+
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+
+    <!-- Add the Leaflet JavaScript library -->
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h3>PWD Inlets</h3>
+        <div id="map" style="width: 705px; height: 375px"></div>
+    </div>
+<style>
+    #map {
+        border: 1px solid rgba(0, 0, 0, 0);
+        border-radius: 6px;
+        display: inline-block;
+    }
+
+    .container {
+        width: 100%;
+        margin-top: 30px;
+        align-content: center;
+        text-align: center;
+    }
+</style>
+<script>
+    "use-strict"
+
+    document.addEventListener('DOMContentLoaded', function onload() {
+        // create map object
+        var map = L.map('map', {
+            center: [39.96, -75.15], zoom: 13
+        })
+
+        // add basemap
+        //L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+
+        // add tileserver
+        // un-comment out the path that you want to test
+        var TILESERVER_PATH = 'https://d28f32z0lbuk2f.cloudfront.net//tile/{z}/{x}/{y}.png'
+        // var TILESERVER_PATH = 'http://localhost:9001/tile/{z}/{x}/{y}.png'
+        L.tileLayer(TILESERVER_PATH).addTo(map)
+    })
+
+</script>
+</body>
+
+</html>
