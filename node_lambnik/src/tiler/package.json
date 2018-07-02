@@ -28,7 +28,7 @@
     "dev": "nodemon -e js,xml,mss,json --ignore bin/ --exec yarn local",
     "lint": "eslint src",
     "local": "yarn transpile && node --inspect=0.0.0.0:9229 node_modules/claudia-local-api/bin/claudia-local-api --api-module bin/api | bunyan -o short",
-    "transpile": "babel src -d bin --copy-files"
+    "transpile": "babel src -d bin --copy-files --source-maps inline"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

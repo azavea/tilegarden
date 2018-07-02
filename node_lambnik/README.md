@@ -15,4 +15,5 @@
   * Start the development server with `./scripts/server`.
   * Open Google Chrome and navigate to `about:inspect`.
   * There should be an option listed as something along the lines of "Target (v8.10.0)" with the Node.js logo and a path like `file:///home/tiler/node_modules/claudia-local-api/bin/claudia-local-api`. Click "inspect", underneath.
- * A new window will open up. Type `ctrl+p` to open a search bar that lets you navigate to your source code. The transpiled code in `tiler/bin/` is what is actually being tracked by the debugger.
+ * A new window will open up. Type `ctrl+p` to open a search bar that lets you navigate to your source code. **The transpiled code in `tiler/bin/` is what is actually being tracked by the debugger,**  not the source code in `tiler/src/`.
+ 
