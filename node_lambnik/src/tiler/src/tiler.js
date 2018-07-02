@@ -58,14 +58,14 @@ const tileBounds = (z, x, y) => new SphericalMercator().bbox(x, y, z, false, pro
  * @param y
  * @returns {Promise<any>}
  */
-export const grid = (z, x, y) => {
-    const grd = new mapnik.Grid(TILE_WIDTH, TILE_HEIGHT, {key: 'inlettype'})
+export const grid = (z, x, y, infoColumn) => {
+    const grd = new mapnik.Grid(TILE_WIDTH, TILE_HEIGHT, {key: infoColumn})
 
     return createMap(z, x, y)
         .then((map) => new Promise((resolve, reject) => {
             map.render(grd, {
                 layer: 0,
-                fields: ['inlettype'],
+                fields: [ infoColumn ],
             }, (err, rendered) => {
                 if (err) reject(err)
                 else resolve(rendered)
