@@ -23,26 +23,28 @@
     "bin"
   ],
   "scripts": {
-    "deploy": "yarn transpile && claudia update --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER}",
-    "deploy-new": "yarn transpile && claudia create --region us-east-1 --role lambnik-tiler-dev --api-module bin/api --name tilegarden-dev-${USER} --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER}",
-    "dev": "nodemon --ignore bin/ --exec yarn local",
+    "deploy": "yarn transpile && claudia update --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER},DB_TABLE=${DB_TABLE},GEOMETRY_FIELD=${GEOMETRY_FIELD},EPSG=${EPSG} --timeout ${TIMEOUT}",
+    "deploy-new": "yarn transpile && claudia create --region us-east-1 --role lambnik-tiler-dev --api-module bin/api --name tilegarden-dev-${USER} --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER}DB_TABLE=${DB_TABLE},GEOMETRY_FIELD=${GEOMETRY_FIELD},EPSG=${EPSG}",
+    "dev": "nodemon -e js,xml,mss,json --ignore bin/ --exec yarn local",
     "lint": "eslint src",
     "local": "yarn transpile && claudia-local-api --api-module bin/api | bunyan -o short",
-    "test": "claudia test-lambda",
-    "transpile": "babel src -d bin"
+    "transpile": "babel src -d bin --copy-files"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "bunyan": "^1.8.12",
     "claudia": "^5.0.0",
-    "claudia-local-api": "^2.0.0",
+    "claudia-local-api": "https://github.com/mattdelsordo/claudia-local-api.git",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.12.0",
     "nodemon": "^1.17.5"
   },
   "dependencies": {
+    "@mapbox/sphericalmercator": "^1.1.0",
+    "babel-runtime": "6",
     "claudia-api-builder": "^4.1.0",
     "mapnik": "^3.7.2"
   }

@@ -3,40 +3,44 @@
  */
 
 import APIBuilder from 'claudia-api-builder'
-import fs from 'fs'
-import util from 'util'
-import path from 'path'
-import mapnik from 'mapnik'
 
-const promiseReadFile = util.promisify(fs.readFile)
+import { home, img, getGrid, getImage } from './tile-interface'
+import * as Endpoints from './path-config'
 
+const IMAGE_RESPONSE = {
+    success: {
+        contentType: 'image/png',
+        contentHandling: 'CONVERT_TO_BINARY',
+    },
+}
+
+const HTML_RESPONSE = { success: { contentType: 'text/html' } }
+
+// Create new lambda API
 const api = new APIBuilder()
 
-api.get('/', () => 'Hello, world!')
+api.get(Endpoints.USAGE_PATH, () => home(), HTML_RESPONSE)
 
-api.get('/greet/{name}', request => `Hello, ${request.pathParams.name}!`)
+api.get(Endpoints.IMAGE_TEST_PATH, () => img(), IMAGE_RESPONSE)
 
-api.get('/echo', request => request)
-
+// Get utf grid for some zxy bounds
+// in the original implementation this alone uses cors: why?
 api.get(
-    '/page.html',
-    () => promiseReadFile(path.join(__dirname, 'page.html'), 'utf-8'),
-    { success: { contentType: 'text/html' } },
+    Endpoints.GRID_PATH,
+    req => getGrid(req),
 )
 
-api.setBinaryMediaTypes(['image/jpeg'])
+// Get tile for some zxy bounds
 api.get(
-    '/img.jpg',
-    () => promiseReadFile(path.join(__dirname, 'img.jpg')),
-    {
-        success: {
-            contentType: 'image/jpeg',
-            contentHandling: 'CONVERT_TO_BINARY',
-        },
-    },
+    Endpoints.TILE_PATH,
+    req => getImage(req),
+    IMAGE_RESPONSE,
 )
 
-api.get('/map', () => new mapnik.Map(25, 25, '+init=epsg:3857'))
+// Handles favicon
+api.get(Endpoints.FAVICON_PATH, () => {
+    // pass
+})
 
-// not es6-ic, but necessary for claudia to find the api
+// not es6-ic, but necessary for claudia to find the index
 module.exports = api

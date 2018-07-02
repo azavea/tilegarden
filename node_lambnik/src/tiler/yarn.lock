@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@mapbox/sphericalmercator@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@mapbox/sphericalmercator/-/sphericalmercator-1.1.0.tgz#f3b1af042620716a1289fc41e1e97f610823aefe"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -617,6 +621,12 @@ babel-plugin-transform-regenerator@^6.22.0:
   dependencies:
     regenerator-transform "^0.10.0"
 
+babel-plugin-transform-runtime@^6.23.0:
+  version "6.23.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-runtime/-/babel-plugin-transform-runtime-6.23.0.tgz#88490d446502ea9b8e7efb0fe09ec4d99479b1ee"
+  dependencies:
+    babel-runtime "^6.22.0"
+
 babel-plugin-transform-strict-mode@^6.24.1:
   version "6.24.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-strict-mode/-/babel-plugin-transform-strict-mode-6.24.1.tgz#d5faf7aa578a65bbe591cf5edae04a0c67020758"
@@ -679,7 +689,7 @@ babel-register@^6.26.0:
     mkdirp "^0.5.1"
     source-map-support "^0.4.15"
 
-babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.26.0:
+babel-runtime@6, babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
   dependencies:
@@ -1025,14 +1035,16 @@ claudia-api-builder@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/claudia-api-builder/-/claudia-api-builder-4.1.0.tgz#173a6079a5472cc19921693052546b2f9a0ca904"
 
-claudia-local-api@^2.0.0:
+"claudia-local-api@https://github.com/mattdelsordo/claudia-local-api.git":
   version "2.0.0"
-  resolved "https://registry.yarnpkg.com/claudia-local-api/-/claudia-local-api-2.0.0.tgz#f16bb31ab64659cdfa03f6c6f9453a17d15298a7"
+  resolved "https://github.com/mattdelsordo/claudia-local-api.git#b9e0ea0a88d646fa7b879f43eafc5b5db10e7612"
   dependencies:
     body-parser "^1.0.0"
     bunyan "^1.0.0"
     commander "^2.13.0"
     express "^4.16.1"
+    fs "^0.0.1-security"
+    lodash "^4.17.10"
     path-parser "^4.0.4"
 
 claudia@^5.0.0:
@@ -1800,6 +1812,10 @@ fs-readdir-recursive@^1.0.0:
 fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
+
+fs@^0.0.1-security:
+  version "0.0.1-security"
+  resolved "https://registry.yarnpkg.com/fs/-/fs-0.0.1-security.tgz#8a7bd37186b6dddf3813f23858b57ecaaf5e41d4"
 
 fsevents@^1.0.0, fsevents@^1.1.2:
   version "1.2.4"
