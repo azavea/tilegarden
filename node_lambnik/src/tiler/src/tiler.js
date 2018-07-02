@@ -8,7 +8,7 @@ import SphericalMercator from '@mapbox/sphericalmercator'
 import path from 'path'
 import carto from 'carto'
 
-import { readFile } from './util/fsPromise'
+import { readFile } from './util/fs-promise'
 
 const TILE_HEIGHT = 256
 const TILE_WIDTH = 256
