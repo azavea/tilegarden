@@ -1,0 +1,16 @@
+# Import values from local environment
+# If you want to set them specifically, change them to assignments
+USER
+AWS_PROFILE
+
+# Enter your database credentials here:
+TILEGARDEN_DB=
+TILEGARDEN_DB_HOST=
+TILEGARDEN_DB_PASSWORD=
+TILEGARDEN_DB_USER=
+
+# Function config information
+DB_TABLE=
+GEOMETRY_FIELD=geom
+EPSG=4326
+TIMEOUT=5

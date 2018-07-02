@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Map[]>
+<Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over">
+  <Parameters>
+    <Parameter name="name"><![CDATA[Tilegarden Configuration]]></Parameter>
+    <Parameter name="description"><![CDATA[Carto MML file to configure Tilegarden settings]]></Parameter>
+    <Parameter name="format"><![CDATA[png]]></Parameter>
+  </Parameters>
+  <Style filter-mode="first" name="pwd_inlets">
+    <Rule>
+      <MarkersSymbolizer allow-overlap="true" fill="#0000ff" marker-type="ellipse" />
+    </Rule>
+  </Style>
+  <Layer name="pwd_inlets">
+    <StyleName><![CDATA[pwd_inlets]]></StyleName>
+    <Datasource>
+      <Parameter name="type"><![CDATA[postgis]]></Parameter>
+      <Parameter name="dbname"><![CDATA[postgres]]></Parameter>
+      <Parameter name="table"><![CDATA[pwd_inlets]]></Parameter>
+      <Parameter name="user"><![CDATA[postgres]]></Parameter>
+      <Parameter name="password"><![CDATA[postgres]]></Parameter>
+      <Parameter name="host"><![CDATA[database.lambnik.azavea.com]]></Parameter>
+      <Parameter name="key_field"><![CDATA[]]></Parameter>
+      <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+    </Datasource>
+  </Layer>
+</Map>

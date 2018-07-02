@@ -20,18 +20,15 @@
     "url": "https://github.com/azavea/tilegarden.git"
   },
   "files": [
-    "bin",
-    "config"
+    "bin"
   ],
   "scripts": {
-    "deploy": "yarn check-prod-config && yarn transpile && claudia update --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER},DB_TABLE=${DB_TABLE},GEOMETRY_FIELD=${GEOMETRY_FIELD},EPSG=${EPSG} --timeout ${TIMEOUT}",
-    "deploy-new": "yarn check-prod-config && yarn transpile && claudia create --region us-east-1 --role lambnik-tiler-dev --api-module bin/api --name tilegarden-dev-${USER} --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER}DB_TABLE=${DB_TABLE},GEOMETRY_FIELD=${GEOMETRY_FIELD},EPSG=${EPSG}",
-    "dev": "yarn check-dev-config && nodemon -e js,xml,mss,json --ignore bin/ --exec yarn local",
+    "deploy": "yarn transpile && claudia update --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER},DB_TABLE=${DB_TABLE},GEOMETRY_FIELD=${GEOMETRY_FIELD},EPSG=${EPSG} --timeout ${TIMEOUT}",
+    "deploy-new": "yarn transpile && claudia create --region us-east-1 --role lambnik-tiler-dev --api-module bin/api --name tilegarden-dev-${USER} --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER}DB_TABLE=${DB_TABLE},GEOMETRY_FIELD=${GEOMETRY_FIELD},EPSG=${EPSG}",
+    "dev": "nodemon -e js,xml,mss,json --ignore bin/ --exec yarn local",
     "lint": "eslint src",
     "local": "yarn transpile && node --inspect=0.0.0.0:9229 node_modules/claudia-local-api/bin/claudia-local-api --api-module bin/api | bunyan -o short",
-    "transpile": "babel src -d bin --copy-files --source-maps inline",
-    "check-dev-config": "if [ ! -f ./src/config/map-config.dev.mml ]; then echo \"Config file missing!\"; exit 1; fi",
-    "check-prod-config": "if [ ! -f ./src/config/map-config.prod.mml ]; then echo \"Config file missing!\"; exit 1; fi"
+    "transpile": "babel src -d bin --copy-files --source-maps inline"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
