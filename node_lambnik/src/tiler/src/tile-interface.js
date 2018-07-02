@@ -47,9 +47,10 @@ export const getGrid = (req) => {
     const z = Number(req.pathParams.z)
     const x = Number(req.pathParams.x)
     const y = Number(req.pathParams.y)
+    const infoColumn = req.pathParams.infocolumn
 
     // create grid
-    return grid(z, x, y)
+    return grid(z, x, y, infoColumn)
         .then(result => result)
         .catch(e => JSON.stringify(e))
 }
