@@ -22,6 +22,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "9000:3000"
+      - "9229:9229"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
