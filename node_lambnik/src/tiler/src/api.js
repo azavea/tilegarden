@@ -19,9 +19,6 @@ const HTML_RESPONSE = { success: { contentType: 'text/html' } }
 // Create new lambda API
 const api = new APIBuilder()
 
-// Add pngs to binary media types
-//api.setBinaryMediaTypes(['image/png'])
-
 api.get(Endpoints.USAGE_PATH, () => home(), HTML_RESPONSE)
 
 api.get(Endpoints.IMAGE_TEST_PATH, () => img(), IMAGE_RESPONSE)
