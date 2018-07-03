@@ -3,6 +3,8 @@
  * to XML that mapnik can understand
  */
 
+/* eslint-disable no-console */
+
 import carto from 'carto'
 import path from 'path'
 import mkdirp from 'mkdirp'
@@ -21,26 +23,27 @@ const IS_PRODUCTION = process.env.NODE_ENV === 'production'
  * templating library, rather than add new nuances to this
  * implementation.
  */
-const fillTemplate = (mmlString) => {
-    return mmlString.replace(/\$\{[a-z0-9_]+\}/gi, (match) => {
-        const varName = `${(IS_PRODUCTION) ? 'PROD_' : 'DEV_'}${match.slice(2, match.length -1)}`
+const fillTemplate = mmlString => mmlString.replace(
+    /\$\{[a-z0-9_]+\}/gi,
+    (match) => {
+        const varName = `${(IS_PRODUCTION) ? 'PROD_' : 'DEV_'}${match.slice(2, match.length - 1)}`
         return `"${process.env[varName]}"`
-    })
-}
+    },
+)
+
 
 // Loads properly formatted MML into an MML object
-const loadMML = (fullMML) => {
-    return new Promise((resolve, reject) => {
-        const mml = new carto.MML({})
+const loadMML = fullMML => new Promise((resolve, reject) => {
+    const mml = new carto.MML({})
 
-        // Carto CAN read MSSs from file, which is why it
-        // needs the directory of the MML file (for relative path calculation)
-        mml.load(path.dirname(IN_FILE), fullMML, (err, data) => {
-            if (err) reject(err)
-            else resolve(data)
-        })
+    // Carto CAN read MSSs from file, which is why it
+    // needs the directory of the MML file (for relative path calculation)
+    mml.load(path.dirname(IN_FILE), fullMML, (err, data) => {
+        if (err) reject(err)
+        else resolve(data)
     })
-}
+})
+
 
 // Converts an MML object to an XML string
 const mmlToXML = (mml) => {
@@ -49,13 +52,13 @@ const mmlToXML = (mml) => {
     const jsonResponse = new carto.Renderer({}).render(mml)
 
     if (jsonResponse.msg) {
-        jsonResponse.msg.forEach(m => console.log(carto.Util.getMessageToPrint(m)))
+        jsonResponse.msg.forEach(m =>
+            console.log(carto.Util.getMessageToPrint(m)))
     }
 
     if (jsonResponse.data) return jsonResponse.data
 
     // Actually throw an error if no data result
-    console.log(jsonResponse)
     throw new Error('Error: could not render MML to XML, no result from render()')
 }
 
