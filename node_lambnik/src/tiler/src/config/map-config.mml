@@ -17,7 +17,7 @@ Layer:
       user: ${TILEGARDEN_USER}
       password: ${TILEGARDEN_PASSWORD}
       type: "postgis"
-      table: "(select geom, inlettype from pwd_inlets where inlettype = 'INLCTY3') as q"
+      table: "(select geom from pwd_inlets where inlettype = 'INLCTY3') as q"
       key_field: ""
       geometry_field: "geom"
  - id: INLCTY4
@@ -30,7 +30,7 @@ Layer:
       user: ${TILEGARDEN_USER}
       password: ${TILEGARDEN_PASSWORD}
       type: "postgis"
-      table: "(select geom, inlettype from pwd_inlets where inlettype = 'INLCTY4') as q"
+      table: "(select geom from pwd_inlets where inlettype = 'INLCTY4') as q"
       key_field: ""
       geometry_field: "geom"
 

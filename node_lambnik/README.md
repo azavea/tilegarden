@@ -15,6 +15,9 @@
 ### Configuration & Styling
 [Tilegarden uses CartoCSS to specify map styles.](https://carto.com/docs/carto-engine/cartocss/) Edit `src/tiler/src/config/map-config.mml` to specify your map configuration, including a reference any CartoCSS `.mss` files. [See here](https://cartocss.readthedocs.io/en/latest/mml.html) for Carto's `.mml` specification.
 
+### Filtering
+Map data can be filtered by specifying a query in the form `( QUERY ) as VARIABLE` as the value of `table` for a layer in `map-config.mml`. Different combinations of layers can be fetched by adding `?layers=layer1,layer2,layer...N` as a query string to a tile or UTF grid URL. All specified layers are shown by default.
+
 ### Debugging
  The local development server exposes a websocket to a node inspector that can be attached to your IDE of choice to step through and debug your code. Here are instructions on how to do so using Google Chrome's Dev Tools:
   * Start the development server with `./scripts/server`.
