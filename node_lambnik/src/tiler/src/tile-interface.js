@@ -42,14 +42,22 @@ export const img = () => new Promise((resolve, reject) => {
     })
 })
 
+// makes sure the utf query string is properly formatted
+const processUTFQuery = (queryString) => {
+    if (!queryString) throw new Error('UTF grid missing field query!')
+
+    return queryString.split(',')
+}
+
 export const getGrid = (req) => {
     // Handle url params
     const z = Number(req.pathParams.z)
     const x = Number(req.pathParams.x)
     const y = Number(req.pathParams.y)
+    const utfFields = processUTFQuery(req.queryString.utfFields)
 
     // create grid
-    return grid(z, x, y)
+    return grid(z, x, y, utfFields)
         .then(result => result)
         .catch(e => JSON.stringify(e))
 }

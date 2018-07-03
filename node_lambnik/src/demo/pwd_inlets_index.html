@@ -5,18 +5,16 @@
     <meta charset="utf-8">
     <title>PWD Inlets</title>
 
-    <!-- External Stylesheets -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
-
-    <!-- Add the Leaflet JavaScript library -->
-    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet-src.js"></script>
+    <script src="https://danzel.github.io/Leaflet.utfgrid/src/leaflet.utfgrid.js"></script>
 </head>
 
 <body>
-    <div class="container">
-        <h3>PWD Inlets</h3>
-        <div id="map" style="width: 705px; height: 375px"></div>
-    </div>
+<div class="container">
+    <h3>PWD Inlets</h3>
+    <div id="map" style="width: 705px; height: 375px"></div>
+</div>
 <style>
     #map {
         border: 1px solid rgba(0, 0, 0, 0);
@@ -38,10 +36,9 @@
         // create map object
         var map = L.map('map', {
             center: [39.96, -75.15], zoom: 13
-        })
+        });
 
         // add basemap
-        //L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map)
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -50,10 +47,25 @@
 
         // add tileserver
         // un-comment out the path that you want to test
-        var TILESERVER_PATH = 'https://d28f32z0lbuk2f.cloudfront.net//tile/{z}/{x}/{y}.png'
-        // var TILESERVER_PATH = 'http://localhost:9001/tile/{z}/{x}/{y}.png'
-        L.tileLayer(TILESERVER_PATH).addTo(map)
-    })
+        // var TILESERVER_PATH = 'https://d28f32z0lbuk2f.cloudfront.net/';
+        var TILESERVER_PATH = 'http://localhost:9001/';
+
+        // add custom tile layer
+        L.tileLayer(TILESERVER_PATH + '/tile/{z}/{x}/{y}.png').addTo(map);
+
+        // add utf grid
+        var grid = new L.UtfGrid(TILESERVER_PATH + "/grid/{z}/{x}/{y}?utfFields=inlettype,owner", {
+            useJsonP: false
+        });
+
+        map.addLayer(grid);
+        grid.on('click', function(e) {
+            if (e.data) {
+                alert("This inlet is owned by: " + e.data.owner + " and has type " + e.data.inlettype);
+                console.log(JSON.stringify(e.data))
+            }
+        });
+    });
 
 </script>
 </body>
