@@ -6,10 +6,10 @@
  */
 
 import path from 'path'
-import fs from 'fs'
+import { readFile } from './util/fs-promise'
 
 import { image, grid } from './tiler'
-import { TILE_PATH, GRID_PATH } from './path-config'
+import { TILE_PATH, GRID_PATH } from './util/path-config'
 
 const handleException = (e) => {
     return e.toString()
@@ -33,14 +33,6 @@ export const home = () => {
         </html>
     `
 }
-
-// img endpoint to verify binary content serving
-export const img = () => new Promise((resolve, reject) => {
-    fs.readFile(path.join(__dirname, 'res/img.png'), (err, data) => {
-        if (err) reject(err)
-        else resolve(data)
-    })
-})
 
 // makes sure the utf query string is properly formatted
 const processUTFQuery = (queryString) => {
