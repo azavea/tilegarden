@@ -26,7 +26,7 @@
     "build-xml": "babel-node src/util/build-xml.js src/config/map-config.mml bin/map-config.xml",
     "deploy": "yarn transpile && claudia update --timeout ${TIMEOUT}",
     "deploy-new": "yarn transpile && claudia create --region us-east-1 --role lambnik-tiler-dev --api-module bin/api --name tilegarden-dev-${USER} --timeout ${TIMEOUT}",
-    "dev": "NODE_ENV=development && nodemon -e js,mss,json,mml,mss --ignore bin/ --exec yarn local",
+    "dev": "nodemon -e js,mss,json,mml,mss --ignore bin/ --exec yarn local",
     "lint": "eslint src",
     "local": "yarn transpile && node --inspect=0.0.0.0:9229 node_modules/claudia-local-api/bin/claudia-local-api --api-module bin/api | bunyan -o short",
     "transpile": "yarn build-xml && babel src -d bin --copy-files --source-maps inline"

@@ -11,7 +11,7 @@
  * API Gateway has trouble serving images, so you need to configure some sort of proxy (e.g. using a CloudFront distribution) that sets an `Accept:image/png` header on all lambda requests.
  
 ### Configuration & Styling
-[Tilegarden uses CartoCSS to specify map styles.](https://carto.com/docs/carto-engine/cartocss/) Edit `src/tiler/src/map-config.mml` to specify your map configuration, including a reference any CartoCSS `.mss` files. [See here](https://cartocss.readthedocs.io/en/latest/mml.html) for Carto's `.mml` specification.
+[Tilegarden uses CartoCSS to specify map styles.](https://carto.com/docs/carto-engine/cartocss/) Edit `src/tiler/src/config/map-config.mml` to specify your map configuration, including a reference any CartoCSS `.mss` files. [See here](https://cartocss.readthedocs.io/en/latest/mml.html) for Carto's `.mml` specification.
 
 ### Debugging
  The local development server exposes a websocket to a node inspector that can be attached to your IDE of choice to step through and debug your code. Here are instructions on how to do so using Google Chrome's Dev Tools:
