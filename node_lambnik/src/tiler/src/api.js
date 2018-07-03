@@ -65,8 +65,9 @@ api.get(
     (req) => {
         const { z, x, y } = processCoords(req)
         const utfFields = processUTFQuery(req)
+        const layers = processLayers(req)
 
-        return grid(z, x, y, utfFields)
+        return grid(z, x, y, utfFields, layers)
             .catch(JSON.stringify)
     },
 )
