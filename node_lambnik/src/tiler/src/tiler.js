@@ -6,7 +6,6 @@
 import mapnik from 'mapnik'
 import SphericalMercator from '@mapbox/sphericalmercator'
 import path from 'path'
-import carto from 'carto'
 
 import { readFile } from './util/fs-promise'
 
@@ -17,40 +16,43 @@ const TILE_WIDTH = 256
 mapnik.register_default_input_plugins()
 
 /**
- * Return a promise that renders a utf grid for a given map coordinate
+ * Creates a map based on configured datasource and style information
  * @param z
  * @param x
  * @param y
- * @returns {Promise<any>}
+ * @returns {Promise<mapnik.Map>}
  */
-export const grid = (z, x, y, utfFields) => {
-    const grd = new mapnik.Grid(TILE_WIDTH, TILE_HEIGHT)
+const createMap = (z, x, y) => {
+    // Create a webmercator map with specified bounds
+    const map = new mapnik.Map(TILE_WIDTH, TILE_HEIGHT)
+    map.bufferSize = 64
+    map.extent = new SphericalMercator().bbox(x, y, z, false, process.env.EPSG)
 
-    return createMap(z, x, y)
-        .then((map) => new Promise((resolve, reject) => {
-            map.render(grd, {
-                layer: 0,
-                fields: utfFields,
-            }, (err, rendered) => {
+    // Load map specification from xml string
+    return readFile(path.join(__dirname, 'map-config.xml'), 'utf-8')
+        .then(xml => new Promise((resolve, reject) => {
+            map.fromString(xml, (err, result) => {
                 if (err) reject(err)
-                else resolve(rendered)
+                else {
+                    result.extent = new SphericalMercator().bbox(x, y, z)
+                    resolve(result)
+                }
             })
         }))
-        .then((g) => {
-            return new Promise((resolve, reject) => {
-                g.encode({
-                    resolution: 4,
-                }, (err, result) => {
-                    if (err) reject(err)
-                    else resolve(result)
-                })
-            })
-        })
         .catch((e) => {
+            /* eslint-disable-next-line no-console */
             console.log(e)
             throw e
         })
 }
+
+const encodeAsPNG = renderedTile => new Promise((resolve, reject) => {
+    renderedTile.encode('png', {}, (err, result) => {
+        if (err) reject(err)
+        else resolve(result)
+    })
+})
+
 
 /**
  * Returns a promise that renders a map tile for a given map coordinate
@@ -66,54 +68,50 @@ export const image = (z, x, y) => {
     // render map to image
     // return asynchronous rendering method as a promise
     return createMap(z, x, y)
-        .then((map) => {
-            return new Promise((resolve, reject) => {
-                map.render(img, {}, (err, result) => {
-                    if (err) reject(err)
-                    else resolve(result)
-                })
+        .then(map => new Promise((resolve, reject) => {
+            map.render(img, {}, (err, result) => {
+                if (err) reject(err)
+                else resolve(result)
             })
-        })
+        }))
         .then(encodeAsPNG)
         .catch((e) => {
+            /* eslint-disable-next-line no-console */
             console.log(e)
             throw e
         })
 }
 
-const encodeAsPNG = (renderedTile) => new Promise((resolve, reject) => {
-    renderedTile.encode('png', {}, (err, result) => {
-        if (err) reject(err)
-        else resolve(result)
-    })
-})
-
 /**
- * Creates a map based on configured datasource and style information
+ * Return a promise that renders a utf grid for a given map coordinate
  * @param z
  * @param x
  * @param y
- * @returns {Promise<mapnik.Map>}
+ * @returns {Promise<any>}
  */
-const createMap = (z, x, y) => {
-    // Create a webmercator map with specified bounds
-    const map = new mapnik.Map(TILE_WIDTH, TILE_HEIGHT)
-    map.bufferSize = 64
+export const grid = (z, x, y, utfFields) => {
+    const grd = new mapnik.Grid(TILE_WIDTH, TILE_HEIGHT)
 
-    // Load map specification from xml string
-    return readFile(path.join(__dirname, 'map-config.xml'), 'utf-8')
-        .then((xml) => {
-            return new Promise((resolve, reject) => {
-                map.fromString(xml, (err, result) => {
-                    if (err) reject(err)
-                    else {
-                        result.extent = new SphericalMercator().bbox(x, y, z)
-                        resolve(result)
-                    }
-                })
+    return createMap(z, x, y)
+        .then(map => new Promise((resolve, reject) => {
+            map.render(grd, {
+                layer: 0,
+                fields: utfFields,
+            }, (err, rendered) => {
+                if (err) reject(err)
+                else resolve(rendered)
             })
-        })
+        }))
+        .then(g => new Promise((resolve, reject) => {
+            g.encode({
+                resolution: 4,
+            }, (err, result) => {
+                if (err) reject(err)
+                else resolve(result)
+            })
+        }))
         .catch((e) => {
+            /* eslint-disable-next-line no-console */
             console.log(e)
             throw e
         })
