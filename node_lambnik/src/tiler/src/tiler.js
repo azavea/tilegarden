@@ -17,6 +17,16 @@ const TILE_WIDTH = 256
 // Register plugins
 mapnik.register_default_input_plugins()
 
+const filterLayers = (xmlString, layers) => xmlString.replace(
+    /(<Layer name="(.+)")>/g,
+    (fullMatch, beginning, layerName) => {
+        if (layers.includes(layerName)) {
+            return `${beginning} status="0">`
+        }
+        return fullMatch
+    },
+)
+
 /**
  * Creates a map based on configured datasource and style information
  * @param z
@@ -24,7 +34,7 @@ mapnik.register_default_input_plugins()
  * @param y
  * @returns {Promise<mapnik.Map>}
  */
-const createMap = (z, x, y) => {
+const createMap = (z, x, y, layers) => {
     // Create a webmercator map with specified bounds
     const map = new mapnik.Map(TILE_WIDTH, TILE_HEIGHT)
     map.bufferSize = 64
@@ -32,6 +42,7 @@ const createMap = (z, x, y) => {
 
     // Load map specification from xml string
     return readFile(path.join(__dirname, 'map-config.xml'), 'utf-8')
+        .then(xml => filterLayers(xml, layers))
         .then(xml => new Promise((resolve, reject) => {
             map.fromString(xml, (err, result) => {
                 if (err) reject(err)
@@ -63,13 +74,13 @@ const encodeAsPNG = renderedTile => new Promise((resolve, reject) => {
  * @param y
  * @returns {Promise<any>}
  */
-export const image = (z, x, y) => {
+export const image = (z, x, y, layers) => {
     // create mapnik image
     const img = new mapnik.Image(TILE_WIDTH, TILE_HEIGHT)
 
     // render map to image
     // return asynchronous rendering method as a promise
-    return createMap(z, x, y)
+    return createMap(z, x, y, layers)
         .then(map => new Promise((resolve, reject) => {
             map.render(img, {}, (err, result) => {
                 if (err) reject(err)

@@ -7,8 +7,8 @@ Stylesheet:
   - style.mss
 
 Layer:
- - id: pwd_inlets
-   name: pwd_inlets
+ - id: INLCTY3
+   name: INLCTY3
    geometry: polygon
    srs-name: "4326"
    Datasource:
@@ -17,6 +17,20 @@ Layer:
       user: ${TILEGARDEN_USER}
       password: ${TILEGARDEN_PASSWORD}
       type: "postgis"
-      table: "pwd_inlets"
+      table: "(select geom, inlettype from pwd_inlets where inlettype = 'INLCTY3') as q"
       key_field: ""
       geometry_field: "geom"
+ - id: INLCTY4
+   name: INLCTY4
+   geometry: polygon
+   srs-name: "4326"
+   Datasource:
+      host: ${TILEGARDEN_HOST}
+      dbname: ${TILEGARDEN_DB}
+      user: ${TILEGARDEN_USER}
+      password: ${TILEGARDEN_PASSWORD}
+      type: "postgis"
+      table: "(select geom, inlettype from pwd_inlets where inlettype = 'INLCTY4') as q"
+      key_field: ""
+      geometry_field: "geom"
+
