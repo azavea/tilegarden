@@ -46,7 +46,6 @@ export const grid = (z, x, y, utfFields) => {
                 })
             })
         })
-        .then(result => result)
         .catch((e) => {
             console.log(e)
             throw e
@@ -114,7 +113,6 @@ const createMap = (z, x, y) => {
                 })
             })
         })
-        .then(result => result)
         .catch((e) => {
             console.log(e)
             throw e

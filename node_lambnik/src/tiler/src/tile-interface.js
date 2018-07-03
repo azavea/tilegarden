@@ -50,7 +50,6 @@ export const getGrid = (req) => {
 
     // create grid
     return grid(z, x, y, utfFields)
-        .then(result => result)
         .catch(e => JSON.stringify(e))
 }
 
@@ -64,7 +63,6 @@ export const getImage = async (req) => {
 
     // return tile buffer to client
     return image(z, x, y)
-        .then(result => result)
         .catch(e => JSON.stringify(e))
 }
 
