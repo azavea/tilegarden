@@ -4,7 +4,8 @@
 
 import APIBuilder from 'claudia-api-builder'
 
-import { home, img, getGrid, getImage } from './tile-interface'
+import { image, grid } from './tiler'
+import {readFile} from "./util/fs-promise"
 
 const IMAGE_RESPONSE = {
     success: {
@@ -15,29 +16,69 @@ const IMAGE_RESPONSE = {
 
 const HTML_RESPONSE = { success: { contentType: 'text/html' } }
 
+// Converts a req object to a set of coordinates
+const processCoords = (req) => {
+    // Handle url params
+    const z = Number(req.pathParams.z)
+    const x = Number(req.pathParams.x)
+
+    // strip .png off of y if necessary
+    const preY = req.pathParams.y
+    const y = Number(preY.substr(0, preY.lastIndexOf('.')) || preY)
+
+    return { z, x, y }
+}
+
+// Makes sure utf fields exist and returns them in the correct format
+const processUTFQuery = (req) => {
+    const queryString = req.queryString.utfFields
+    if (!queryString) throw new Error('UTF grid missing field query!')
+    return queryString.split(',')
+}
+
 // Create new lambda API
 const api = new APIBuilder()
 
-api.get('/', () => home(), HTML_RESPONSE)
-
-// Get utf grid for some zxy bounds
-// in the original implementation this alone uses cors: why?
-api.get(
-    '/grid/{z}/{x}/{y}',
-    req => getGrid(req),
-)
-
 // Get tile for some zxy bounds
-api.get(
-    '/tile/{z}/{x}/{y}',
-    req => getImage(req),
+api.get('/tile/{z}/{x}/{y}', (req) => {
+        const {z, x, y} = processCoords(req)
+
+        return image(z, x, y)
+            .catch(JSON.stringify)
+    },
     IMAGE_RESPONSE,
 )
 
-// Handles favicon
-api.get('/favicon.ico', () => {
-    // pass
-})
+// Get utf grid for some zxy bounds
+// in the original implementation this alone uses cors: why?
+api.get('/grid/{z}/{x}/{y}', (req) => {
+        const {z, x, y} = processCoords(req)
+        const utfFields = processUTFQuery(req)
+
+        return grid(z, x, y, utfFields)
+            .catch(JSON.stringify)
+    },
+)
+
+api.get('/', () => {
+    return `
+        <html>
+            <head>
+            <title>Tilegarden</title>
+            </head>
+            <body>
+                <h2>Tilegarden Usage:</h2>
+                <ul>
+                    <li>Render tile at zoom/x/y: <code>${TILE_PATH}</code></li>
+                    <li>UTF grid at zoom/x/y: <code>${GRID_PATH}</code></li>
+                </ul>
+                <a href="https://github.com/azavea/tilegarden">See on GitHub</a>
+            </body>
+        </html>
+    `
+}, HTML_RESPONSE)
+
+api.get('/img', () => readFile(path.join(__dirname, 'res/img.png')), IMAGE_RESPONSE)
 
 // not es6-ic, but necessary for claudia to find the index
 module.exports = api
