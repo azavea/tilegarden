@@ -24,10 +24,10 @@ services:
       - "9000:3000"
       - "9229:9229"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
-      - POSTGRES_HOST=database.lambnik.azavea.com
+      - DEV_TILEGARDEN_USER=postgres
+      - DEV_TILEGARDEN_PASSWORD=postgres
+      - DEV_TILEGARDEN_DB=postgres
+      - DEV_TILEGARDEN_HOST=database.lambnik.azavea.com
     env_file: .env
     links:
       - database:database.lambnik.azavea.com

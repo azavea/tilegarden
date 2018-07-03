@@ -23,12 +23,13 @@
     "bin"
   ],
   "scripts": {
-    "deploy": "yarn transpile && claudia update --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER},DB_TABLE=${DB_TABLE},GEOMETRY_FIELD=${GEOMETRY_FIELD},EPSG=${EPSG} --timeout ${TIMEOUT}",
-    "deploy-new": "yarn transpile && claudia create --region us-east-1 --role lambnik-tiler-dev --api-module bin/api --name tilegarden-dev-${USER} --set-env POSTGRES_DB=${TILEGARDEN_DB},POSTGRES_HOST=${TILEGARDEN_DB_HOST},POSTGRES_PASSWORD=${TILEGARDEN_DB_PASSWORD},POSTGRES_USER=${TILEGARDEN_DB_USER}DB_TABLE=${DB_TABLE},GEOMETRY_FIELD=${GEOMETRY_FIELD},EPSG=${EPSG}",
-    "dev": "nodemon -e js,xml,mss,json --ignore bin/ --exec yarn local",
+    "build-xml": "babel-node src/util/build-xml.js src/config/map-config.mml bin/map-config.xml",
+    "deploy": "yarn transpile && claudia update --timeout ${TIMEOUT}",
+    "deploy-new": "yarn transpile && claudia create --region us-east-1 --role lambnik-tiler-dev --api-module bin/api --name tilegarden-dev-${USER} --timeout ${TIMEOUT}",
+    "dev": "nodemon -e js,mss,json,mml,mss --ignore bin/ --exec yarn local",
     "lint": "eslint src",
     "local": "yarn transpile && node --inspect=0.0.0.0:9229 node_modules/claudia-local-api/bin/claudia-local-api --api-module bin/api | bunyan -o short",
-    "transpile": "babel src -d bin --copy-files --source-maps inline"
+    "transpile": "yarn build-xml && babel src -d bin --copy-files --source-maps inline"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -45,7 +46,9 @@
   "dependencies": {
     "@mapbox/sphericalmercator": "^1.1.0",
     "babel-runtime": "6",
+    "carto": "^1.0.1",
     "claudia-api-builder": "^4.1.0",
-    "mapnik": "^3.7.2"
+    "mapnik": "^3.7.2",
+    "mkdirp": "^0.5.1"
   }
 }

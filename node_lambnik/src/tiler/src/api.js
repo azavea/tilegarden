@@ -5,7 +5,7 @@
 import APIBuilder from 'claudia-api-builder'
 
 import { home, img, getGrid, getImage } from './tile-interface'
-import * as Endpoints from './path-config'
+import * as Endpoints from './util/path-config'
 
 const IMAGE_RESPONSE = {
     success: {
@@ -20,8 +20,6 @@ const HTML_RESPONSE = { success: { contentType: 'text/html' } }
 const api = new APIBuilder()
 
 api.get(Endpoints.USAGE_PATH, () => home(), HTML_RESPONSE)
-
-api.get(Endpoints.IMAGE_TEST_PATH, () => img(), IMAGE_RESPONSE)
 
 // Get utf grid for some zxy bounds
 // in the original implementation this alone uses cors: why?
