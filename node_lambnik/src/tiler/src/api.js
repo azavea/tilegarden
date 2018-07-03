@@ -35,6 +35,13 @@ const processUTFQuery = (req) => {
     return queryString.split(',')
 }
 
+// Returns a properly formatted list of layers
+// or an empty list if there are none
+const processLayers = (req) => {
+    if (req.queryString.layers) return req.queryString.layers.split(',')
+    return []
+}
+
 // Create new lambda API
 const api = new APIBuilder()
 
@@ -43,8 +50,9 @@ api.get(
     '/tile/{z}/{x}/{y}',
     (req) => {
         const { z, x, y } = processCoords(req)
+        const layers = processLayers(req)
 
-        return image(z, x, y)
+        return image(z, x, y, layers)
             .catch(JSON.stringify)
     },
     IMAGE_RESPONSE,
