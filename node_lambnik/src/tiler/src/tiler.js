@@ -101,10 +101,10 @@ export const image = (z, x, y, layers) => {
  * @param y
  * @returns {Promise<any>}
  */
-export const grid = (z, x, y, utfFields) => {
+export const grid = (z, x, y, utfFields, layers) => {
     const grd = new mapnik.Grid(TILE_WIDTH, TILE_HEIGHT)
 
-    return createMap(z, x, y)
+    return createMap(z, x, y, layers)
         .then(map => new Promise((resolve, reject) => {
             map.render(grd, {
                 layer: 0,
