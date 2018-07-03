@@ -23,7 +23,7 @@
     "bin"
   ],
   "scripts": {
-    "build-xml": "babel-node src/util/build-xml.js map-config.mml src/res/map-config.xml",
+    "build-xml": "babel-node src/util/build-xml.js src/config/map-config.mml bin/map-config.xml",
     "deploy": "yarn transpile && claudia update --timeout ${TIMEOUT}",
     "deploy-new": "yarn transpile && claudia create --region us-east-1 --role lambnik-tiler-dev --api-module bin/api --name tilegarden-dev-${USER} --timeout ${TIMEOUT}",
     "dev": "NODE_ENV=development && nodemon -e js,mss,json,mml,mss --ignore bin/ --exec yarn local",
@@ -48,6 +48,7 @@
     "babel-runtime": "6",
     "carto": "^1.0.1",
     "claudia-api-builder": "^4.1.0",
-    "mapnik": "^3.7.2"
+    "mapnik": "^3.7.2",
+    "mkdirp": "^0.5.1"
   }
 }

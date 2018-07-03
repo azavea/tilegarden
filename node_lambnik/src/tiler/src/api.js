@@ -21,8 +21,6 @@ const api = new APIBuilder()
 
 api.get(Endpoints.USAGE_PATH, () => home(), HTML_RESPONSE)
 
-api.get(Endpoints.IMAGE_TEST_PATH, () => img(), IMAGE_RESPONSE)
-
 // Get utf grid for some zxy bounds
 // in the original implementation this alone uses cors: why?
 api.get(

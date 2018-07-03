@@ -5,6 +5,7 @@
 
 import carto from 'carto'
 import path from 'path'
+import mkdirp from 'mkdirp'
 
 import { readFile, writeFile } from './fs-promise'
 
@@ -22,7 +23,7 @@ const fillTemplate = (mmlString) => {
 }
 
 // Loads properly formatted MML into an MML object
-const mmlToJSON = (fullMML) => {
+const loadMML = (fullMML) => {
     return new Promise((resolve, reject) => {
         const mml = new carto.MML({})
 
@@ -54,10 +55,14 @@ const mmlToXML = (mml) => {
 
 readFile(IN_FILE, 'utf-8')
     .then(fillTemplate)
-    .then(mmlToJSON)
+    .then(loadMML)
     .then(mmlToXML)
-    .then((xml) => {
-        return writeFile(OUT_FILE, xml, 'utf-8')
-    })
+    .then(xml => new Promise((resolve, reject) => {
+        mkdirp(path.dirname(OUT_FILE), (err) => {
+            if (err) reject(err)
+            else resolve(xml)
+        })
+    }))
+    .then(xml => writeFile(OUT_FILE, xml, 'utf-8'))
     .then(() => console.log(`Successfully wrote ${IN_FILE} to ${OUT_FILE}`))
     .catch(e => console.error(e))
