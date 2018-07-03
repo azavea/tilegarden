@@ -11,6 +11,7 @@ export const readFile = (path, encoding) => new Promise((resolve, reject) => {
     })
 })
 
+/* eslint-disable-next-line max-len */
 export const writeFile = (path, data, encoding) => new Promise((resolve, reject) => {
     fs.writeFile(path, data, encoding, (err) => {
         if (err) reject(err)

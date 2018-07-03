@@ -24,8 +24,8 @@
   ],
   "scripts": {
     "build-xml": "babel-node src/util/build-xml.js src/config/map-config.mml bin/map-config.xml",
-    "deploy": "yarn transpile && claudia update --timeout ${TIMEOUT}",
-    "deploy-new": "yarn transpile && claudia create --region us-east-1 --role lambnik-tiler-dev --api-module bin/api --name tilegarden-dev-${USER} --timeout ${TIMEOUT}",
+    "deploy": "yarn transpile && claudia update --timeout ${LAMBDA_TIMEOUT} --memory ${LAMBDA_MEMORY} --security-group-ids ${LAMBDA_SECURITY_GROUPS} --subnet-ids ${LAMBDA_SUBNETS}",
+    "deploy-new": "yarn transpile && claudia create --api-module bin/api --name tilegarden-dev-${USER} --region ${LAMBDA_REGION} --role ${LAMBDA_ROLE} --timeout ${LAMBDA_TIMEOUT} --memory ${LAMBDA_MEMORY} --security-group-ids ${LAMBDA_SECURITY_GROUPS} --subnet-ids ${LAMBDA_SUBNETS}",
     "dev": "nodemon -e js,mss,json,mml,mss --ignore bin/ --exec yarn local",
     "lint": "eslint src",
     "local": "yarn transpile && node --inspect=0.0.0.0:9229 node_modules/claudia-local-api/bin/claudia-local-api --api-module bin/api | bunyan -o short",
