@@ -1,6 +1,6 @@
 # tilegarden
 
-### Usage
+## Usage
  * Make sure to have `docker`, `docker-compose`, and `yarn` installed locally.
  * After a clone, run `./scripts/update` to populate the database and install node modules.
  * Run `./scripts/server` to run the development server, which will be accessible on port **9001**, not 3000 as listed by the output from claudia-local-api. Several example endpoints have been defined in `src/api.js`.
@@ -9,6 +9,9 @@
  	* Generate a UTF grid: `/grid/{z}/{x}/{y}`
  * To publish, make sure you have specified valid AWS credentials and have listed the proper database credentials in a `.env` file in the root of the project. The format for this file can be copied from `env-template`. You can then run `./scripts/publish` to publish to AWS Lambda.
  * API Gateway has trouble serving images, so you need to configure some sort of proxy (e.g. using a CloudFront distribution) that sets an `Accept:image/png` header on all lambda requests.
+ 
+### Configuration & Styling
+[Tilegarden uses CartoCSS to specify map styles.](https://carto.com/docs/carto-engine/cartocss/) Edit `src/tiler/src/map-config.mml` to specify your map configuration, including a reference any CartoCSS `.mss` files. [See here](https://cartocss.readthedocs.io/en/latest/mml.html) for Carto's `.mml` specification.
 
 ### Debugging
  The local development server exposes a websocket to a node inspector that can be attached to your IDE of choice to step through and debug your code. Here are instructions on how to do so using Google Chrome's Dev Tools:
