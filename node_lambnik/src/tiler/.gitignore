@@ -3,6 +3,3 @@ claudia.json
 # ignore the folder of transpiled es6
 /bin/
 tiles/
-
-# This is automatically generated and doesn't need to be committed
-map-config.xml

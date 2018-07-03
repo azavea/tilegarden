@@ -34,9 +34,6 @@ export const home = () => {
     `
 }
 
-// img endpoint to verify binary content serving
-export const img = () => readFile(path.join(__dirname, 'res/img.png'))
-
 // makes sure the utf query string is properly formatted
 const processUTFQuery = (queryString) => {
     if (!queryString) throw new Error('UTF grid missing field query!')

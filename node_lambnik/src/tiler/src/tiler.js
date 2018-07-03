@@ -100,7 +100,6 @@ const createMap = (z, x, y) => {
     // Create a webmercator map with specified bounds
     const map = new mapnik.Map(TILE_WIDTH, TILE_HEIGHT)
     map.bufferSize = 64
-    map.extent = new SphericalMercator().bbox(x, y, z, false, process.env.EPSG)
 
     // Load map specification from xml string
     return readFile(path.join(__dirname, 'map-config.xml'), 'utf-8')
@@ -108,7 +107,10 @@ const createMap = (z, x, y) => {
             return new Promise((resolve, reject) => {
                 map.fromString(xml, (err, result) => {
                     if (err) reject(err)
-                    else resolve(result)
+                    else {
+                        result.extent = new SphericalMercator().bbox(x, y, z)
+                        resolve(result)
+                    }
                 })
             })
         })
