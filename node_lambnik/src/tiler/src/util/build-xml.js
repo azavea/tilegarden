@@ -11,13 +11,19 @@ import { readFile, writeFile } from './fs-promise'
 
 const IN_FILE = process.argv[2]
 const OUT_FILE = process.argv[3]
-const NODE_ENV = process.env.NODE_ENV === 'production'
-console.log(`Production mode=${NODE_ENV}`)
+const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
 // Takes in a string and templates in the proper env variables
+/**
+ * Variables are templated in to MML using custom bash-like syntax.
+ * If the needs of the project become more complicated, this should
+ * be changed to a defined YAML templating convention and/or use a
+ * templating library, rather than add new nuances to this
+ * implementation.
+ */
 const fillTemplate = (mmlString) => {
     return mmlString.replace(/\$\{[a-z0-9_]+\}/gi, (match) => {
-        const varName = `${(NODE_ENV) ? 'PROD_' : 'DEV_'}${match.slice(2, match.length -1)}`
+        const varName = `${(IS_PRODUCTION) ? 'PROD_' : 'DEV_'}${match.slice(2, match.length -1)}`
         return `"${process.env[varName]}"`
     })
 }
@@ -36,7 +42,7 @@ const loadMML = (fullMML) => {
     })
 }
 
-// Converts an MML object to XML
+// Converts an MML object to an XML string
 const mmlToXML = (mml) => {
     // MML.load is asynchronous, but render is NOT, and you have to
     // manually check for errors by checking the members of the result

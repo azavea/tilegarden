@@ -13,19 +13,8 @@ import { readFile } from './util/fs-promise'
 const TILE_HEIGHT = 256
 const TILE_WIDTH = 256
 
-const PROJECTION = '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over'
-
 // Register plugins
 mapnik.register_default_input_plugins()
-
-/**
- * Converts z/x/y coordinates to a bounding box that can be used by a mapnik map
- * @param z (zoom)
- * @param x
- * @param y
- * @returns {*}
- */
-const tileBounds = (z, x, y) => new SphericalMercator().bbox(x, y, z, false, process.env.EPSG)
 
 /**
  * Return a promise that renders a utf grid for a given map coordinate
@@ -109,16 +98,14 @@ const encodeAsPNG = (renderedTile) => new Promise((resolve, reject) => {
  */
 const createMap = (z, x, y) => {
     // Create a webmercator map with specified bounds
-    const map = new mapnik.Map(TILE_WIDTH, TILE_HEIGHT, PROJECTION)
+    const map = new mapnik.Map(TILE_WIDTH, TILE_HEIGHT)
     map.bufferSize = 64
-    map.extent = tileBounds(z, x, y)
+    map.extent = new SphericalMercator().bbox(x, y, z, false, process.env.EPSG)
 
-
-    // load in mml and render to xml
+    // Load map specification from xml string
     return readFile(path.join(__dirname, 'map-config.xml'), 'utf-8')
         .then((xml) => {
             return new Promise((resolve, reject) => {
-                // Load map specification from xml string
                 map.fromString(xml, (err, result) => {
                     if (err) reject(err)
                     else resolve(result)
