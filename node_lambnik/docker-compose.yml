@@ -37,6 +37,17 @@ services:
       - bin:/home/tiler/bin
       - $HOME/.aws:/root/.aws:ro
 
+  terraform:
+    image: hashicorp/terraform:light
+    env_file: .env
+    working_dir: /home/terraform
+    command: "init"
+    volumes:
+      - ./src/terraform:/home/terraform
+      - dotterraform:/home/terraform/.terraform
+      - $HOME/.aws:/root/.aws:ro
+
 volumes:
   node_modules:
   bin:
+  dotterraform:
