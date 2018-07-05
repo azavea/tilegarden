@@ -1,9 +1,9 @@
-provider "aws" {
-	region	= "us-east-1"
-}
+variable "region" {}
+variable "source_name" {}
+variable "source_domain" {}
 
-locals {
-  api_gateway_id = "tilegarden"
+provider "aws" {
+  region	= "${var.region}"
 }
 
 resource "aws_cloudfront_distribution" "tilegarden_test" {
@@ -16,9 +16,9 @@ resource "aws_cloudfront_distribution" "tilegarden_test" {
       origin_keepalive_timeout = 5
       origin_read_timeout = 30
     }
-    domain_name = "bjltimsf0a.execute-api.us-east-1.amazonaws.com"
+    domain_name = "${var.source_domain}"
     origin_path = "/latest"
-    origin_id = "${local.api_gateway_id}"
+    origin_id = "${var.source_name}"
     custom_header {
       name = "Accept"
       value = "image/png"
@@ -29,12 +29,12 @@ resource "aws_cloudfront_distribution" "tilegarden_test" {
 
   enabled = true
   is_ipv6_enabled = true
-  comment = "CloudFront proxy for Tilegarden"
+  comment = "Proxy for ${var.source_name}"
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "${local.api_gateway_id}"
+    target_origin_id = "${var.source_name}"
 
     forwarded_values {
       query_string = true
