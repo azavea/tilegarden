@@ -10,9 +10,20 @@ PROD_TILEGARDEN_PASSWORD=
 PROD_TILEGARDEN_USER=
 
 # Function config information
+## REQUIRED ##
 LAMBDA_REGION=us-east-1
-LAMBDA_TIMEOUT=5
-LAMBDA_MEMORY=3008
 LAMBDA_ROLE=role
-LAMBDA_SUBNETS=subnet1,subnet2,subnet...N
-LAMBDA_SECURITY_GROUPS=group1,group2,group...N
+
+## OPTIONAL ##
+# Amount of time in seconds your lambdas will wait before timing out
+#LAMBDA_TIMEOUT=5
+# Memory in MB allocated to your lambda functions
+#LAMBDA_MEMORY=3008
+# The following VPC (Virtual Private Cloud) settings should be used if you
+# need your lambdas to be able to connect to other AWS resources,
+# e.g. an RDS instance, and should match the subnets/security groups used
+# for those resources.
+# VPC Subnets that your lambdas should use (comma separated list)
+#LAMBDA_SUBNETS=subnet1,subnet2,subnet...N
+# VPC Security Groups that your lambdas should use (comma separated list)
+#LAMBDA_SECURITY_GROUPS=group1,group2,group...N
