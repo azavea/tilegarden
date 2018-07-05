@@ -63,6 +63,3 @@ typings/
 # added by filesystem
 .directory
 .idea
-
-# directory of test results
-test-results

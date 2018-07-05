@@ -4,7 +4,7 @@
     "semi": [2, "never"],
     "no-unexpected-multiline": 2,
     "indent": ["error", 4],
-    "max-len": ["error", 80],
+    "max-len": ["error", 100],
     "quotes": ["error", "single"],
     "camelcase": 2,
     "vars-on-top": 2,
