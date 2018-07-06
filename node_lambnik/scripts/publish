@@ -14,9 +14,9 @@ Options:
 function main() {
     if [ "${1}" = "--new" ]
     then
-        docker-compose run -e NODE_ENV=production --rm tiler yarn deploy-new
+        docker-compose run --rm -e NODE_ENV=production tiler yarn deploy-new
     else
-        docker-compose run -e NODE_ENV=production --rm tiler yarn deploy
+        docker-compose run --rm -e NODE_ENV=production tiler yarn deploy
     fi
 
 	# Deploy CloudFront proxy

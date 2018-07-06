@@ -39,13 +39,12 @@ services:
       - $HOME/.aws:/root/.aws:ro
 
   terraform:
-    image: hashicorp/terraform:light
+    image: hashicorp/terraform:full
     env_file: .env
     environment:
       - TF_VAR_region=${LAMBDA_REGION}
       - TF_VAR_source_name=${PROJECT_NAME}-${USER}
     working_dir: /home/terraform
-    command: "init"
     volumes:
       - ./src/terraform:/home/terraform
       - $HOME/.aws:/root/.aws:ro
