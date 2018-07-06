@@ -47,10 +47,8 @@ services:
     command: "init"
     volumes:
       - ./src/terraform:/home/terraform
-      - dotterraform:/home/terraform/.terraform
       - $HOME/.aws:/root/.aws:ro
 
 volumes:
   node_modules:
   bin:
-  dotterraform:

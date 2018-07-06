@@ -11,14 +11,27 @@ Options:
 "
 }
 
+function checkJQ() {
+	if ! [ -x "$(command -v jq)" ]
+	then
+		echo "jq not found!";
+		echo "Please install jq to continue with deployment process (https://stedolan.github.io/jq/)";
+		exit 1;
+	fi
+
+}
+
 function main() {
+    checkJQ
     if [ "${1}" = "--new" ]
     then
-        docker-compose run -e NODE_ENV=production tiler  yarn deploy-new
+        docker-compose run -e NODE_ENV=production tiler yarn deploy-new;
     else
-        docker-compose run -e NODE_ENV=production tiler yarn deploy
+        docker-compose run -e NODE_ENV=production tiler yarn deploy;
     fi
 
+	# Deploy CloudFront proxy
+	docker-compose run -e TF_VAR_source_id=$(jq -r '.api.id' src/tiler/claudia.json) terraform apply -auto-approve;
 }
 
 if [ "${BASH_SOURCE[0]}" = "${0}" ]

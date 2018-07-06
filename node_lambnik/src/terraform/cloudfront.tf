@@ -1,9 +1,13 @@
 variable "region" {}
 variable "source_name" {}
-variable "source_domain" {}
+variable "source_id" {}
 
 provider "aws" {
   region	= "${var.region}"
+}
+
+output "domain" {
+  value = "${aws_cloudfront_distribution.tilegarden_test.domain_name}"
 }
 
 resource "aws_cloudfront_distribution" "tilegarden_test" {
@@ -16,7 +20,7 @@ resource "aws_cloudfront_distribution" "tilegarden_test" {
       origin_keepalive_timeout = 5
       origin_read_timeout = 30
     }
-    domain_name = "${var.source_domain}"
+    domain_name = "${var.source_id}.execute-api.${var.region}.amazonaws.com"
     origin_path = "/latest"
     origin_id = "${var.source_name}"
     custom_header {
