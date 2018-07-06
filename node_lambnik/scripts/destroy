@@ -1,0 +1,35 @@
+#!/bin/bash
+
+set -e
+
+function usage() {
+    echo -n "Usage: $(basename "${0}")
+Removes all published resources from AWS
+Options:
+    --help      Display this help text
+"
+}
+
+function main() {
+	echo "WARNING: you are about to destroy all your deployed resources!"
+	read -p "If this is what you want, type 'yes' to continue: " -r
+	echo
+	if [[ $REPLY =~ ^[yY][eE][sS]$ ]]
+	then
+		docker-compose run tiler yarn destroy;
+		docker-compose run terraform destroy -auto-approve;
+	else
+		echo "Aborting destroy"
+	fi
+}
+
+if [ "${BASH_SOURCE[0]}" = "${0}" ]
+then
+    if [ "${1:-}" = "--help" ]
+    then
+        usage
+    else
+        main
+    fi
+    exit
+fi
