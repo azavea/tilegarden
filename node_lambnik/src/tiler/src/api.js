@@ -74,6 +74,7 @@ api.get(
 
 api.get(
     '/',
+    /* eslint-disable max-len */
     () => `
         <html>
             <head>
@@ -90,6 +91,7 @@ api.get(
             </body>
         </html>
     `,
+    /* eslint-enable max-len */
     HTML_RESPONSE,
 )
 
