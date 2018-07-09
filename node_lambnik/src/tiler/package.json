@@ -31,11 +31,10 @@
     "local": "yarn transpile && node --inspect=0.0.0.0:9229 node_modules/claudia-local-api/bin/claudia-local-api --api-module bin/api | bunyan -o short",
     "transpile": "yarn build-xml && babel src -d bin --copy-files --source-maps inline",
     "parse-id": "jq -r '.api.id' claudia.json > .api-id",
-    "test": "eslint src && jest --coverage"
+    "test": "eslint src && yarn transpile && jest --coverage"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-jest": "^23.2.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "bunyan": "^1.8.12",
@@ -45,7 +44,8 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.12.0",
     "jest": "^23.2.0",
-    "nodemon": "^1.17.5"
+    "nodemon": "^1.17.5",
+    "rewire": "^4.0.1"
   },
   "dependencies": {
     "@mapbox/sphericalmercator": "^1.1.0",
