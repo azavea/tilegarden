@@ -23,11 +23,11 @@ const IS_PRODUCTION = process.env.NODE_ENV === 'production'
  * templating library, rather than add new nuances to this
  * implementation.
  */
-const fillTemplate = (mmlString, isProduction) => mmlString.replace(
+const fillTemplate = (mmlString, isProduction, env) => mmlString.replace(
     /\$\{([a-z0-9_]+)\}/gi,
     (_, envName) => {
         const varName = `${isProduction ? 'PROD_' : 'DEV_'}${envName}`
-        return `"${process.env[varName]}"`
+        return `"${env[varName]}"`
     },
 )
 
@@ -63,7 +63,7 @@ const mmlToXML = (mml) => {
 }
 
 readFile(IN_FILE, 'utf-8')
-    .then(mmlTemplate => fillTemplate(mmlTemplate, IS_PRODUCTION))
+    .then(mmlTemplate => fillTemplate(mmlTemplate, IS_PRODUCTION, process.env))
     .then(loadMML)
     .then(mmlToXML)
     .then(xml => new Promise((resolve, reject) => {
