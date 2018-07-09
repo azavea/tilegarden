@@ -20,6 +20,7 @@ function main() {
     fi
 
 	# Deploy CloudFront proxy
+	docker-compose run terraform init;
 	docker-compose run -e TF_VAR_source_id=$(<src/tiler/.api-id) terraform apply -auto-approve && echo "Success! Your tiles will be available at the above URL shortly.";
 }
 
