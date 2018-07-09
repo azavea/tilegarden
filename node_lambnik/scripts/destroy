@@ -16,13 +16,16 @@ function main() {
 	echo
 	if [[ $REPLY =~ ^[yY][eE][sS]$ ]]
 	then
+
+		# Destroy deployed resources
 		# This command ALSO tried to destroy your lambda's IAM role.
 		# It will probably fail to do so, but it will delete the lambda
 		# and API Gateway FIRST, so it's fine.
 		docker-compose run tiler yarn destroy || true;
-		docker-compose run tiler rm claudia.json .api-id;
-
 		docker-compose run -e TF_VAR_source_id=$(<src/tiler/.api-id) terraform destroy -auto-approve;
+
+		# Remove local config files
+		docker-compose run tiler rm claudia.json .api-id;
 		docker-compose run --entrypoint rm terraform -rf .terraform terraform.tfstate terraform.tfstate.backup;
 
 	else
