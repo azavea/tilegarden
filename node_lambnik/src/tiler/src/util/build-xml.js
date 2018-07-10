@@ -24,9 +24,9 @@ const IS_PRODUCTION = process.env.NODE_ENV === 'production'
  * implementation.
  */
 const fillTemplate = mmlString => mmlString.replace(
-    /\$\{[a-z0-9_]+\}/gi,
-    (match) => {
-        const varName = `${(IS_PRODUCTION) ? 'PROD_' : 'DEV_'}${match.slice(2, match.length - 1)}`
+    /\$\{([a-z0-9_]+)\}/gi,
+    (_, envName) => {
+        const varName = `${(IS_PRODUCTION) ? 'PROD_' : 'DEV_'}${envName}`
         return `"${process.env[varName]}"`
     },
 )
