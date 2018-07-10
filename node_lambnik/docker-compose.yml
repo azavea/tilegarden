@@ -28,6 +28,7 @@ services:
       - DEV_TILEGARDEN_PASSWORD=postgres
       - DEV_TILEGARDEN_DB=postgres
       - DEV_TILEGARDEN_HOST=database.lambnik.azavea.com
+      - PROJECT_NAME=${PROJECT_NAME}-${USER}
     env_file: .env
     links:
       - database:database.lambnik.azavea.com
@@ -35,6 +36,18 @@ services:
       - ./src/tiler:/home/tiler
       - node_modules:/home/tiler/node_modules
       - bin:/home/tiler/bin
+      - $HOME/.aws:/root/.aws:ro
+
+  terraform:
+    image: hashicorp/terraform:light
+    env_file: .env
+    environment:
+      - TF_VAR_region=${LAMBDA_REGION}
+      - TF_VAR_source_name=${PROJECT_NAME}-${USER}
+    working_dir: /home/terraform
+    command: "init"
+    volumes:
+      - ./src/terraform:/home/terraform
       - $HOME/.aws:/root/.aws:ro
 
 volumes:
