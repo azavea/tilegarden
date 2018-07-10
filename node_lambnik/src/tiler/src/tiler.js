@@ -10,32 +10,13 @@ import SphericalMercator from '@mapbox/sphericalmercator'
 import path from 'path'
 
 import { readFile } from './util/fs-promise'
+import filterVisibleLayers from './util/layer-filter'
 
 const TILE_HEIGHT = 256
 const TILE_WIDTH = 256
 
 // Register plugins
 mapnik.register_default_input_plugins()
-
-/**
- * Disables all layers that aren't specified in the query string
- */
-const filterLayers = (xmlString, layers) => {
-    // Only filter if there ARE layers to filter on
-    if (layers && layers.length > 0) {
-        return xmlString.replace(
-            /(<Layer name="(.+)")>/g,
-            (fullMatch, beginning, layerName) => {
-                if (!layers.includes(layerName)) {
-                    return `${beginning} status="0">`
-                }
-                return fullMatch
-            },
-        )
-    }
-
-    return xmlString
-}
 
 /**
  * Creates a map based on configured datasource and style information
@@ -52,7 +33,7 @@ const createMap = (z, x, y, layers) => {
 
     // Load map specification from xml string
     return readFile(path.join(__dirname, 'map-config.xml'), 'utf-8')
-        .then(xml => filterLayers(xml, layers))
+        .then(xml => filterVisibleLayers(xml, layers))
         .then(xml => new Promise((resolve, reject) => {
             map.fromString(xml, (err, result) => {
                 if (err) reject(err)
