@@ -12,7 +12,7 @@ fi
 
 function usage() {
     echo -n "Usage: $(basename "$0")
-Clean up unused Docker resources to free disk space.
+Destroy build artifacts and Docker containers for a fresh environment
 "
 }
 
@@ -24,13 +24,10 @@ if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
     	docker-compose run tiler rm -rf bin/ node_modules/
 
         # Stop containers and shut down the network
-        docker-compose down
+        docker-compose down --volumes
 
-        # Remove unused containers, images, and volumes
+        # Remove any dangling volumes
         docker images -qf dangling=true | xargs -r docker rmi
         docker volume ls -qf dangling=true | xargs -r docker volume rm
-        docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs -r docker rm
-
-        docker-compose rm
     fi
 fi
