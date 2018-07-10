@@ -21,10 +21,10 @@ const toBuffer = image => new Promise((resolve, reject) => {
     })
 })
 
-export default error => createBlankImage()
+export default message => createBlankImage()
     .then(tile => Jimp.loadFont(Jimp.FONT_SANS_16_BLACK)
         .then((font) => {
-            tile.print(font, 10, 10, error.toString(), 246)
+            tile.print(font, 10, 10, message, 246)
             return tile
         }))
     .then(toBuffer)
