@@ -5,7 +5,7 @@
 import APIBuilder from 'claudia-api-builder'
 
 import { image, grid } from './tiler'
-import errorTile from './util/error-image'
+import messageTile from './util/message-tile'
 
 const IMAGE_RESPONSE = {
     success: {
@@ -59,7 +59,7 @@ api.get(
 
             return image(z, x, y, layers)
         } catch (e) {
-            return errorTile(e)
+            return messageTile(e.toString())
         }
     },
     IMAGE_RESPONSE,
