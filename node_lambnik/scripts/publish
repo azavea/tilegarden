@@ -14,14 +14,15 @@ Options:
 function main() {
     if [ "${1}" = "--new" ]
     then
-        docker-compose run -e NODE_ENV=production tiler yarn deploy-new;
+        docker-compose run -e NODE_ENV=production tiler yarn deploy-new
     else
-        docker-compose run -e NODE_ENV=production tiler yarn deploy;
+        docker-compose run -e NODE_ENV=production tiler yarn deploy
     fi
 
 	# Deploy CloudFront proxy
-	docker-compose run terraform init;
-	docker-compose run -e TF_VAR_source_id=$(<src/tiler/.api-id) terraform apply -auto-approve && echo "Success! Your tiles will be available at the above URL shortly.";
+	docker-compose run terraform init
+	docker-compose run -e TF_VAR_source_id=$(<src/tiler/.api-id) terraform apply -auto-approve && \
+	echo "Success! Your tiles will be available at the above URL shortly."
 }
 
 if [ "${BASH_SOURCE[0]}" = "${0}" ]
