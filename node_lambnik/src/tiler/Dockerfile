@@ -2,7 +2,7 @@ FROM node:8.10-slim
 
 # Install git for git dependencies
 RUN apt-get update -y
-RUN apt-get install git -y
+RUN apt-get install git jq -y
 
 # Copy files needed for installing packages first
 COPY package.json yarn.lock /home/tiler/
