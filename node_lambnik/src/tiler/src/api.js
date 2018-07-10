@@ -5,6 +5,7 @@
 import APIBuilder from 'claudia-api-builder'
 
 import { image, grid } from './tiler'
+import errorTile from './util/error-image'
 
 const IMAGE_RESPONSE = {
     success: {
@@ -52,11 +53,14 @@ const api = new APIBuilder()
 api.get(
     '/tile/{z}/{x}/{y}',
     (req) => {
-        const { z, x, y } = processCoords(req)
-        const layers = processLayers(req)
+        try {
+            const { z, x, y } = processCoords(req)
+            const layers = processLayers(req)
 
-        return image(z, x, y, layers)
-            .catch(JSON.stringify)
+            return image(z, x, y, layers)
+        } catch (e) {
+            return errorTile(e)
+        }
     },
     IMAGE_RESPONSE,
 )
@@ -66,12 +70,15 @@ api.get(
 api.get(
     '/grid/{z}/{x}/{y}',
     (req) => {
-        const { z, x, y } = processCoords(req)
-        const utfFields = processUTFQuery(req)
-        const layers = processLayers(req)
+        try {
+            const { z, x, y } = processCoords(req)
+            const utfFields = processUTFQuery(req)
+            const layers = processLayers(req)
 
-        return grid(z, x, y, utfFields, layers)
-            .catch(JSON.stringify)
+            return grid(z, x, y, utfFields, layers)
+        } catch (e) {
+            return JSON.stringify(e)
+        }
     },
 )
 
