@@ -25,6 +25,9 @@ const processCoords = (req) => {
     const preY = req.pathParams.y
     const y = Number(preY.substr(0, preY.lastIndexOf('.')) || preY)
 
+    // Check type of coords
+    /* eslint-disable-next-line no-restricted-globals */
+    if (isNaN(x) || isNaN(y) || isNaN(z)) throw new Error('Coordinate values must be numbers!')
     return { z, x, y }
 }
 
