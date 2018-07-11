@@ -3,47 +3,42 @@ const buildXML = rewire('../bin/util/build-xml'),
     fillTemplate = buildXML.__get__('fillTemplate')
 
 describe('fillTemplate', () => {
-    let env
-
-    beforeEach(() => {
-        env = Object.assign({}, process.env)
-    })
-
-    afterEach(() => {
-        process.env = Object.assign({}, env)
-    })
-
-    test('basic substitution (prod)', () => {
+    test('append PROD_ in production', () => {
         const env = {
-            PROD_TEST: 'fish'
+            NODE_ENV: 'production',
+            PROD_TEST: 'success',
+            DEV_TEST: 'failure',
         }
         const template = '${TEST}'
-        expect(fillTemplate(template, true, env)).toBe('"fish"')
+        expect(fillTemplate(template, env)).toBe('"success"')
     })
 
-    test('basic substitution (dev)', () => {
+    test('append DEV_ in development', () => {
         const env = {
-            DEV_TEST: 'fish'
+            NODE_ENV: 'development',
+            PROD_TEST: 'failure',
+            DEV_TEST: 'success',
         }
         const template = '${TEST}'
-        expect(fillTemplate(template, false, env)).toBe('"fish"')
+        expect(fillTemplate(template, env)).toBe('"success"')
     })
 
-    test('case insensitivity (dev)', () => {
+    test('default to DEV given any non-production NODE_ENV', () => {
         const env = {
-            DEV_test: 'fish'
+            NODE_ENV: 'asdasdgdfgsdfgsdfg',
+            PROD_TEST: 'failure',
+            DEV_TEST: 'success',
         }
-        const template = '${test}'
-        expect(fillTemplate(template, false, env)).toBe('"fish"')
+        const template = '${TEST}'
+        expect(fillTemplate(template, env)).toBe('"success"')
     })
 
-    test('multiple templates', () => {
+    test('default to DEV given no NODE_ENV', () => {
         const env = {
-            DEV_TEST: 'fish',
-            DEV_TOAST: 'flish',
-            DEV_TRIST: 'flash',
+            PROD_TEST: 'failure',
+            DEV_TEST: 'success',
         }
-        const template = '${TEST}${TOAST}${TRIST}'
-        expect(fillTemplate(template, false, env)).toBe('"fish""flish""flash"')
+        const template = '${TEST}'
+        expect(fillTemplate(template, env)).toBe('"success"')
     })
 })
