@@ -12,6 +12,7 @@ Options:
 
 function main() {
     echo "WARNING: you are about to destroy all your deployed resources!"
+    printf "That includes:\n - Associated AWS Lambda functions\n - Associated API Gateways\n - Associated IAM roles (automatically generated or no)\n - Associated CloudFront distributions\n"
     read -p "If this is what you want, type 'yes' to continue: " -r
     echo
     if [[ $REPLY =~ ^[yY][eE][sS]$ ]]
