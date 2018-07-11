@@ -10,6 +10,7 @@ import SphericalMercator from '@mapbox/sphericalmercator'
 import path from 'path'
 
 import { readFile } from './util/fs-promise'
+import filterVisibleLayers from './util/layer-filter'
 
 const TILE_HEIGHT = 256
 const TILE_WIDTH = 256
@@ -24,7 +25,7 @@ mapnik.register_default_input_plugins()
  * @param y
  * @returns {Promise<mapnik.Map>}
  */
-const createMap = (z, x, y) => {
+const createMap = (z, x, y, layers) => {
     // Create a webmercator map with specified bounds
     const map = new mapnik.Map(TILE_WIDTH, TILE_HEIGHT)
     map.bufferSize = 64
@@ -32,6 +33,7 @@ const createMap = (z, x, y) => {
 
     // Load map specification from xml string
     return readFile(path.join(__dirname, 'map-config.xml'), 'utf-8')
+        .then(xml => filterVisibleLayers(xml, layers))
         .then(xml => new Promise((resolve, reject) => {
             map.fromString(xml, (err, result) => {
                 if (err) reject(err)
@@ -63,13 +65,13 @@ const encodeAsPNG = renderedTile => new Promise((resolve, reject) => {
  * @param y
  * @returns {Promise<any>}
  */
-export const image = (z, x, y) => {
+export const image = (z, x, y, layers) => {
     // create mapnik image
     const img = new mapnik.Image(TILE_WIDTH, TILE_HEIGHT)
 
     // render map to image
     // return asynchronous rendering method as a promise
-    return createMap(z, x, y)
+    return createMap(z, x, y, layers)
         .then(map => new Promise((resolve, reject) => {
             map.render(img, {}, (err, result) => {
                 if (err) reject(err)
@@ -90,10 +92,10 @@ export const image = (z, x, y) => {
  * @param y
  * @returns {Promise<any>}
  */
-export const grid = (z, x, y, utfFields) => {
+export const grid = (z, x, y, utfFields, layers) => {
     const grd = new mapnik.Grid(TILE_WIDTH, TILE_HEIGHT)
 
-    return createMap(z, x, y)
+    return createMap(z, x, y, layers)
         .then(map => new Promise((resolve, reject) => {
             map.render(grd, {
                 layer: 0,

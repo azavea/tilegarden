@@ -35,6 +35,13 @@ const processUTFQuery = (req) => {
     return queryString.split(',')
 }
 
+// Returns a properly formatted list of layers
+// or an empty list if there are none
+const processLayers = (req) => {
+    if (req.queryString.layers) return req.queryString.layers.split(',')
+    return []
+}
+
 // Create new lambda API
 const api = new APIBuilder()
 
@@ -43,8 +50,9 @@ api.get(
     '/tile/{z}/{x}/{y}',
     (req) => {
         const { z, x, y } = processCoords(req)
+        const layers = processLayers(req)
 
-        return image(z, x, y)
+        return image(z, x, y, layers)
             .catch(JSON.stringify)
     },
     IMAGE_RESPONSE,
@@ -57,8 +65,9 @@ api.get(
     (req) => {
         const { z, x, y } = processCoords(req)
         const utfFields = processUTFQuery(req)
+        const layers = processLayers(req)
 
-        return grid(z, x, y, utfFields)
+        return grid(z, x, y, utfFields, layers)
             .catch(JSON.stringify)
     },
 )
@@ -74,7 +83,8 @@ api.get(
                 <h2>Tilegarden Usage:</h2>
                 <ul>
                     <li>Render tile at zoom/x/y: <code>/tile/{z}/{x}/{y}.png</code></li>
-                    <li>UTF grid at zoom/x/y: <code>/grid/{z}/{x}/{y}</code></li>
+                    <li>UTF grid at zoom/x/y: <code>/grid/{z}/{x}/{y}?utfFields=field1,field2,field...N</code></li>
+                    <li>Filter layers: add <code>?layers=layer1,layer2,layer...N</code></li>
                 </ul>
                 <a href="https://github.com/azavea/tilegarden">See on GitHub</a>
             </body>
