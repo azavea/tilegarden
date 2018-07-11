@@ -11,26 +11,26 @@ Options:
 }
 
 function main() {
-	echo "WARNING: you are about to destroy all your deployed resources!"
-	read -p "If this is what you want, type 'yes' to continue: " -r
-	echo
-	if [[ $REPLY =~ ^[yY][eE][sS]$ ]]
-	then
+    echo "WARNING: you are about to destroy all your deployed resources!"
+    read -p "If this is what you want, type 'yes' to continue: " -r
+    echo
+    if [[ $REPLY =~ ^[yY][eE][sS]$ ]]
+    then
 
-		# Destroy deployed resources
-		# This command ALSO tried to destroy your lambda's IAM role.
-		# It will probably fail to do so, but it will delete the lambda
-		# and API Gateway FIRST, so it's fine.
-		docker-compose run tiler yarn destroy || true;
-		docker-compose run -e TF_VAR_source_id=$(<src/tiler/.api-id) terraform destroy -auto-approve;
+        # Destroy deployed resources
+        # This command ALSO tried to destroy your lambda's IAM role.
+        # It will probably fail to do so, but it will delete the lambda
+        # and API Gateway FIRST, so it's fine.
+        docker-compose run tiler yarn destroy || true
+        docker-compose run -e TF_VAR_source_id=$(<src/tiler/.api-id) terraform destroy -auto-approve
 
-		# Remove local config files
-		docker-compose run tiler rm claudia.json .api-id;
-		docker-compose run --entrypoint rm terraform -rf .terraform terraform.tfstate terraform.tfstate.backup;
+        # Remove local config files
+        docker-compose run tiler rm claudia.json .api-id
+        docker-compose run --entrypoint rm terraform -rf .terraform terraform.tfstate terraform.tfstate.backup
 
-	else
-		echo "Aborting destroy"
-	fi
+    else
+        echo "Aborting destroy"
+    fi
 }
 
 if [ "${BASH_SOURCE[0]}" = "${0}" ]
