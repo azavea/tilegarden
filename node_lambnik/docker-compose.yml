@@ -11,9 +11,16 @@ services:
       - tiler:tiler.lambnik.azavea.com
 
   database:
-    image: quay.io/azavea/postgis:2.3-postgres9.6-slim
+    image: database
+    build:
+      context: ./src/database
+      dockerfile: Dockerfile
     expose:
       - "5432"
+    working_dir: /home
+    volumes:
+      - ./data:/home/data
+      - ./scripts/updatedb:/home/updatedb
 
   tiler:
     image: tiler
