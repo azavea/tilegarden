@@ -8,6 +8,7 @@ POSTGRES_DB="${POSTGRES_DB:-$POSTGRES_USER}"
 
 # Execute psql commands on the database container for performance reasons.
 PSQL="docker exec -i $(docker-compose ps -q database) gosu ${POSTGRES_USER} psql -d ${POSTGRES_DB}"
+PSQLSHP="docker exec -i $(docker-compose ps -q database) gosu ${POSTGRES_USER} psql -d ${POSTGRES_DB}"
 # echo "psql command: ${PSQL}"
 
 function usage() {
@@ -26,16 +27,6 @@ function drop() {
     tablename=${1}
     echo "Dropping ${tablename}"
     ${PSQL} -c "DROP TABLE ${tablename};"
-}
-
-function load() {
-    file=${1}
-    echo "Loading ${file}"
-    extracted_file=${file/.gz/}
-    echo "Attempting to extract $extracted_file"
-    gunzip "$file" -qkf
-    ${PSQL} < "$extracted_file"
-    rm "$extracted_file"
 }
 
 function table_exists() {
@@ -82,19 +73,68 @@ function check_postgis_install() {
     ${PSQL} -c "CREATE EXTENSION postgis;" &>/dev/null
 }
 
+# converts all shapefiles to sql
+function process_shp() {
+	for SHAPEFILE in $(find "$1" -name "*.shp")
+	do
+	  BASENAME=$(basename $SHAPEFILE .shp)
+	  DIRNAME=$(dirname $SHAPEFILE)
+	  SQLFILE="${BASENAME}.sql"
+	  shp2pgsql -W UTF-8 $SHAPEFILE $BASENAME > "${1}.sql"
+	done
+}
+
+
+# locates and unzips all zips in data
+function process_zip() {
+	# Generate .sql files
+	zip=${1}
+	echo "Loading ${zip}"
+	outdir="${zip%.*}"
+	echo "Attempting to extract ${zip}"
+	unzip "$zip" -d "$outdir"
+	process_shp "$outdir" data/
+	rm -rf "$outdir"
+
+	extracted_file="${outdir}.sql"
+	${PSQL} < "$extracted_file"
+	rm "$extracted_file"
+}
+
+# unzips all .gz files
+function process_gz() {
+    file=${1}
+    echo "Loading ${file}"
+    extracted_file=${file/.gz/}
+    echo "Attempting to extract $extracted_file"
+    gunzip "$file" -qkf
+
+    ${PSQL} < "$extracted_file"
+    rm "$extracted_file"
+}
+
+function load() {
+	if [ "${1: -3}" == ".gz" ]; then
+		process_gz "${1}" "${2}"
+	elif [ "${1: -4}" == ".zip" ]; then
+		process_zip "${1}" "${2}"
+	fi
+}
+
 function add_table() {
 	if table_exists "${2}"; then
 		if [ "$force_reload" = true ]; then
 			drop ${tablename}
-			load "${1}"
+			load "${1}" "${2}"
 		else
 			echo "table ${2} exists"
 		fi
 	else
 		echo "Loading ${2}"
-		load "${1}"
+		load "${1}" "${2}"
 	fi
 }
+
 
 while getopts ":hf" opt; do
     case $opt in
