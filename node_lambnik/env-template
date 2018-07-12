@@ -16,8 +16,8 @@ PROD_TILEGARDEN_USER=
 LAMBDA_REGION=us-east-1
 
 ## OPTIONAL ##
-# ARN of role associated with this lambda function
-#LAMBDA_ROLE=arn:aws:iam:1237192731893/role:etc
+# name of role associated with this lambda function
+#LAMBDA_ROLE=role-name
 # Amount of time in seconds your lambdas will wait before timing out
 #LAMBDA_TIMEOUT=5
 # Memory in MB allocated to your lambda functions
