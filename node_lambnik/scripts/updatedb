@@ -32,6 +32,7 @@ function load() {
     file=${1}
     echo "Loading ${file}"
     extracted_file=${file/.gz/}
+    echo "Attempting to extract $extracted_file"
     gunzip "$file" -qkf
     ${PSQL} < "$extracted_file"
     rm "$extracted_file"
@@ -81,6 +82,20 @@ function check_postgis_install() {
     ${PSQL} -c "CREATE EXTENSION postgis;" &>/dev/null
 }
 
+function add_table() {
+	if table_exists "${2}"; then
+		if [ "$force_reload" = true ]; then
+			drop ${tablename}
+			load "${1}"
+		else
+			echo "table ${2} exists"
+		fi
+	else
+		echo "Loading ${2}"
+		load "${1}"
+	fi
+}
+
 while getopts ":hf" opt; do
     case $opt in
         h) usage; exit 0;;
@@ -94,16 +109,9 @@ shift $(($OPTIND - 1))
 check_database;
 check_postgis_install;
 
-tablename="${1:-pwd_inlets}"
-
-if table_exists "${tablename}"; then
-    if [ "$force_reload" = true ]; then
-        drop ${tablename}
-        load "data/${tablename}.sql.gz"
-    else
-        echo "table ${tablename} exists"
-    fi
-else
-    echo "Loading ${tablename}"
-    load "data/${tablename}.sql.gz"
-fi
+for entry in data/*
+do
+	file="${entry##*/}"
+	base="${file%%.*}"
+	add_table "$entry" "$base"
+done
