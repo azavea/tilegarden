@@ -14,9 +14,10 @@ PROD_TILEGARDEN_USER=
 # Function config information
 ## REQUIRED ##
 LAMBDA_REGION=us-east-1
-LAMBDA_ROLE=role
 
 ## OPTIONAL ##
+# name of role associated with this lambda function
+#LAMBDA_ROLE=role-name
 # Amount of time in seconds your lambdas will wait before timing out
 #LAMBDA_TIMEOUT=5
 # Memory in MB allocated to your lambda functions

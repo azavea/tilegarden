@@ -1,0 +1,23 @@
+#!/bin/bash
+
+function usage() {
+    echo -n "Usage: $(basename "$0")
+Destroy build artifacts and Docker containers for a fresh environment
+"
+}
+
+if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
+    if [ "${1:-}" = "--help" ]; then
+        usage
+    else
+        # Remove build artifacts from local machine
+        docker-compose run tiler rm -rf bin/ node_modules/
+
+        # Stop containers and shut down the network
+        docker-compose down --volumes
+
+        # Remove any dangling volumes
+        docker images -qf dangling=true | xargs -r docker rmi
+        docker volume ls -qf dangling=true | xargs -r docker volume rm
+    fi
+fi
