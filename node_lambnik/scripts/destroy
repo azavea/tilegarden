@@ -19,9 +19,9 @@ function main() {
     then
 
         # Destroy deployed resources
-        # This command ALSO tried to destroy your lambda's IAM role.
-        # It will probably fail to do so, but it will delete the lambda
-        # and API Gateway FIRST, so it's fine.
+        # If any part of this fails, the parts that didn't fail
+        # remain destroyed, so it's best to just carry on and
+        # follow through.
         docker-compose run tiler yarn destroy || true
         docker-compose run -e TF_VAR_source_id=$(<src/tiler/.api-id) terraform destroy -auto-approve
 
