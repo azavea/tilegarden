@@ -1,38 +1,23 @@
-#STATE {
-    marker-fill: grey;
-    marker-width: 4;
-    marker-allow-overlap: true;
-}
-#PWD {
-    marker-fill: blue;
-    marker-width: 4;
-    marker-allow-overlap: true;
-}
-#PARK {
-    marker-fill: green;
-    marker-width: 4;
-    marker-allow-overlap: true;
-}
-#AIRPRT {
-    marker-fill: white;
-    marker-width: 4;
-    marker-allow-overlap: true;
-}
-
-#LM {
+#pwd_parcels {
     marker-fill: black;
-    marker-width: 4;
+    marker-width: 2;
     marker-allow-overlap: true;
+    line-color: red;
+    polygon-fill: orange;
 }
 
-#FEDERAL {
-    marker-fill: red;
-    marker-width: 4;
+#street_centerline{
+    marker-fill: black;
+    marker-width: 2;
     marker-allow-overlap: true;
+    line-color: red;
+    polygon-fill: orange;
 }
 
-#PRIV {
-    marker-fill: yellow;
-    marker-width: 4;
+#pwd_inlets {
+    marker-fill: black;
+    marker-width: 2;
     marker-allow-overlap: true;
+    line-color: red;
+    polygon-fill: orange;
 }
