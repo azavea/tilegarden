@@ -121,7 +121,8 @@ function load() {
 }
 
 function add_table() {
-	if table_exists "${2}"; then
+	if table_exists "${2}"; then\
+
 		if [ "$force_reload" = true ]; then
 			drop ${tablename}
 			load "${1}" "${2}"

@@ -1,7 +1,6 @@
 version: '3.1'
 services:
   proxy:
-    image: tile-proxy
     build:
       context: ./src/proxy
       dockerfile: Dockerfile
@@ -11,7 +10,6 @@ services:
       - tiler:tiler.lambnik.azavea.com
 
   database:
-    image: database
     build:
       context: ./src/database
       dockerfile: Dockerfile
@@ -23,7 +21,6 @@ services:
       - ./scripts/updatedb:/home/updatedb
 
   tiler:
-    image: tiler
     build:
       context: ./src/tiler
       dockerfile: Dockerfile
