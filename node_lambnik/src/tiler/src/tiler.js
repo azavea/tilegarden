@@ -6,11 +6,11 @@
 /* eslint-disable no-console */
 
 import mapnik from 'mapnik'
-import SphericalMercator from '@mapbox/sphericalmercator'
 import path from 'path'
 
 import { readFile } from './util/fs-promise'
 import filterVisibleLayers from './util/layer-filter'
+import bbox from './util/bounding-box'
 
 const TILE_HEIGHT = 256
 const TILE_WIDTH = 256
@@ -37,8 +37,9 @@ const createMap = (z, x, y, layers) => {
             map.fromString(xml, (err, result) => {
                 if (err) reject(err)
                 else {
+                    console.log(JSON.stringify(result, null, 4))
                     /* eslint-disable-next-line no-param-reassign */
-                    result.extent = new SphericalMercator().bbox(x, y, z, false, '900913')
+                    result.extent = bbox(z, x, y, TILE_HEIGHT, result.srs)
                     resolve(result)
                 }
             })
