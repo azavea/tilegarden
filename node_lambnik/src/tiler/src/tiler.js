@@ -37,9 +37,9 @@ const createMap = (z, x, y, layers) => {
             map.fromString(xml, (err, result) => {
                 if (err) reject(err)
                 else {
-                    console.log(JSON.stringify(result, null, 4))
                     /* eslint-disable-next-line no-param-reassign */
                     result.extent = bbox(z, x, y, TILE_HEIGHT, result.srs)
+
                     resolve(result)
                 }
             })
