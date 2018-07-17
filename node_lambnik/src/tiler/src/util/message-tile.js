@@ -4,11 +4,11 @@
  */
 import Jimp from 'jimp'
 
-const createBlankImage = () => new Promise((resolve, reject) => {
+const createImage = () => new Promise((resolve, reject) => {
     // eslint yells at me for using 'new' for side effects
     // (which I agree with) but this is how it's implemented
     /* eslint-disable-next-line no-new */
-    new Jimp(256, 256, (err, image) => {
+    new Jimp(256, 256, 0xffffffff, (err, image) => {
         if (err) reject(err)
         else resolve(image)
     })
@@ -21,7 +21,7 @@ const toBuffer = image => new Promise((resolve, reject) => {
     })
 })
 
-export default message => createBlankImage()
+export default message => createImage()
     .then(tile => Jimp.loadFont(Jimp.FONT_SANS_16_BLACK)
         .then((font) => {
             tile.print(font, 10, 10, message, 246)

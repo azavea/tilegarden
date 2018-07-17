@@ -30,9 +30,9 @@
     "dev": "nodemon -e js,mss,json,mml,mss --ignore bin/ --exec yarn local",
     "lint": "eslint src",
     "local": "yarn transpile && node --inspect=0.0.0.0:9229 node_modules/claudia-local-api/bin/claudia-local-api --api-module bin/api | bunyan -o short",
-    "transpile": "yarn build-xml && babel src -d bin --copy-files --source-maps inline",
     "parse-id": "jq -r '.api.id' claudia.json > .api-id",
-    "test": "eslint src && jest --coverage"
+    "test": "eslint src && jest --coverage",
+    "transpile": "yarn build-xml && babel src -d bin --copy-files --source-maps inline"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
