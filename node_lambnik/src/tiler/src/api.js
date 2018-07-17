@@ -5,6 +5,7 @@
 import APIBuilder from 'claudia-api-builder'
 
 import { image, grid } from './tiler'
+import messageTile from './util/message-tile'
 
 const IMAGE_RESPONSE = {
     success: {
@@ -25,6 +26,9 @@ const processCoords = (req) => {
     const preY = req.pathParams.y
     const y = Number(preY.substr(0, preY.lastIndexOf('.')) || preY)
 
+    // Check type of coords
+    /* eslint-disable-next-line no-restricted-globals */
+    if (isNaN(x) || isNaN(y) || isNaN(z)) throw new Error('Coordinate values must be numbers!')
     return { z, x, y }
 }
 
@@ -49,11 +53,14 @@ const api = new APIBuilder()
 api.get(
     '/tile/{z}/{x}/{y}',
     (req) => {
-        const { z, x, y } = processCoords(req)
-        const layers = processLayers(req)
+        try {
+            const { z, x, y } = processCoords(req)
+            const layers = processLayers(req)
 
-        return image(z, x, y, layers)
-            .catch(JSON.stringify)
+            return image(z, x, y, layers)
+        } catch (e) {
+            return messageTile(e.toString())
+        }
     },
     IMAGE_RESPONSE,
 )
@@ -63,17 +70,21 @@ api.get(
 api.get(
     '/grid/{z}/{x}/{y}',
     (req) => {
-        const { z, x, y } = processCoords(req)
-        const utfFields = processUTFQuery(req)
-        const layers = processLayers(req)
+        try {
+            const { z, x, y } = processCoords(req)
+            const utfFields = processUTFQuery(req)
+            const layers = processLayers(req)
 
-        return grid(z, x, y, utfFields, layers)
-            .catch(JSON.stringify)
+            return grid(z, x, y, utfFields, layers)
+        } catch (e) {
+            return JSON.stringify(e)
+        }
     },
 )
 
 api.get(
     '/',
+    /* eslint-disable max-len */
     () => `
         <html>
             <head>
@@ -90,6 +101,7 @@ api.get(
             </body>
         </html>
     `,
+    /* eslint-enable max-len */
     HTML_RESPONSE,
 )
 

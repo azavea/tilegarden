@@ -1,0 +1,5 @@
+language: node_js
+before_install: cd node_lambnik/src/tiler
+install: yarn install
+before_script: yarn transpile
+script: yarn test
