@@ -13,7 +13,6 @@ import { readFile, writeFile } from './fs-promise'
 
 const IN_FILE = process.argv[2]
 const OUT_FILE = process.argv[3]
-const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
 // Takes in a string and templates in the proper env variables
 /**
@@ -23,13 +22,17 @@ const IS_PRODUCTION = process.env.NODE_ENV === 'production'
  * templating library, rather than add new nuances to this
  * implementation.
  */
-const fillTemplate = mmlString => mmlString.replace(
-    /\$\{([a-z0-9_]+)\}/gi,
-    (_, envName) => {
-        const varName = `${(IS_PRODUCTION) ? 'PROD_' : 'DEV_'}${envName}`
-        return `"${process.env[varName]}"`
-    },
-)
+const fillTemplate = (mmlString, env) => {
+    const envPrefix = env.NODE_ENV === 'production' ? 'PROD_' : 'DEV_'
+
+    return mmlString.replace(
+        /\$\{([a-z0-9_]+)\}/gi,
+        (_, envName) => {
+            const varName = `${envPrefix}${envName}`
+            return `"${env[varName]}"`
+        },
+    )
+}
 
 
 // Loads properly formatted MML into an MML object
@@ -63,7 +66,7 @@ const mmlToXML = (mml) => {
 }
 
 readFile(IN_FILE, 'utf-8')
-    .then(fillTemplate)
+    .then(mmlTemplate => fillTemplate(mmlTemplate, process.env))
     .then(loadMML)
     .then(mmlToXML)
     .then(xml => new Promise((resolve, reject) => {

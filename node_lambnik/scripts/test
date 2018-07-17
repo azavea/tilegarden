@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -e
+
+function usage() {
+    echo -n "Usage: $(basename "${0}") [OPTION]
+Runs test suites
+Options:
+    --help      Display this help text
+"
+}
+
+if [ "${BASH_SOURCE[0]}" = "${0}" ]
+then
+    if [ "${1:-}" = "--help" ]
+    then
+        usage
+    else
+        docker-compose run tiler yarn test
+    fi
+    exit
+fi

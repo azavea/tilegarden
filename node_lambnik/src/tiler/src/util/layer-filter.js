@@ -8,9 +8,9 @@
 import xmlParser from 'xml2js'
 
 // Promisified conversion of an xml string to a JSON object
-const parsePromise = (xmlString) => new Promise((resolve, reject) => {
+const parsePromise = xmlString => new Promise((resolve, reject) => {
     xmlParser.parseString(xmlString, (err, result) => {
-        if (err) reject (err)
+        if (err) reject(err)
         else resolve(result)
     })
 })
@@ -20,7 +20,8 @@ const parsePromise = (xmlString) => new Promise((resolve, reject) => {
  */
 const filter = (xmlJson, enabledLayers) => {
     xmlJson.Map.Layer.forEach((layer) => {
-        if (!enabledLayers.includes(layer.$.name)) layer.$['status'] = 'false'
+        /* eslint-disable-next-line no-param-reassign */
+        if (!enabledLayers.includes(layer.$.name)) layer.$.status = 'false'
     })
     return xmlJson
 }
@@ -33,10 +34,12 @@ const returnToXml = (xmlJson) => {
 
 export default (xmlString, enabledLayers) => {
     // skip entire process if no layers are to be parsed
-    if (!enabledLayers || enabledLayers.length < 1) return xmlString
+    if (!enabledLayers || enabledLayers.length < 1) {
+        return new Promise(resolve => resolve(xmlString))
+    }
 
     return parsePromise(xmlString)
-        .then((xmlJson) => filter(xmlJson, enabledLayers))
+        .then(xmlJson => filter(xmlJson, enabledLayers))
         .then(returnToXml)
 }
 

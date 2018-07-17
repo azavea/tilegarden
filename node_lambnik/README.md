@@ -1,4 +1,4 @@
-# tilegarden
+# tilegarden [![Build Status](https://travis-ci.org/azavea/tilegarden.svg?branch=develop)](https://travis-ci.org/azavea/tilegarden)
 
 ## Usage
  * Make sure to have `docker`, `docker-compose`, and `yarn` installed locally.
