@@ -22,9 +22,5 @@ then
         # Launch database container so we can populate it.
         docker-compose up -d database
         docker-compose exec database bash -c "./updatedb"
-
-        # Load data fixtures.
-#        ./scripts/updatedb
-
     fi
 fi
