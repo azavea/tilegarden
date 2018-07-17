@@ -38,7 +38,7 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "bunyan": "^1.8.12",
-    "claudia": "^5.0.0",
+    "claudia": "^5.0.1",
     "claudia-local-api": "https://github.com/mattdelsordo/claudia-local-api.git#feature/binary-response-support",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
