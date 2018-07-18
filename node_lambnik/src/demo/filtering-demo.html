@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <title>PWD Inlets</title>
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet-src.js"></script>
-    <script src="https://danzel.github.io/Leaflet.utfgrid/src/leaflet.utfgrid.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.2/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.3.2/dist/leaflet.js"></script>
+    <script src="L.UTFGrid-min.js"></script>
 </head>
 
 <body>
@@ -48,7 +48,6 @@
         border-radius: 6px;
         display: inline-block;
     }
-
     .container {
         width: 100%;
         margin-top: 30px;
@@ -58,23 +57,19 @@
 </style>
 <script>
     "use-strict"
-
     document.addEventListener('DOMContentLoaded', function onload() {
         // create map object
         var map = L.map('map', {
             center: [39.96, -75.15], zoom: 12
         });
-
         // add tileserver
         // un-comment out the path that you want to test
-
         //var TILESERVER_PATH = 'https://d28f32z0lbuk2f.cloudfront.net/';
         var TILESERVER_PATH = 'http://localhost:9001/';
-
         // Create/add tile layers
         function createLayer(ownerName) {
             lyr = L.tileLayer(TILESERVER_PATH + '/tile/{z}/{x}/{y}.png?layers=' + ownerName);
-            grd = new L.UtfGrid(TILESERVER_PATH + "/grid/{z}/{x}/{y}?utfFields=inlettype&layers=" + ownerName, {
+            grd = L.utfGrid(TILESERVER_PATH + "/grid/{z}/{x}/{y}?utfFields=inlettype&layers=" + ownerName, {
                 useJsonP: false
             });
             grd.on('click', function(e) {
@@ -82,18 +77,15 @@
                     alert("This inlet is of type " + e.data.inlettype);
                 }
             });
-
             return {
                 layer: lyr,
                 grid: grd,
             }
         }
-
         const layerNames = ['PWD', 'STATE', 'PARK', 'AIRPRT', 'LM', 'FEDERAL', 'PRIV']
         const layerKeys = Object.assign({}, ...layerNames.map(function(key) {
             return {[key]: createLayer(key)}
         }))
-
         document.querySelectorAll("#layer-selector input").forEach(function (item) {
             item.addEventListener('click', function() {
                 if (this.checked) {
@@ -108,7 +100,6 @@
                 }
             })
         })
-
         document.getElementById("all").addEventListener('click', function() {
             console.log('Toggled all buttons.')
             var checked = this.checked;
@@ -116,7 +107,6 @@
                 if (checkbox.checked != checked) checkbox.click();
             });
         });
-
         // add basemap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,

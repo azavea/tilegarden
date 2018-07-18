@@ -7,94 +7,42 @@ Stylesheet:
   - style.mss
 
 Layer:
- - id: PWD
-   name: PWD
-   geometry: polygon
-   srs-name: "4326"
-   Datasource:
-      host: ${TILEGARDEN_HOST}
-      dbname: ${TILEGARDEN_DB}
-      user: ${TILEGARDEN_USER}
-      password: ${TILEGARDEN_PASSWORD}
-      type: "postgis"
-      table: "(select geom,owner,inlettype from pwd_inlets where owner = 'PWD') as q"
-      key_field: ""
-      geometry_field: "geom"
- - id: AIRPRT
-   name: AIRPRT
-   geometry: polygon
-   srs-name: "4326"
-   Datasource:
-      host: ${TILEGARDEN_HOST}
-      dbname: ${TILEGARDEN_DB}
-      user: ${TILEGARDEN_USER}
-      password: ${TILEGARDEN_PASSWORD}
-      type: "postgis"
-      table: "(select geom,owner,inlettype from pwd_inlets where owner = 'AIRPRT') as q"
-      key_field: ""
-      geometry_field: "geom"
- - id: STATE
-   name: STATE
-   geometry: polygon
-   srs-name: "4326"
-   Datasource:
-      host: ${TILEGARDEN_HOST}
-      dbname: ${TILEGARDEN_DB}
-      user: ${TILEGARDEN_USER}
-      password: ${TILEGARDEN_PASSWORD}
-      type: "postgis"
-      table: "(select geom,owner,inlettype from pwd_inlets where owner = 'STATE') as q"
-      key_field: ""
-      geometry_field: "geom"
- - id: PARK
-   name: PARK
-   geometry: polygon
-   srs-name: "4326"
-   Datasource:
-      host: ${TILEGARDEN_HOST}
-      dbname: ${TILEGARDEN_DB}
-      user: ${TILEGARDEN_USER}
-      password: ${TILEGARDEN_PASSWORD}
-      type: "postgis"
-      table: "(select geom,owner,inlettype from pwd_inlets where owner = 'PARK') as q"
-      key_field: ""
-      geometry_field: "geom"
- - id: LM
-   name: LM
-   geometry: polygon
-   srs-name: "4326"
-   Datasource:
-      host: ${TILEGARDEN_HOST}
-      dbname: ${TILEGARDEN_DB}
-      user: ${TILEGARDEN_USER}
-      password: ${TILEGARDEN_PASSWORD}
-      type: "postgis"
-      table: "(select geom,owner,inlettype from pwd_inlets where owner = 'LM') as q"
-      key_field: ""
-      geometry_field: "geom"
- - id: FEDERAL
-   name: FEDERAL
-   geometry: polygon
-   srs-name: "4326"
-   Datasource:
-      host: ${TILEGARDEN_HOST}
-      dbname: ${TILEGARDEN_DB}
-      user: ${TILEGARDEN_USER}
-      password: ${TILEGARDEN_PASSWORD}
-      type: "postgis"
-      table: "(select geom,owner,inlettype from pwd_inlets where owner = 'FEDERAL') as q"
-      key_field: ""
-      geometry_field: "geom"
- - id: PRIV
-   name: PRIV
-   geometry: polygon
-   srs-name: "4326"
-   Datasource:
-      host: ${TILEGARDEN_HOST}
-      dbname: ${TILEGARDEN_DB}
-      user: ${TILEGARDEN_USER}
-      password: ${TILEGARDEN_PASSWORD}
-      type: "postgis"
-      table: "(select geom,owner,inlettype from pwd_inlets where owner = 'PRIV') as q"
-      key_field: ""
-      geometry_field: "geom"
+- id: street_centerline
+  name: street_centerline
+  geometry: polygon
+  srs-name: "4326"
+  Datasource:
+    host: ${TILEGARDEN_HOST}
+    dbname: ${TILEGARDEN_DB}
+    user: ${TILEGARDEN_USER}
+    password: ${TILEGARDEN_PASSWORD}
+    type: "postgis"
+    table: "street_centerline"
+    key_field: ""
+    geometry_field: "geom"
+- id: pwd_parcels
+  name: pwd_parcels
+  geometry: polygon
+  srs-name: "4326"
+  Datasource:
+    host: ${TILEGARDEN_HOST}
+    dbname: ${TILEGARDEN_DB}
+    user: ${TILEGARDEN_USER}
+    password: ${TILEGARDEN_PASSWORD}
+    type: "postgis"
+    table: "pwd_parcels"
+    key_field: ""
+    geometry_field: "geom"
+- id: pwd_inlets
+  name: pwd_inlets
+  geometry: polygon
+  srs-name: "4326"
+  Datasource:
+    host: ${TILEGARDEN_HOST}
+    dbname: ${TILEGARDEN_DB}
+    user: ${TILEGARDEN_USER}
+    password: ${TILEGARDEN_PASSWORD}
+    type: "postgis"
+    table: "pwd_inlets"
+    key_field: ""
+    geometry_field: "geom"
