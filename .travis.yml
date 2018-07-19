@@ -1,7 +1,36 @@
-language: node_js
+sudo: required
+services:
+ - docker
 git:
   lfs_skip_smudge: true
-before_install: cd src/tiler
+language: node_js
+before_install:
+ - mkdir ~/.aws
+ - echo -e '[claudia]\naws_access_key_id = ${AWS_ACCESS}\naws_secret_access_key = ${AWS_SECRET}' > ~/.aws/credentials
+ - echo 'USER=${PROD_USER}' >> .env
+ - echo 'PROJECT_NAME=${PROJECT_NAME}' >> .env
+ - echo 'PROD_TILEGARDEN_USER=${PROD_TILEGARDEN_USER}' >> .env
+ - echo 'PROD_TILEGARDEN_PASSWORD=${PROD_TILEGARDEN_PASSWORD}' >> .env
+ - echo 'PROD_TILEGARDEN_HOST=${PROD_TILEGARDEN_HOST}' >> .env
+ - echo 'PROD_TILEGARDEN_DB=${PROD_TILEGARDEN_DB}' >> .env
+ - echo 'LAMBDA_TIMEOUT=${LAMBDA_TIMEOUT}' >> .env
+ - echo 'LAMBDA_SUBNETS=${LAMBDA_SUBNETS}' >> .env
+ - echo 'LAMBDA_SECURITY_GROUPS=${LAMBDA_SECURITY_GROUPS}' >> .env
+ - echo 'LAMBDA_REGION=${LAMBDA_REGION}' >> .env
+ - echo 'LAMBDA_MEMORY=${LAMBDA_MEMORY}' >> .env
+ - echo 'AWS_PROFILE=claudia' >> .env
+ - cd src/tiler
 install: yarn install
 before_script: yarn transpile
 script: yarn test
+deploy:
+  - provider: script
+    skip-cleanup: true
+    script: cd ../.. && bash scripts/publish
+    on:
+      branch: master
+  - provider: pages
+    skip-cleanup: true
+    github-token: $GITHUB_TOKEN
+    on:
+      branch: master
