@@ -1,7 +1,7 @@
 language: node_js
 git:
   lfs_skip_smudge: true
-before_install: cd node_lambnik/src/tiler
+before_install: cd src/tiler
 install: yarn install
 before_script: yarn transpile
 script: yarn test
