@@ -1,0 +1,11 @@
+{
+  "lambda": {
+    "role": "tilegarden_demo-mdelsordo-executor",
+    "name": "tilegarden_demo-mdelsordo",
+    "region": "us-east-1"
+  },
+  "api": {
+    "id": "2wmtql1cd6",
+    "module": "bin/api"
+  }
+}

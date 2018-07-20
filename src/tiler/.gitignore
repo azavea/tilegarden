@@ -1,7 +1,3 @@
-# Ignore lambda settings to avoid blocking new users
-claudia.json
-.api-id
-
 # Ignore the folder of transpiled es6
 /bin/
 
