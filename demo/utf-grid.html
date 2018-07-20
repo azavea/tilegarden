@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Tilegarden</title>
+    <title>Tilegarden | UTF Grids</title>
     <!--Bootstrap-->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -15,7 +15,7 @@
     <style>
         #map {
             width: 100%;
-            height: 600px;
+            height: 500px;
         }
     </style>
     <script>
@@ -37,11 +37,17 @@
             //var TILESERVER_PATH = 'https://d28f32z0lbuk2f.cloudfront.net/';
             var TILESERVER_PATH = 'http://localhost:9001/';
 
-            L.tileLayer(TILESERVER_PATH + '/tile/{z}/{x}/{y}.png?layers=pwd_inlets').addTo(map);
-            var grid = L.utfGrid(TILESERVER_PATH + '/grid/{z}/{x}/{y}?layers=pwd_inlets&utfFields=owner,operator', { useJsonP: false })
-            grid.on('click', function gridClick(e) {
+            L.tileLayer(TILESERVER_PATH + '/tile/{z}/{x}/{y}.png?layers=inlets').addTo(map);
+            var grid = L.utfGrid(TILESERVER_PATH + '/grid/{z}/{x}/{y}?layers=inlets&utfFields=owner,operator', { useJsonP: false })
+
+            // keep track of currently active marker
+            //var marker
+            grid.on('mouseover', function gridClick(e) {
                 if (e.data) {
-                    alert('Inlet owned by ' + e.data.owner + ", operated by " + e.data.operator + ".");
+                    L.popup()
+                        .setLatLng(e.latlng)
+                        .setContent("This inlet is owned by " + e.data.owner + " and operated by " + e.data.operator + ".")
+                        .openOn(map)
                 }
             })
             map.addLayer(grid);

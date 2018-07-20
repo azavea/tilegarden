@@ -46,3 +46,133 @@ Layer:
     table: "inlets"
     key_field: ""
     geometry_field: "geom"
+- id: PWD
+  name: PWD
+  geometry: polygon
+  srs: "+proj=longlat +datum=WGS84 +no_defs"
+  Datasource:
+     host: ${TILEGARDEN_HOST}
+     dbname: ${TILEGARDEN_DB}
+     user: ${TILEGARDEN_USER}
+     password: ${TILEGARDEN_PASSWORD}
+     type: "postgis"
+     table: "(select geom,owner,inlettype from inlets where owner = 'PWD') as q"
+     key_field: ""
+     geometry_field: "geom"
+- id: AIRPRT
+  name: AIRPRT
+  geometry: polygon
+  srs: "+proj=longlat +datum=WGS84 +no_defs"
+  Datasource:
+     host: ${TILEGARDEN_HOST}
+     dbname: ${TILEGARDEN_DB}
+     user: ${TILEGARDEN_USER}
+     password: ${TILEGARDEN_PASSWORD}
+     type: "postgis"
+     table: "(select geom,owner,inlettype from inlets where owner = 'AIRPRT') as q"
+     key_field: ""
+     geometry_field: "geom"
+- id: STATE
+  name: STATE
+  geometry: polygon
+  srs: "+proj=longlat +datum=WGS84 +no_defs"
+  Datasource:
+     host: ${TILEGARDEN_HOST}
+     dbname: ${TILEGARDEN_DB}
+     user: ${TILEGARDEN_USER}
+     password: ${TILEGARDEN_PASSWORD}
+     type: "postgis"
+     table: "(select geom,owner,inlettype from inlets where owner = 'STATE') as q"
+     key_field: ""
+     geometry_field: "geom"
+- id: PARK
+  name: PARK
+  geometry: polygon
+  srs: "+proj=longlat +datum=WGS84 +no_defs"
+  Datasource:
+     host: ${TILEGARDEN_HOST}
+     dbname: ${TILEGARDEN_DB}
+     user: ${TILEGARDEN_USER}
+     password: ${TILEGARDEN_PASSWORD}
+     type: "postgis"
+     table: "(select geom,owner,inlettype from inlets where owner = 'PARK') as q"
+     key_field: ""
+     geometry_field: "geom"
+- id: LM
+  name: LM
+  geometry: polygon
+  srs: "+proj=longlat +datum=WGS84 +no_defs"
+  Datasource:
+     host: ${TILEGARDEN_HOST}
+     dbname: ${TILEGARDEN_DB}
+     user: ${TILEGARDEN_USER}
+     password: ${TILEGARDEN_PASSWORD}
+     type: "postgis"
+     table: "(select geom,owner,inlettype from inlets where owner = 'LM') as q"
+     key_field: ""
+     geometry_field: "geom"
+- id: FEDERAL
+  name: FEDERAL
+  geometry: polygon
+  srs: "+proj=longlat +datum=WGS84 +no_defs"
+  Datasource:
+     host: ${TILEGARDEN_HOST}
+     dbname: ${TILEGARDEN_DB}
+     user: ${TILEGARDEN_USER}
+     password: ${TILEGARDEN_PASSWORD}
+     type: "postgis"
+     table: "(select geom,owner,inlettype from inlets where owner = 'FEDERAL') as q"
+     key_field: ""
+     geometry_field: "geom"
+- id: PRIV
+  name: PRIV
+  geometry: polygon
+  srs: "+proj=longlat +datum=WGS84 +no_defs"
+  Datasource:
+     host: ${TILEGARDEN_HOST}
+     dbname: ${TILEGARDEN_DB}
+     user: ${TILEGARDEN_USER}
+     password: ${TILEGARDEN_PASSWORD}
+     type: "postgis"
+     table: "(select geom,owner,inlettype from inlets where owner = 'PRIV') as q"
+     key_field: ""
+     geometry_field: "geom"
+- id: CHEL
+  name: CHEL
+  geometry: polygon
+  srs: "+proj=longlat +datum=WGS84 +no_defs"
+  Datasource:
+     host: ${TILEGARDEN_HOST}
+     dbname: ${TILEGARDEN_DB}
+     user: ${TILEGARDEN_USER}
+     password: ${TILEGARDEN_PASSWORD}
+     type: "postgis"
+     table: "(select geom,owner,inlettype from inlets where owner = 'CHEL') as q"
+     key_field: ""
+     geometry_field: "geom"
+- id: USNAVY
+  name: USNAVY
+  geometry: polygon
+  srs: "+proj=longlat +datum=WGS84 +no_defs"
+  Datasource:
+     host: ${TILEGARDEN_HOST}
+     dbname: ${TILEGARDEN_DB}
+     user: ${TILEGARDEN_USER}
+     password: ${TILEGARDEN_PASSWORD}
+     type: "postgis"
+     table: "(select geom,owner,inlettype from inlets where owner = 'USNAVY') as q"
+     key_field: ""
+     geometry_field: "geom"
+- id: PRIVPWDMAINT
+  name: PRIVPWDMAINT
+  geometry: polygon
+  srs: "+proj=longlat +datum=WGS84 +no_defs"
+  Datasource:
+     host: ${TILEGARDEN_HOST}
+     dbname: ${TILEGARDEN_DB}
+     user: ${TILEGARDEN_USER}
+     password: ${TILEGARDEN_PASSWORD}
+     type: "postgis"
+     table: "(select geom,owner,inlettype from inlets where owner = 'PRIVPWDMAINT') as q"
+     key_field: ""
+     geometry_field: "geom"

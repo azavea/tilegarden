@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Tilegarden</title>
+    <title>Tilegarden | Raster Tiles</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
@@ -11,7 +11,7 @@
     <style>
         #map {
             width: 100%;
-            height: 600px;
+            height: 500px;
         }
     </style>
     <script>
@@ -33,7 +33,7 @@
             //var TILESERVER_PATH = 'https://d28f32z0lbuk2f.cloudfront.net/';
             var TILESERVER_PATH = 'http://localhost:9001/';
 
-            L.tileLayer(TILESERVER_PATH + '/tile/{z}/{x}/{y}.png?layers=street_centerline').addTo(map);
+            L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?layers=street_centerline').addTo(map);
         });
     </script>
 </head>

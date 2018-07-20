@@ -11,7 +11,7 @@
     <style>
         #map {
             width: 100%;
-            height: 600px;
+            height: 500px;
         }
     </style>
     <script>
@@ -19,7 +19,7 @@
 
         document.addEventListener('DOMContentLoaded', function pageLoaded() {
             var map = L.map('map', {
-                center: [39.96, -75.15], zoom: 12
+                center: [39.96, -75.15], zoom: 11
             });
 
             // add basemap
@@ -28,6 +28,33 @@
                 attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             });
             map.addLayer(basemap)
+
+            // swap this URL for production
+            //var TILESERVER_PATH = 'https://d28f32z0lbuk2f.cloudfront.net/';
+            var TILESERVER_PATH = 'http://localhost:9001/';
+
+            // add filtered layers
+            function newLayer (filters) {
+                return L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?layers=' + filters)
+            }
+
+            // keep track of active layers so
+            var currentSelection;
+            document.getElementById("selector").addEventListener('mouseup', function selectorMouseUp() {
+                // remove old layer
+                map.removeLayer(currentSelection);
+
+                // get new layer names from selector
+                var layerNames = Object.values(this.selectedOptions).map(function(v) {
+                    return v.value;
+                }).join(',');
+
+                currentSelection = newLayer(layerNames)
+                currentSelection.addTo(map)
+            });
+
+            currentSelection = newLayer('PRIV,PARK');
+            map.addLayer(currentSelection);
         });
     </script>
 </head>
@@ -42,7 +69,29 @@
     <div>
         <h2>Filtering</h2>
         <p class="lead">Filtering blurb goes here.</p>
-        <div id="map"/>
+        <div class="row">
+            <div class="col-8" id="map">
+
+            </div>
+            <div class="col">
+                <div class="form-group h-75">
+                    <label for="selector">Filter (by inlet owner)</label>
+                    <select id="selector" class="custom-select h-75" multiple>
+                        <option>AIRPRT</option>
+                        <option>CHEL</option>
+                        <option>FEDERAL</option>
+                        <option>LM</option>
+                        <option selected>PARK</option>
+                        <option selected>PRIV</option>
+                        <option>PRIVPWDMAINT</option>
+                        <option>PWD</option>
+                        <option>STATE</option>
+                        <option>USNAVY</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
 
