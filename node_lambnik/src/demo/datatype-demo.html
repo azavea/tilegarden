@@ -16,14 +16,14 @@
     <div id="map" style="width: 800px; height: 800px"></div>
     <div>
         <form id="layer-selector">
-            <input type="radio" name="layer" id="pwd_inlets" value="pwd_inlets">
-            <label for="pwd_inlets">pwd_inlets (POINT/EPSG:4326)</label>
+            <input type="radio" name="layer" id="inlets" value="inlets">
+            <label for="inlets">inlets (POINT/EPSG:4326)</label>
 
             <input type="radio" name="layer" id="street_centerline" value="street_centerline">
             <label for="street_centerline">street_centerline (MULTILINESTRING/EPSG:2272)</label>
 
             <input type="radio" name="layer" id="pwd_parcels" value="pwd_parcels">
-            <label for="pwd_parcels">pwd_parcels (MULTIPOLYGON/EPSG:4326)</label>
+            <label for="pwd_parcels">pwd_parcels (MULTIPOLYGON/EPSG:2272)</label>
         </form>
     </div>
 </div>
@@ -66,7 +66,7 @@
             }
         }
 
-        const layerNames = ['pwd_inlets', 'pwd_parcels', 'street_centerline']
+        const layerNames = ['inlets', 'pwd_parcels', 'street_centerline']
         const layerKeys = Object.assign({}, ...layerNames.map(function(key) {
             return {[key]: createLayer(key)}
         }))
