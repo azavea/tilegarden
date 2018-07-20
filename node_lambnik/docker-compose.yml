@@ -18,7 +18,7 @@ services:
     working_dir: /home
     volumes:
       - ./data:/home/data
-      - ./scripts/updatedb:/home/updatedb
+      - ./scripts/load_sample_data:/home/load_sample_data
 
   tiler:
     build:
