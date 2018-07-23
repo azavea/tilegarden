@@ -1,10 +1,14 @@
 /**
  * This script uses carto to compile templated MML files
- * to XML that mapnik can understand
+ * to XML that mapnik can understand. This script is only run prior
+ * to deployment, so it makes use of some devDependencies that won't
+ * exist in production. Under no circumstances should this be
+ * run in production (unless you make Carto a regular dependency).
  */
 
 /* eslint-disable no-console */
 
+/* eslint-disable-next-line import/no-extraneous-dependencies */
 import carto from 'carto'
 import path from 'path'
 import mkdirp from 'mkdirp'
