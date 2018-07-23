@@ -4,7 +4,7 @@
 
 import APIBuilder from 'claudia-api-builder'
 
-import { image, grid } from './tiler'
+import { image, grid, vectorTile } from './tiler'
 import messageTile from './util/message-tile'
 
 const IMAGE_RESPONSE = {
@@ -80,6 +80,22 @@ api.get(
                 .catch(e => JSON.stringify(e))
         } catch (e) {
             return JSON.stringify(e)
+        }
+    },
+)
+
+// Get a vector tile for some zxy bounds
+api.get(
+    '/vector/{z}/{x}/{y}',
+    (req) => {
+        try {
+            const { z, x, y } = processCoords(req)
+            const layers = processLayers(req)
+
+            return vectorTile(z, x, y, layers)
+                .catch(e => messageTile(e.toString()))
+        } catch (e) {
+            return messageTile(e.toString())
         }
     },
 )
