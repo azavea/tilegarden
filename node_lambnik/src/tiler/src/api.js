@@ -58,6 +58,7 @@ api.get(
             const layers = processLayers(req)
 
             return image(z, x, y, layers)
+                .catch(e => messageTile(e.toString()))
         } catch (e) {
             return messageTile(e.toString())
         }
@@ -76,6 +77,7 @@ api.get(
             const layers = processLayers(req)
 
             return grid(z, x, y, utfFields, layers)
+                .catch(e => JSON.stringify(e))
         } catch (e) {
             return JSON.stringify(e)
         }
