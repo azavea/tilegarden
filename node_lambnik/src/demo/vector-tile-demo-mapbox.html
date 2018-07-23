@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Datatype Demo</title>
+    <title>Vector Tile Demo</title>
 
     <script src='https://api.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.css' rel='stylesheet' />
@@ -11,30 +11,49 @@
 
 <body>
 <div class="container">
-    <h3>Datatype Demo</h3>
-    <p>Note: this vector tiles only work if your browser supports <code>&lt;canvas&gt;</code> elements.</p>
-
-    <!--<div>-->
-        <!--<form id="layer-selector">-->
-            <!--<input type="radio" name="layer" id="inlets" value="inlets">-->
-            <!--<label for="inlets">inlets (POINT/EPSG:4326)</label>-->
-
-            <!--<input type="radio" name="layer" id="street_centerline" value="street_centerline">-->
-            <!--<label for="street_centerline">street_centerline (MULTILINESTRING/EPSG:2272)</label>-->
-
-            <!--<input type="radio" name="layer" id="pwd_parcels" value="pwd_parcels">-->
-            <!--<label for="pwd_parcels">pwd_parcels (MULTIPOLYGON/EPSG:2272)</label>-->
-        <!--</form>-->
-    <!--</div>-->
+    <h3>Vector Tile Demo</h3>
 </div>
-<div id="map"/>
+<div class="row">
+    <div class="left-column" id="map">
+
+    </div>
+    <div class="right-column">
+        <select id="selector">
+            <option value="inlets">inlets</option>
+            <option value="street_centerline">street_centerline</option>
+            <option value="pwd_parcels">pwd_parcels</option>
+        </select>
+        <div>
+            <textarea id="stylebox"></textarea>
+        </div>
+        <div>
+            <button id="btnChangeStyle">Set Style</button>
+        </div>
+    </div>
+</div>
 <style>
     #map {
-        border: 1px solid rgba(0, 0, 0, 0);
-        border-radius: 6px;
-        display: inline-block;
-        width: 100%;
         height: 500px;
+        padding: 4px;
+    }
+
+    .row {
+        display: flex;
+    }
+
+    .right-column {
+        flex: 34%;
+        height: 100%;
+    }
+
+    .left-column {
+        flex: 66%;
+        height: 100%;
+    }
+
+    #stylebox {
+        width: 100%;
+        height: 200px;
     }
 
     .container {
@@ -53,25 +72,41 @@
             container: 'map',
             style: 'mapbox://styles/mapbox/light-v9',
             center: [ -75.15, 39.96,],
-            zoom: 11,
+            zoom: 13,
         });
 
-        var mapstyle = {
-            pwd_parcels: {
-                'marker-fill': 'black',
-                'marker-width': 1,
-                'marker-allow-overlap': true,
-                'line-color': 'red',
-                'polygon-fill': 'orange',
+        // list of layers
+        var layers = {
+            'pwd_parcels': {
+                id: 'tilegarden',
+                type: 'fill',
+                source: 'tilegarden',
+                'source-layer': 'pwd_parcels',
+                paint: {
+                    'fill-color': 'orange',
+                    'fill-outline-color': 'red',
+                }
             },
             'street_centerline': {
-                'line-color': 'red',
+                id: 'tilegarden',
+                type: 'line',
+                source: 'tilegarden',
+                'source-layer': 'street_centerline',
+                paint: {
+                    'line-color': 'red',
+                    'line-width': 2,
+                }
             },
             'inlets': {
-                'marker-line-color': 'purple',
-                'marker-fill': 'lightblue',
-                'marker-width': 4,
-                'marker-allow-overlap': true,
+                id: 'tilegarden',
+                type: 'circle',
+                source: 'tilegarden',
+                'source-layer': 'inlets',
+                paint: {
+                    'circle-color': 'orange',
+                    'circle-stroke-color': 'red',
+                    'circle-stroke-width': 1
+                }
             }
         }
 
@@ -79,20 +114,8 @@
             // add tileserver
             // un-comment out the path that you want to test
             //var TILESERVER_PATH = 'https://d28f32z0lbuk2f.cloudfront.net/';
-            var TILESERVER_PATH = 'http://localhost:9000/';
+            var TILESERVER_PATH = 'http://localhost:9001/';
 
-            // map.addLayer({
-            //     "id": 'streets',
-            //     "type": "line",
-            //     "source": {
-            //         type: 'vector',
-            //         url: TILESERVER_PATH + 'vector/{z}/{x}/{y}'
-            //     },
-            //     "source-layer": "street-centerline",
-            //     paint: {
-            //         'line-color': 'red',
-            //     }
-            // })
             map.addSource(
                 'tilegarden',
                 {
@@ -100,39 +123,27 @@
                     tiles: [TILESERVER_PATH+'vector/{z}/{x}/{y}']
                 },
             )
-            map.addLayer({
-                id: 'tilegarden',
-                type: 'line',
-                source: 'tilegarden',
-                'source-layer': 'pwd_parcels',
-                paint: {
-                    'line-color': 'red',
-                }
-            })
+            map.addLayer(layers['inlets'])
+            document.getElementById('stylebox').value = JSON.stringify(layers['inlets'].paint)
         })
 
-        // // create map object
-        // var map = L.map('map', {
-        //     center: [39.96, -75.15],
-        //     zoom: 12
-        // });
-        //
-        // // add basemap
-        // var basemap = L.tileLayer('https://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}', {
-        //     maxZoom: 19,
-        //     attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        // });
-        // map.addLayer(basemap)
-        //
+        document.getElementById("selector").addEventListener('change', function selectorChange (e) {
+            var selection = document.getElementById("selector").value;
+            console.log(JSON.stringify(selection))
+            map.removeLayer('tilegarden')
+            map.addLayer(layers[selection])
+            document.getElementById('stylebox').value = JSON.stringify(layers[selection].paint)
+        })
 
-
-        //
-        // var layer = L.vectorGrid.protobuf(TILESERVER_PATH + "vector/{z}/{x}/{y}", {
-        //     vectorTileLayerStyles: mapstyle,
-        //     rendererFactor: L.canvas.tile,
-        // });
-        // map.addLayer(layer);
-
+        // update styles by looping through properties of json object
+        document.getElementById('btnChangeStyle').addEventListener('click', function changeStyle() {
+            var newStyle = JSON.parse(document.getElementById('stylebox').value);
+            for (var p in newStyle) {
+                if (newStyle.hasOwnProperty(p)) {
+                    map.setPaintProperty('tilegarden', p, newStyle[p])
+                }
+            }
+        });
     });
 </script>
 </body>
