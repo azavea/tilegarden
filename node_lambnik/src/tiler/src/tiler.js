@@ -121,7 +121,7 @@ export const grid = (z, x, y, utfFields, layers) => {
 
 /**
  * Return a promise that resolves to a vector tile of the input
- * coordinates
+ * coordinates, compressed as a gzip
  * @param z
  * @param x
  * @param y
@@ -139,7 +139,12 @@ export const vectorTile = (z, x, y, layers) => {
             })
         }))
         .then(tile => new Promise((resolve, reject) => {
-            tile.getData((err, data) => {
+            const compressionOptions = {
+                compression: 'gzip',
+                level: 9,
+                strategy: 'FILTERED',
+            }
+            tile.getData(compressionOptions, (err, data) => {
                 if (err) reject(err)
                 else resolve(data)
             })

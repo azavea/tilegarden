@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Datatype Demo</title>
+
+    <script src='https://api.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.css' rel='stylesheet' />
+</head>
+
+<body>
+<div class="container">
+    <h3>Datatype Demo</h3>
+    <p>Note: this vector tiles only work if your browser supports <code>&lt;canvas&gt;</code> elements.</p>
+
+    <!--<div>-->
+        <!--<form id="layer-selector">-->
+            <!--<input type="radio" name="layer" id="inlets" value="inlets">-->
+            <!--<label for="inlets">inlets (POINT/EPSG:4326)</label>-->
+
+            <!--<input type="radio" name="layer" id="street_centerline" value="street_centerline">-->
+            <!--<label for="street_centerline">street_centerline (MULTILINESTRING/EPSG:2272)</label>-->
+
+            <!--<input type="radio" name="layer" id="pwd_parcels" value="pwd_parcels">-->
+            <!--<label for="pwd_parcels">pwd_parcels (MULTIPOLYGON/EPSG:2272)</label>-->
+        <!--</form>-->
+    <!--</div>-->
+</div>
+<div id="map"/>
+<style>
+    #map {
+        border: 1px solid rgba(0, 0, 0, 0);
+        border-radius: 6px;
+        display: inline-block;
+        width: 100%;
+        height: 500px;
+    }
+
+    .container {
+        width: 100%;
+        margin-top: 30px;
+        align-content: center;
+        text-align: center;
+    }
+</style>
+<script>
+    "use-strict"
+
+    document.addEventListener('DOMContentLoaded', function onload() {
+        mapboxgl.accessToken = "pk.eyJ1IjoibWRlbHNvcmRvLWF6YXZlYSIsImEiOiJjamp5Z3M5NTcwbHZpM3ZydzAxMXF3bWY5In0.GObbyRg_IX8mONaD98SIjQ"
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/light-v9',
+            center: [ -75.15, 39.96,],
+            zoom: 11,
+        });
+
+        var mapstyle = {
+            pwd_parcels: {
+                'marker-fill': 'black',
+                'marker-width': 1,
+                'marker-allow-overlap': true,
+                'line-color': 'red',
+                'polygon-fill': 'orange',
+            },
+            'street_centerline': {
+                'line-color': 'red',
+            },
+            'inlets': {
+                'marker-line-color': 'purple',
+                'marker-fill': 'lightblue',
+                'marker-width': 4,
+                'marker-allow-overlap': true,
+            }
+        }
+
+        map.on('load', function mapLoaded() {
+            // add tileserver
+            // un-comment out the path that you want to test
+            //var TILESERVER_PATH = 'https://d28f32z0lbuk2f.cloudfront.net/';
+            var TILESERVER_PATH = 'http://localhost:9000/';
+
+            // map.addLayer({
+            //     "id": 'streets',
+            //     "type": "line",
+            //     "source": {
+            //         type: 'vector',
+            //         url: TILESERVER_PATH + 'vector/{z}/{x}/{y}'
+            //     },
+            //     "source-layer": "street-centerline",
+            //     paint: {
+            //         'line-color': 'red',
+            //     }
+            // })
+            map.addSource(
+                'tilegarden',
+                {
+                    type: 'vector',
+                    tiles: [TILESERVER_PATH+'vector/{z}/{x}/{y}']
+                },
+            )
+            map.addLayer({
+                id: 'tilegarden',
+                type: 'line',
+                source: 'tilegarden',
+                'source-layer': 'pwd_parcels',
+                paint: {
+                    'line-color': 'red',
+                }
+            })
+        })
+
+        // // create map object
+        // var map = L.map('map', {
+        //     center: [39.96, -75.15],
+        //     zoom: 12
+        // });
+        //
+        // // add basemap
+        // var basemap = L.tileLayer('https://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}', {
+        //     maxZoom: 19,
+        //     attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        // });
+        // map.addLayer(basemap)
+        //
+
+
+        //
+        // var layer = L.vectorGrid.protobuf(TILESERVER_PATH + "vector/{z}/{x}/{y}", {
+        //     vectorTileLayerStyles: mapstyle,
+        //     rendererFactor: L.canvas.tile,
+        // });
+        // map.addLayer(layer);
+
+    });
+</script>
+</body>
+
+</html>

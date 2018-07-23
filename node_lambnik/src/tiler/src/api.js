@@ -16,6 +16,16 @@ const IMAGE_RESPONSE = {
 
 const HTML_RESPONSE = { success: { contentType: 'text/html' } }
 
+const VECTOR_RESPONSE = {
+    success: {
+        headers: {
+            'Content-Encoding': 'gzip',
+        },
+        contentType: 'application/vnd.mapbox-vector-tile',
+        contentHandling: 'CONVERT_TO_BINARY',
+    },
+}
+
 // Converts a req object to a set of coordinates
 const processCoords = (req) => {
     // Handle url params
@@ -98,6 +108,7 @@ api.get(
             return messageTile(e.toString())
         }
     },
+    VECTOR_RESPONSE,
 )
 
 api.get(
