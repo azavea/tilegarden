@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 # Fetches development data sets from OpenDataPhilly
-if ! [ -f data/STR_Centerline.zip ]; then
-    curl 'https://phila-gisdata.s3.amazonaws.com/ODP/STR_Centerline.zip' -L -o data/STR_Centerline.zip
+if ! [ -f data/street_centerline.zip ]; then
+    curl 'https://phila-gisdata.s3.amazonaws.com/ODP/STR_Centerline.zip' -L -o data/street_centerline.zip
 fi
 
-if ! [ -f data/PWD_Parcels.zip ]; then
-    curl 'http://gis.phila.gov/gisdata/ODP/PWD_Parcels.zip' -L -o data/PWD_Parcels.zip
+if ! [ -f data/pwd_parcels.zip ]; then
+    curl 'http://gis.phila.gov/gisdata/ODP/PWD_Parcels.zip' -L -o data/pwd_parcels.zip
 fi
 
 if ! [ -f data/inlets.zip ]; then
