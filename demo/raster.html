@@ -35,9 +35,13 @@
                 'pwd_parcels': 'PWD stormwater billing parcels. The primary purpose of PWD_PARCEL layer is to calculate parcel-based stormwater charges for PWD customers under the new parcel-based stormwater billing program. | <a href="https://www.opendataphilly.org/dataset/pwd-stormwater-billing-parcels">City of Philadelphia</a>',
             }
 
-            // swap this URL for production
-            //var TILESERVER_PATH = 'https://d28f32z0lbuk2f.cloudfront.net/';
-            var TILESERVER_PATH = 'http://localhost:9001/';
+            // dynamically set path based on host
+            var PROD_PATH = 'https://d3hvvzen5hf4hb.cloudfront.net/';
+            var DEV_PATH = 'http://localhost:9001/';
+            var TILESERVER_PATH;
+            var host = window.location.hostname;
+            if (!host || host === 'localhost') TILESERVER_PATH = DEV_PATH;
+            else TILESERVER_PATH = PROD_PATH;
 
             function makeLayer (layer) {
                 return L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?layers=' + layer);

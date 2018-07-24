@@ -24,6 +24,7 @@
                 center: [ -75.15, 39.96,],
                 zoom: 13,
             });
+
             // list of layers
             var layers = {
                 'pwd_parcels': {
@@ -58,11 +59,16 @@
                     }
                 }
             }
+
+            // dynamically set path based on host
+            var PROD_PATH = 'https://d3hvvzen5hf4hb.cloudfront.net/';
+            var DEV_PATH = 'http://localhost:9001/';
+            var TILESERVER_PATH;
+            var host = window.location.hostname;
+            if (!host || host === 'localhost') TILESERVER_PATH = DEV_PATH;
+            else TILESERVER_PATH = PROD_PATH;
+
             map.on('load', function mapLoaded() {
-                // add tileserver
-                // un-comment out the path that you want to test
-                //var TILESERVER_PATH = 'https://d28f32z0lbuk2f.cloudfront.net/';
-                var TILESERVER_PATH = 'http://localhost:9001/';
                 map.addSource(
                     'tilegarden',
                     {
