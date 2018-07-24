@@ -98,15 +98,10 @@ api.get(
 api.get(
     '/vector/{z}/{x}/{y}',
     (req) => {
-        try {
-            const { z, x, y } = processCoords(req)
-            const layers = processLayers(req)
+        const { z, x, y } = processCoords(req)
+        const layers = processLayers(req)
 
-            return vectorTile(z, x, y, layers)
-                .catch(e => messageTile(e.toString()))
-        } catch (e) {
-            return messageTile(e.toString())
-        }
+        return vectorTile(z, x, y, layers)
     },
     VECTOR_RESPONSE,
 )
