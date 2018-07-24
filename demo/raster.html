@@ -29,11 +29,32 @@
             });
             map.addLayer(basemap);
 
+            var LAYER_DESCS = {
+                'inlets': 'This point layer contains all the wastewater and stormwater inlets in Philadelphia with latitude and longitude coordinates. | <a href="https://www.opendataphilly.org/dataset/water-inlets">City of Philadelphia</a>',
+                'street_centerline': 'Street centerlines. Used citywide as base layer for many purposes/applications. The street centerline is available for reference purposes only and does not represent exact engineering specifiactions. | <a href="https://www.opendataphilly.org/dataset/street-centerlines">City of Philadelphia</a>',
+                'pwd_parcels': 'PWD stormwater billing parcels. The primary purpose of PWD_PARCEL layer is to calculate parcel-based stormwater charges for PWD customers under the new parcel-based stormwater billing program. | <a href="https://www.opendataphilly.org/dataset/pwd-stormwater-billing-parcels">City of Philadelphia</a>',
+            }
+
             // swap this URL for production
             //var TILESERVER_PATH = 'https://d28f32z0lbuk2f.cloudfront.net/';
             var TILESERVER_PATH = 'http://localhost:9001/';
 
-            L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?layers=street_centerline').addTo(map);
+            function makeLayer (layer) {
+                return L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?layers=' + layer);
+            }
+
+            var currentLayer;
+            document.getElementById("selector").addEventListener('change', function selectorChange (e) {
+                map.removeLayer(currentLayer);
+                currentLayer = makeLayer(this.value);
+                map.addLayer(currentLayer);
+
+                document.getElementById('dataDesc').innerHTML = LAYER_DESCS[this.value];
+            })
+
+            currentLayer = makeLayer('inlets');
+            map.addLayer(currentLayer);
+            document.getElementById('dataDesc').innerHTML = LAYER_DESCS['inlets'];
         });
     </script>
 </head>
@@ -46,9 +67,33 @@
         </ol>
     </nav>
     <div>
-        <h2>Raster Tiles</h2>
-        <p class="lead">Raster blurb goes here.</p>
-        <div id="map"/>
+        <h2 class="display-4">Raster Tiles</h2>
+        <p class="lead">
+            Serve your geospatial data as raster tiles, specified and styled via <a href="https://cartocss.readthedocs.io/en/latest/index.html">CartoCSS</a>.
+        </p>
+        <div class="row">
+            <div class="m-auto">
+                <code id="urlExample">https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png</code>
+            </div>
+            <div class="col-8">
+                <figure class="figure">
+                    <div id="map" class="figure-img"></div>
+                    <figcaption class="figure-caption"  id="dataDesc">
+                        This point layer contains all the wastewater and stormwater inlets in Philadelphia with latitude and longitude coordinates. | <a href="https://www.opendataphilly.org/dataset/water-inlets">City of Philadelphia</a>
+                    </figcaption>
+                </figure>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="selector">Data set:</label>
+                    <select id="selector" class="custom-select">
+                        <option value="inlets">Points</option>
+                        <option value="street_centerline">Lines</option>
+                        <option value="pwd_parcels">Polygons</option>
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </body>
