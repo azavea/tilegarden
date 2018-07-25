@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Vector Tile Demo</title>
+
+    <script src='https://api.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.css' rel='stylesheet' />
+</head>
+
+<body>
+<div class="container">
+    <h3>Vector Tile Demo</h3>
+</div>
+<div class="row">
+    <div class="left-column" id="map">
+
+    </div>
+    <div class="right-column">
+        <select id="selector">
+            <option value="inlets">inlets</option>
+            <option value="street_centerline">street_centerline</option>
+            <option value="pwd_parcels">pwd_parcels</option>
+        </select>
+        <div>
+            <textarea id="stylebox"></textarea>
+        </div>
+        <div>
+            <button id="btnChangeStyle">Set Style</button>
+        </div>
+    </div>
+</div>
+<style>
+    #map {
+        height: 500px;
+        padding: 4px;
+    }
+
+    .row {
+        display: flex;
+    }
+
+    .right-column {
+        flex: 34%;
+        height: 100%;
+    }
+
+    .left-column {
+        flex: 66%;
+        height: 100%;
+    }
+
+    #stylebox {
+        width: 100%;
+        height: 200px;
+    }
+
+    .container {
+        width: 100%;
+        margin-top: 30px;
+        align-content: center;
+        text-align: center;
+    }
+</style>
+<script>
+    "use-strict"
+
+    document.addEventListener('DOMContentLoaded', function onload() {
+        mapboxgl.accessToken = "pk.eyJ1IjoibWRlbHNvcmRvLWF6YXZlYSIsImEiOiJjamp5Z3M5NTcwbHZpM3ZydzAxMXF3bWY5In0.GObbyRg_IX8mONaD98SIjQ"
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/light-v9',
+            center: [ -75.15, 39.96,],
+            zoom: 13,
+        });
+
+        // list of layers
+        var layers = {
+            'pwd_parcels': {
+                id: 'tilegarden',
+                type: 'fill',
+                source: 'tilegarden',
+                'source-layer': 'pwd_parcels',
+                paint: {
+                    'fill-color': 'orange',
+                    'fill-outline-color': 'red',
+                }
+            },
+            'street_centerline': {
+                id: 'tilegarden',
+                type: 'line',
+                source: 'tilegarden',
+                'source-layer': 'street_centerline',
+                paint: {
+                    'line-color': 'red',
+                    'line-width': 2,
+                }
+            },
+            'inlets': {
+                id: 'tilegarden',
+                type: 'circle',
+                source: 'tilegarden',
+                'source-layer': 'inlets',
+                paint: {
+                    'circle-color': 'orange',
+                    'circle-stroke-color': 'red',
+                    'circle-stroke-width': 1
+                }
+            }
+        }
+
+        map.on('load', function mapLoaded() {
+            // add tileserver
+            // un-comment out the path that you want to test
+            //var TILESERVER_PATH = 'https://d28f32z0lbuk2f.cloudfront.net/';
+            var TILESERVER_PATH = 'http://localhost:9001/';
+
+            map.addSource(
+                'tilegarden',
+                {
+                    type: 'vector',
+                    tiles: [TILESERVER_PATH+'vector/{z}/{x}/{y}']
+                },
+            )
+            map.addLayer(layers['inlets'])
+            document.getElementById('stylebox').value = JSON.stringify(layers['inlets'].paint)
+        })
+
+        document.getElementById("selector").addEventListener('change', function selectorChange (e) {
+            var selection = document.getElementById("selector").value;
+            console.log(JSON.stringify(selection))
+            map.removeLayer('tilegarden')
+            map.addLayer(layers[selection])
+            document.getElementById('stylebox').value = JSON.stringify(layers[selection].paint)
+        })
+
+        // update styles by looping through properties of json object
+        document.getElementById('btnChangeStyle').addEventListener('click', function changeStyle() {
+            var newStyle = JSON.parse(document.getElementById('stylebox').value);
+            for (var p in newStyle) {
+                if (newStyle.hasOwnProperty(p)) {
+                    map.setPaintProperty('tilegarden', p, newStyle[p])
+                }
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

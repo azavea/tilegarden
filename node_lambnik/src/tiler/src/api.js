@@ -4,7 +4,7 @@
 
 import APIBuilder from 'claudia-api-builder'
 
-import { image, grid } from './tiler'
+import { image, grid, vectorTile } from './tiler'
 import messageTile from './util/message-tile'
 
 const IMAGE_RESPONSE = {
@@ -15,6 +15,16 @@ const IMAGE_RESPONSE = {
 }
 
 const HTML_RESPONSE = { success: { contentType: 'text/html' } }
+
+const VECTOR_RESPONSE = {
+    success: {
+        headers: {
+            'Content-Encoding': 'gzip',
+        },
+        contentType: 'application/vnd.mapbox-vector-tile',
+        contentHandling: 'CONVERT_TO_BINARY',
+    },
+}
 
 // Converts a req object to a set of coordinates
 const processCoords = (req) => {
@@ -82,6 +92,18 @@ api.get(
             return JSON.stringify(e)
         }
     },
+)
+
+// Get a vector tile for some zxy bounds
+api.get(
+    '/vector/{z}/{x}/{y}',
+    (req) => {
+        const { z, x, y } = processCoords(req)
+        const layers = processLayers(req)
+
+        return vectorTile(z, x, y, layers)
+    },
+    VECTOR_RESPONSE,
 )
 
 api.get(

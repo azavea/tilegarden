@@ -118,3 +118,39 @@ export const grid = (z, x, y, utfFields, layers) => {
             throw e
         })
 }
+
+/**
+ * Return a promise that resolves to a vector tile of the input
+ * coordinates, compressed as a gzip
+ * @param z
+ * @param x
+ * @param y
+ * @param layers
+ * @returns {Promise<mapnik.Buffer>}
+ */
+export const vectorTile = (z, x, y, layers) => {
+    const vt = new mapnik.VectorTile(z, x, y)
+
+    return createMap(z, x, y, layers)
+        .then(map => new Promise((resolve, reject) => {
+            map.render(vt, (err, tile) => {
+                if (err) reject(err)
+                else resolve(tile)
+            })
+        }))
+        .then(tile => new Promise((resolve, reject) => {
+            const compressionOptions = {
+                compression: 'gzip',
+                level: 9,
+                strategy: 'FILTERED',
+            }
+            tile.getData(compressionOptions, (err, data) => {
+                if (err) reject(err)
+                else resolve(data)
+            })
+        }))
+        .catch((e) => {
+            console.log(e)
+            throw e
+        })
+}
