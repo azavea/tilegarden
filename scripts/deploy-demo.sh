@@ -9,11 +9,10 @@ CURRENT_BRANCH=$(git rev-parse HEAD)
 # First we have to clone the entire repo
 REPO_TEMP=$(mktemp -d)
 git clone https://github.com/azavea/tilegarden.git "${REPO_TEMP}"
-cp .env "${REPO_TEMP}"
 cd "${REPO_TEMP}"
 
 # checkout gh-pages and merge
-git checkout gh-pages
+git checkout gh-test
 echo "Merging with ${CURRENT_BRANCH}"
 git merge "${CURRENT_BRANCH}"
 # make sure there wasn't a merge conflict
@@ -23,6 +22,9 @@ if [[ $(git ls-files -u) ]]; then
 	echo "WARNING: Merge conflict! This branch must have its conflicts resolved manually before deployment."
 	exit 0
 fi
+
+# Decrypt .env
+openssl aes-256-cbc -K $encrypted_f456ba71c182_key -iv $encrypted_f456ba71c182_iv -in .env.enc -out .env -d
 
 # push
 PUSH_URI="https://${GITHUB_TOKEN}@github.com/azavea/tilegarden.git"

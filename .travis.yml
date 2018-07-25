@@ -4,24 +4,13 @@ services:
 git:
   lfs_skip_smudge: true
 language: node_js
-before_install:
- - echo 'USER=${PROD_USER}' >> .env
- - echo 'PROJECT_NAME=${PROJECT_NAME}' >> .env
- - echo 'PROD_TILEGARDEN_USER=${PROD_TILEGARDEN_USER}' >> .env
- - echo 'PROD_TILEGARDEN_PASSWORD=${PROD_TILEGARDEN_PASSWORD}' >> .env
- - echo 'PROD_TILEGARDEN_HOST=${PROD_TILEGARDEN_HOST}' >> .env
- - echo 'PROD_TILEGARDEN_DB=${PROD_TILEGARDEN_DB}' >> .env
- - echo 'GITHUB_TOKEN=${GITHUB_TOKEN}' >> .env
- - echo 'AWS_ACCESS_KEY_ID=${AWS_ACCESS}' >> .env
- - echo 'AWS_SECRET_KEY=${AWS_SECRET}' >> .env
- - cd src/tiler
+before_install: cd src/tiler
 install: yarn install
 before_script: yarn transpile
 script: yarn test
 deploy:
   - provider: script
     skip-cleanup: true
-    github-token: $GITHUB_TOKEN
     script: cd ../.. && bash scripts/deploy-demo.sh
     on:
       branch: feature/github-pages
