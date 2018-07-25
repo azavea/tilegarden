@@ -150,6 +150,7 @@ check_postgis_install;
 
 for entry in data/*
 do
+    echo "Attempting to add $entry to database"
     file="${entry##*/}"
     base="${file%%.*}"
     add_table "$entry" "$base"

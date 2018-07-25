@@ -10,8 +10,9 @@
     line-color: red;
 }
 
-#pwd_inlets {
-    marker-fill: black;
+#inlets {
+    marker-line-color: purple;
+    marker-fill: lightblue;
     marker-width: 4;
     marker-allow-overlap: true;
 }
