@@ -39,6 +39,7 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "bunyan": "^1.8.12",
+    "carto": "^1.0.1",
     "claudia": "^5.0.1",
     "claudia-local-api": "https://github.com/mattdelsordo/claudia-local-api.git#feature/binary-response-support",
     "eslint": "^4.19.1",
@@ -50,7 +51,6 @@
   },
   "dependencies": {
     "babel-runtime": "6",
-    "carto": "^1.0.1",
     "claudia-api-builder": "^4.1.0",
     "jimp": "^0.2.28",
     "mapnik": "^3.7.2",
