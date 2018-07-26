@@ -3,6 +3,9 @@ services:
  - docker
 git:
   lfs_skip_smudge: true
+branches:
+  except:
+  - gh-pages
 language: node_js
 before_install: cd src/tiler
 install: yarn install
