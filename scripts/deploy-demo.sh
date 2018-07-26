@@ -12,7 +12,7 @@ git clone https://github.com/azavea/tilegarden.git "${REPO_TEMP}"
 cd "${REPO_TEMP}"
 
 # checkout gh-pages and merge
-git checkout gh-test
+git checkout gh-pages
 echo "Merging with ${CURRENT_BRANCH}"
 git merge "${CURRENT_BRANCH}"
 # make sure there wasn't a merge conflict

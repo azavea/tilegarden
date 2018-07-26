@@ -13,4 +13,4 @@ deploy:
     skip-cleanup: true
     script: cd ../.. && bash scripts/deploy-demo.sh
     on:
-      branch: feature/github-pages
+      branch: develop
