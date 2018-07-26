@@ -36,26 +36,21 @@
         height: 500px;
         padding: 4px;
     }
-
     .row {
         display: flex;
     }
-
     .right-column {
         flex: 34%;
         height: 100%;
     }
-
     .left-column {
         flex: 66%;
         height: 100%;
     }
-
     #stylebox {
         width: 100%;
         height: 200px;
     }
-
     .container {
         width: 100%;
         margin-top: 30px;
@@ -65,7 +60,6 @@
 </style>
 <script>
     "use-strict"
-
     document.addEventListener('DOMContentLoaded', function onload() {
         mapboxgl.accessToken = "pk.eyJ1IjoibWRlbHNvcmRvLWF6YXZlYSIsImEiOiJjamp5Z3M5NTcwbHZpM3ZydzAxMXF3bWY5In0.GObbyRg_IX8mONaD98SIjQ"
         var map = new mapboxgl.Map({
@@ -74,7 +68,6 @@
             center: [ -75.15, 39.96,],
             zoom: 13,
         });
-
         // list of layers
         var layers = {
             'pwd_parcels': {
@@ -109,13 +102,11 @@
                 }
             }
         }
-
         map.on('load', function mapLoaded() {
             // add tileserver
             // un-comment out the path that you want to test
             //var TILESERVER_PATH = 'https://d28f32z0lbuk2f.cloudfront.net/';
             var TILESERVER_PATH = 'http://localhost:9001/';
-
             map.addSource(
                 'tilegarden',
                 {
@@ -126,7 +117,6 @@
             map.addLayer(layers['inlets'])
             document.getElementById('stylebox').value = JSON.stringify(layers['inlets'].paint)
         })
-
         document.getElementById("selector").addEventListener('change', function selectorChange (e) {
             var selection = document.getElementById("selector").value;
             console.log(JSON.stringify(selection))
@@ -134,7 +124,6 @@
             map.addLayer(layers[selection])
             document.getElementById('stylebox').value = JSON.stringify(layers[selection].paint)
         })
-
         // update styles by looping through properties of json object
         document.getElementById('btnChangeStyle').addEventListener('click', function changeStyle() {
             var newStyle = JSON.parse(document.getElementById('stylebox').value);
