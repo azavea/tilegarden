@@ -97,7 +97,4 @@ readDir(IN_DIR)
         })
         return promises
     })
-    .then(promises =>
-        Promise.all(promises)
-            .catch(e => console.error(e))
-    )
+    .then(promises => Promise.all(promises).catch(e => console.error(e)))
