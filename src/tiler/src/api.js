@@ -117,11 +117,14 @@ api.get(
             <body>
                 <h2>Tilegarden Usage:</h2>
                 <ul>
-                    <li>Render tile at zoom/x/y: <code>/tile/{z}/{x}/{y}.png</code></li>
+                    <li>Render raster tile at zoom/x/y: <code>/tile/{z}/{x}/{y}.png</code></li>
+                    <li>Render vector tile, rather than raster: <code>/vector/{z}/{x}/{y}</code></li>
                     <li>UTF grid at zoom/x/y: <code>/grid/{z}/{x}/{y}?utfFields=field1,field2,field...N</code></li>
                     <li>Filter layers: add <code>?layers=layer1,layer2,layer...N</code></li>
                 </ul>
-                <a href="https://github.com/azavea/tilegarden">See on GitHub</a>
+                <a href="https://azavea.github.io/tilegarden">Check out a demo &rArr;</a>
+                </br>
+                <a href="https://github.com/azavea/tilegarden">See on GitHub &rArr;</a>
             </body>
         </html>
     `,
