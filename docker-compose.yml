@@ -16,7 +16,7 @@ services:
       context: ./src/tiler
       dockerfile: Dockerfile
     ports:
-      - "9001:3000"
+      - "3000:3000"
       - "9229:9229"
     environment:
       - DEV_TILEGARDEN_USER=postgres
