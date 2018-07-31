@@ -19,7 +19,7 @@
 
         document.addEventListener('DOMContentLoaded', function pageLoaded() {
             var map = L.map('map', {
-                center: [39.96, -75.15], zoom: 11
+                center: [39.99, -75.15], zoom: 11
             });
 
             // add basemap
@@ -29,14 +29,20 @@
             });
             map.addLayer(basemap)
 
-            // swap this URL for production
-            //var TILESERVER_PATH = 'https://d28f32z0lbuk2f.cloudfront.net/';
-            var TILESERVER_PATH = 'http://localhost:9001/';
+            // dynamically set path based on host
+            var PROD_PATH = 'https://d3hvvzen5hf4hb.cloudfront.net/';
+            var DEV_PATH = 'http://localhost:9001/';
+            var TILESERVER_PATH;
+            var host = window.location.hostname;
+            if (!host || host === 'localhost') TILESERVER_PATH = DEV_PATH;
+            else TILESERVER_PATH = PROD_PATH;
 
             // add filtered layers
             function newLayer (filters) {
                 return L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?layers=' + filters)
             }
+
+            var EXAMPLE_PATH = 'https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?layers='
 
             // keep track of active layers so
             var currentSelection;
@@ -49,8 +55,9 @@
                     return v.value;
                 }).join(',');
 
-                currentSelection = newLayer(layerNames)
-                currentSelection.addTo(map)
+                currentSelection = newLayer(layerNames);
+                currentSelection.addTo(map);
+                document.getElementById('urlExample').innerText = EXAMPLE_PATH + layerNames;
             });
 
             currentSelection = newLayer('PRIV,PARK');
@@ -67,11 +74,19 @@
         </ol>
     </nav>
     <div>
-        <h2>Filtering</h2>
-        <p class="lead">Filtering blurb goes here.</p>
+        <h2 class="display-4">Filtering</h2>
+        <p class="lead">Perform server-side filtering on raster data that can be queried by your users.</p>
         <div class="row">
-            <div class="col-8" id="map">
-
+            <div class="m-auto">
+                <code id="urlExample">https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?layers=PARK,PRIV</code>
+            </div>
+            <div class="col-8">
+                <figure class="figure">
+                    <div id="map" class="figure-img"></div>
+                    <figcaption class="figure-caption"  id="dataDesc">
+                        This point layer contains all the wastewater and stormwater inlets in Philadelphia with latitude and longitude coordinates. | <a href="https://www.opendataphilly.org/dataset/water-inlets">City of Philadelphia</a>
+                    </figcaption>
+                </figure>
             </div>
             <div class="col">
                 <div class="form-group h-75">

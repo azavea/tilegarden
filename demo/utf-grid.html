@@ -33,9 +33,13 @@
             });
             map.addLayer(basemap);
 
-            // swap this URL for production
-            //var TILESERVER_PATH = 'https://d28f32z0lbuk2f.cloudfront.net/';
-            var TILESERVER_PATH = 'http://localhost:9001/';
+            // dynamically set path based on host
+            var PROD_PATH = 'https://d3hvvzen5hf4hb.cloudfront.net/';
+            var DEV_PATH = 'http://localhost:9001/';
+            var TILESERVER_PATH;
+            var host = window.location.hostname;
+            if (!host || host === 'localhost') TILESERVER_PATH = DEV_PATH;
+            else TILESERVER_PATH = PROD_PATH;
 
             L.tileLayer(TILESERVER_PATH + '/tile/{z}/{x}/{y}.png?layers=inlets').addTo(map);
             var grid = L.utfGrid(TILESERVER_PATH + '/grid/{z}/{x}/{y}?layers=inlets&utfFields=owner,operator', { useJsonP: false })
@@ -51,6 +55,12 @@
                 }
             })
             map.addLayer(grid);
+
+
+            // prompt user to mouse over the map, remove mouseover div on mouseover
+            document.getElementById('mousePrompt').addEventListener('mouseover', function onMouseOver() {
+                this.parentNode.removeChild(this);
+            })
         });
     </script>
 </head>
@@ -63,9 +73,23 @@
         </ol>
     </nav>
     <div>
-        <h2>UTF Grids</h2>
-        <p class="lead">UTF grid blurb goes here.</p>
-        <div id="map"/>
+        <h2 class="display-4">UTF Grids</h2>
+        <p class="lead">Serve UTF grids and interact with your data.</p>
+        <div class="row">
+            <div class="m-auto">
+                <code id="urlExample">https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?utfFields=owner,operator</code>
+            </div>
+            <figure class="figure w-100" style="position: relative;">
+                <div id="map" class="figure-image" style="position:absolute;z-index:1;"></div>
+
+                <div class="jumbotron w-100 display-4 text-center" style="position:absolute;z-index:2;height:500px;opacity:0.5;" id="mousePrompt">Mouse over me!</div>
+
+                <figcaption class="figure-caption" id="dataDesc" style="position:absolute;top:500px;z-index:3;">
+                    This point layer contains all the wastewater and stormwater inlets in Philadelphia with latitude and longitude coordinates. | <a href="https://www.opendataphilly.org/dataset/water-inlets">City of Philadelphia</a>
+                </figcaption>
+            </figure>
+        </div>
+
     </div>
 </div>
 
