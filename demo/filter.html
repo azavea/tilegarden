@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Tilegarden</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.2/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.3.2/dist/leaflet.js"></script>
+    <style>
+        #map {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+    <script>
+        "use-strict"
+
+        document.addEventListener('DOMContentLoaded', function pageLoaded() {
+            var map = L.map('map', {
+                center: [39.99, -75.15], zoom: 11
+            });
+
+            // add basemap
+            var basemap = L.tileLayer('https://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}', {
+                maxZoom: 19,
+                attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            });
+            map.addLayer(basemap)
+
+            // dynamically set path based on host
+            var PROD_PATH = 'https://d3hvvzen5hf4hb.cloudfront.net/';
+            var DEV_PATH = 'http://localhost:9001/';
+            var TILESERVER_PATH;
+            var host = window.location.hostname;
+            if (!host || host === 'localhost') TILESERVER_PATH = DEV_PATH;
+            else TILESERVER_PATH = PROD_PATH;
+
+            // add filtered layers
+            function newLayer (filters) {
+                return L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?layers=' + filters)
+            }
+
+            var EXAMPLE_PATH = 'https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?layers='
+
+            // keep track of active layers so
+            var currentSelection;
+            document.getElementById("selector").addEventListener('mouseup', function selectorMouseUp() {
+                // remove old layer
+                map.removeLayer(currentSelection);
+
+                // get new layer names from selector
+                var layerNames = Object.values(this.selectedOptions).map(function(v) {
+                    return v.value;
+                }).join(',');
+
+                currentSelection = newLayer(layerNames);
+                currentSelection.addTo(map);
+                document.getElementById('urlExample').innerText = EXAMPLE_PATH + layerNames;
+            });
+
+            currentSelection = newLayer('PRIV,PARK');
+            map.addLayer(currentSelection);
+        });
+    </script>
+</head>
+<body>
+<div class="container mt-1">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Filteriing</li>
+        </ol>
+    </nav>
+    <div>
+        <h2 class="display-4">Filtering</h2>
+        <p class="lead">Perform server-side filtering on raster data that can be queried by your users.</p>
+        <div class="row">
+            <div class="m-auto">
+                <code id="urlExample">https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?layers=PARK,PRIV</code>
+            </div>
+            <div class="col-8">
+                <figure class="figure">
+                    <div id="map" class="figure-img"></div>
+                    <figcaption class="figure-caption"  id="dataDesc">
+                        This point layer contains all the wastewater and stormwater inlets in Philadelphia with latitude and longitude coordinates. | <a href="https://www.opendataphilly.org/dataset/water-inlets">City of Philadelphia</a>
+                    </figcaption>
+                </figure>
+            </div>
+            <div class="col">
+                <div class="form-group h-75">
+                    <label for="selector">Filter (by inlet owner)</label>
+                    <select id="selector" class="custom-select h-75" multiple>
+                        <option>AIRPRT</option>
+                        <option>CHEL</option>
+                        <option>FEDERAL</option>
+                        <option>LM</option>
+                        <option selected>PARK</option>
+                        <option selected>PRIV</option>
+                        <option>PRIVPWDMAINT</option>
+                        <option>PWD</option>
+                        <option>STATE</option>
+                        <option>USNAVY</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+</html>
