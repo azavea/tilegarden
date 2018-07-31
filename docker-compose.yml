@@ -1,14 +1,5 @@
 version: '3.1'
 services:
-  proxy:
-    build:
-      context: ./src/proxy
-      dockerfile: Dockerfile
-    ports:
-      - "9001:80"
-    links:
-      - tiler:tiler.lambnik.azavea.com
-
   database:
     build:
       context: ./src/database
@@ -25,7 +16,7 @@ services:
       context: ./src/tiler
       dockerfile: Dockerfile
     ports:
-      - "9000:3000"
+      - "9001:3000"
       - "9229:9229"
     environment:
       - DEV_TILEGARDEN_USER=postgres
