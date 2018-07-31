@@ -13,10 +13,10 @@ import carto from 'carto'
 import path from 'path'
 import mkdirp from 'mkdirp'
 
-import { readFile, writeFile } from './fs-promise'
+import { readFile, writeFile, readDir } from './fs-promise'
 
-const IN_FILE = process.argv[2]
-const OUT_FILE = process.argv[3]
+const IN_DIR = process.argv[2]
+const OUT_DIR = process.argv[3]
 
 // Takes in a string and templates in the proper env variables
 /**
@@ -40,12 +40,12 @@ const fillTemplate = (mmlString, env) => {
 
 
 // Loads properly formatted MML into an MML object
-const loadMML = fullMML => new Promise((resolve, reject) => {
+const loadMML = (fullMML, fileName) => new Promise((resolve, reject) => {
     const mml = new carto.MML({})
 
     // Carto CAN read MSSs from file, which is why it
     // needs the directory of the MML file (for relative path calculation)
-    mml.load(path.dirname(IN_FILE), fullMML, (err, data) => {
+    mml.load(path.dirname(fileName), fullMML, (err, data) => {
         if (err) reject(err)
         else resolve(data)
     })
@@ -69,16 +69,35 @@ const mmlToXML = (mml) => {
     throw new Error('Error: could not render MML to XML, no result from render()')
 }
 
-readFile(IN_FILE, 'utf-8')
+const convertFile = filename => readFile(filename, 'utf-8')
     .then(mmlTemplate => fillTemplate(mmlTemplate, process.env))
-    .then(loadMML)
+    .then(fullMML => loadMML(fullMML, filename))
     .then(mmlToXML)
     .then(xml => new Promise((resolve, reject) => {
-        mkdirp(path.dirname(OUT_FILE), (err) => {
+        mkdirp(OUT_DIR, (err) => {
             if (err) reject(err)
             else resolve(xml)
         })
     }))
-    .then(xml => writeFile(OUT_FILE, xml, 'utf-8'))
-    .then(() => console.log(`Successfully wrote ${IN_FILE} to ${OUT_FILE}`))
-    .catch(e => console.error(e))
+    .then((xml) => {
+        const newFileName = `${OUT_DIR}${path.basename(filename, '.mml')}.xml`
+        return writeFile(newFileName, xml, 'utf-8')
+    })
+    .then(newFileName => console.log(`\t${IN_DIR}${filename} => ${newFileName}`))
+
+// loop over contents of directory to build pipeline of xml to transpile
+console.log(`Transpiling .mml files in ${IN_DIR} to ${OUT_DIR}...`)
+readDir(IN_DIR)
+    .then((files) => {
+        const promises = []
+        files.forEach((fileName) => {
+            if (path.extname(fileName) === '.mml') {
+                promises.push(convertFile(`${IN_DIR}${fileName}`))
+            }
+        })
+        return promises
+    })
+    .then(promises =>
+        Promise.all(promises)
+            .catch(e => console.error(e))
+    )
