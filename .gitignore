@@ -63,3 +63,6 @@ typings/
 # added by filesystem
 .directory
 .idea
+
+# configs, if generated
+transpiled-configs/
