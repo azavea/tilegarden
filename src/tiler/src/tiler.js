@@ -7,6 +7,7 @@
 
 import mapnik from 'mapnik'
 import path from 'path'
+import aws from 'aws-sdk'
 
 import { readFile } from './util/fs-promise'
 import filterVisibleLayers from './util/layer-filter'
@@ -19,21 +20,49 @@ const TILE_WIDTH = 256
 mapnik.register_default_input_plugins()
 
 /**
+ * Based off the config options object, search for a config.xml
+ * file and return it as a Promise that evaluates to an XML string.
+ * @param options
+ * @returns {Promise<any>}
+ */
+const fetchMapFile = (options) => {
+    const { s3bucket, config = 'map-config.xml' } = options
+
+    // If an s3 bucket is specified, treat config as an object key and attempt to fetch
+    if (s3bucket) {
+        return new Promise((resolve, reject) => {
+            new aws.S3().getObject({
+                Bucket: s3bucket,
+                Key: config,
+            }, (err, data) => {
+                if (err) reject(err)
+                else resolve(data.Body.toString())
+            })
+        })
+    }
+
+    // otherwise, load from the local directory, making sure to add .xml to the file name
+    const configName = path.join(
+        __dirname,
+        `config/${config}${path.extname(config) !== '.xml' ? '.xml' : ''}`,
+    )
+    return readFile(configName, 'utf-8')
+}
+
+/**
  * Creates a map based on configured datasource and style information
  * @param z
  * @param x
  * @param y
  * @returns {Promise<mapnik.Map>}
  */
-const createMap = (z, x, y, layers, config = 'map-config') => {
+const createMap = (z, x, y, layers, configOptions) => {
     // Create a webmercator map with specified bounds
     const map = new mapnik.Map(TILE_WIDTH, TILE_HEIGHT)
     map.bufferSize = 64
 
-    const configName = path.join(__dirname, `config/${config}.xml`)
-
     // Load map specification from xml string
-    return readFile(configName, 'utf-8')
+    return fetchMapFile(configOptions)
         .then(xml => filterVisibleLayers(xml, layers))
         .then(xml => new Promise((resolve, reject) => {
             map.fromString(xml, (err, result) => {
@@ -67,13 +96,13 @@ const encodeAsPNG = renderedTile => new Promise((resolve, reject) => {
  * @param y
  * @returns {Promise<any>}
  */
-export const image = (z, x, y, layers, config) => {
+export const image = (z, x, y, layers, configOptions) => {
     // create mapnik image
     const img = new mapnik.Image(TILE_WIDTH, TILE_HEIGHT)
 
     // render map to image
     // return asynchronous rendering method as a promise
-    return createMap(z, x, y, layers, config)
+    return createMap(z, x, y, layers, configOptions)
         .then(map => new Promise((resolve, reject) => {
             map.render(img, {}, (err, result) => {
                 if (err) reject(err)
@@ -94,10 +123,10 @@ export const image = (z, x, y, layers, config) => {
  * @param y
  * @returns {Promise<any>}
  */
-export const grid = (z, x, y, utfFields, layers, config) => {
+export const grid = (z, x, y, utfFields, layers, configOptions) => {
     const grd = new mapnik.Grid(TILE_WIDTH, TILE_HEIGHT)
 
-    return createMap(z, x, y, layers, config)
+    return createMap(z, x, y, layers, configOptions)
         .then(map => new Promise((resolve, reject) => {
             map.render(grd, {
                 layer: 0,
@@ -130,10 +159,10 @@ export const grid = (z, x, y, utfFields, layers, config) => {
  * @param layers
  * @returns {Promise<mapnik.Buffer>}
  */
-export const vectorTile = (z, x, y, layers, config) => {
+export const vectorTile = (z, x, y, layers, configOptions) => {
     const vt = new mapnik.VectorTile(z, x, y)
 
-    return createMap(z, x, y, layers, config)
+    return createMap(z, x, y, layers, configOptions)
         .then(map => new Promise((resolve, reject) => {
             map.render(vt, (err, tile) => {
                 if (err) reject(err)

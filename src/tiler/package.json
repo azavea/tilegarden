@@ -50,6 +50,7 @@
     "rewire": "^4.0.1"
   },
   "dependencies": {
+    "aws-sdk": "^2.284.1",
     "babel-runtime": "6",
     "claudia-api-builder": "^4.1.0",
     "jimp": "^0.2.28",
