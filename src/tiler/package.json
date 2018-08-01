@@ -23,7 +23,8 @@
     "bin"
   ],
   "scripts": {
-    "build-xml": "babel-node src/util/build-xml.js src/config/ bin/config/",
+    "build-xml": "babel-node -- scripts/build-xml.js",
+    "build-all-xml": "./scripts/build-all-xml.sh src/config bin/config",
     "deploy": "yarn transpile && claudia update ${LAMBDA_TIMEOUT:+--timeout ${LAMBDA_TIMEOUT}} ${LAMBDA_MEMORY:+--memory ${LAMBDA_MEMORY}} ${LAMBDA_SECURITY_GROUPS:+--security-group-ids ${LAMBDA_SECURITY_GROUPS}} ${LAMBDA_SUBNETS:+--subnet-ids ${LAMBDA_SUBNETS}}",
     "deploy-new": "yarn transpile && claudia create --api-module bin/api --name ${PROJECT_NAME} --region ${LAMBDA_REGION} ${LAMBDA_ROLE:+--role ${LAMBDA_ROLE}} ${LAMBDA_TIMEOUT:+--timeout ${LAMBDA_TIMEOUT}} ${LAMBDA_MEMORY:+--memory ${LAMBDA_MEMORY}} ${LAMBDA_SECURITY_GROUPS:+--security-group-ids ${LAMBDA_SECURITY_GROUPS}} ${LAMBDA_SUBNETS:+--subnet-ids ${LAMBDA_SUBNETS}} && yarn parse-id",
     "destroy": "claudia destroy",
@@ -32,7 +33,7 @@
     "local": "yarn transpile && node --inspect=0.0.0.0:9229 node_modules/claudia-local-api/bin/claudia-local-api --api-module bin/api | bunyan -o short",
     "parse-id": "jq -r '.api.id' claudia.json > .api-id",
     "test": "eslint src && jest --coverage",
-    "transpile": "yarn build-xml && babel src -d bin --source-maps inline"
+    "transpile": "yarn build-all-xml && babel src -d bin --source-maps inline"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -55,7 +56,6 @@
     "claudia-api-builder": "^4.1.0",
     "jimp": "^0.2.28",
     "mapnik": "^3.7.2",
-    "mkdirp": "^0.5.1",
     "xml2js": "^0.4.19"
   }
 }
