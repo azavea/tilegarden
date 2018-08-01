@@ -13,7 +13,7 @@ Options:
 function main() {
 	for file in $(echo "${1}/*")
 	do
-		ext="${file##*.}"
+		ext="${file#*.}"
 		if [ "$ext" == "mml" ]; then
 			# get output path
 			filename="${file##*/}"
@@ -23,7 +23,7 @@ function main() {
 			mkdir -p ${2}
 
 			echo "Transpiling ${file} => ${outPath}"
-			yarn --silent build-xml "${file}" "$(< ${file})" > ${outPath}
+			./scripts/build-xml.sh "${file}" "$(< ${file})" > ${outPath}
 		fi
 	done
 }
