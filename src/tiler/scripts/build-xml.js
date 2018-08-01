@@ -11,12 +11,6 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
 import carto from 'carto'
 import path from 'path'
-import mkdirp from 'mkdirp'
-
-import { readFile, writeFile, readDir } from './fs-promise'
-
-const IN_DIR = process.argv[2]
-const OUT_DIR = process.argv[3]
 
 // Takes in a string and templates in the proper env variables
 /**
@@ -26,17 +20,24 @@ const OUT_DIR = process.argv[3]
  * templating library, rather than add new nuances to this
  * implementation.
  */
-const fillTemplate = (mmlString, env) => {
-    const envPrefix = env.NODE_ENV === 'production' ? 'PROD_' : 'DEV_'
+const fillTemplate = (mmlString, env) => new Promise((resolve) => {
+    try {
+        const envPrefix = env.NODE_ENV === 'production' ? 'PROD_' : 'DEV_'
 
-    return mmlString.replace(
-        /\$\{([a-z0-9_]+)\}/gi,
-        (_, envName) => {
-            const varName = `${envPrefix}${envName}`
-            return `"${env[varName]}"`
-        },
-    )
-}
+        const templated = mmlString.replace(
+            /\$\{([a-z0-9_]+)\}/gi,
+            (_, envName) => {
+                const varName = `${envPrefix}${envName}`
+                return `"${env[varName]}"`
+            },
+        )
+
+        resolve(templated)
+    } catch (e) {
+        reject(e)
+    }
+
+})
 
 
 // Loads properly formatted MML into an MML object
@@ -45,6 +46,7 @@ const loadMML = (fullMML, fileName) => new Promise((resolve, reject) => {
 
     // Carto CAN read MSSs from file, which is why it
     // needs the directory of the MML file (for relative path calculation)
+    console.log(fileName)
     mml.load(path.dirname(fileName), fullMML, (err, data) => {
         if (err) reject(err)
         else resolve(data)
@@ -69,32 +71,11 @@ const mmlToXML = (mml) => {
     throw new Error('Error: could not render MML to XML, no result from render()')
 }
 
-const convertFile = filename => readFile(filename, 'utf-8')
-    .then(mmlTemplate => fillTemplate(mmlTemplate, process.env))
-    .then(fullMML => loadMML(fullMML, filename))
-    .then(mmlToXML)
-    .then(xml => new Promise((resolve, reject) => {
-        mkdirp(OUT_DIR, (err) => {
-            if (err) reject(err)
-            else resolve(xml)
-        })
-    }))
-    .then((xml) => {
-        const newFileName = `${OUT_DIR}${path.basename(filename, '.mml')}.xml`
-        return writeFile(newFileName, xml, 'utf-8')
-    })
-    .then(newFileName => console.log(`\t${IN_DIR}${filename} => ${newFileName}`))
+const fileName = process.argv[2]
+const fileContent = process.argv[3]
 
-// loop over contents of directory to build pipeline of xml to transpile
-console.log(`Transpiling .mml files in ${IN_DIR} to ${OUT_DIR}...`)
-readDir(IN_DIR)
-    .then((files) => {
-        const promises = []
-        files.forEach((fileName) => {
-            if (path.extname(fileName) === '.mml') {
-                promises.push(convertFile(`${IN_DIR}${fileName}`))
-            }
-        })
-        return promises
-    })
-    .then(promises => Promise.all(promises).catch(e => console.error(e)))
+fillTemplate(fileContent, process.env)
+    .then(fullMML => loadMML(fullMML, fileName))
+    .then(mmlToXML)
+    .then(xml => console.log(xml))
+    .catch(e => console.error(e))
