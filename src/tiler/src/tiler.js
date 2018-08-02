@@ -25,13 +25,15 @@ mapnik.register_default_input_plugins()
  * @param y
  * @returns {Promise<mapnik.Map>}
  */
-const createMap = (z, x, y, layers) => {
+const createMap = (z, x, y, layers, config = 'map-config') => {
     // Create a webmercator map with specified bounds
     const map = new mapnik.Map(TILE_WIDTH, TILE_HEIGHT)
     map.bufferSize = 64
 
+    const configName = path.join(__dirname, `config/${config}.xml`)
+
     // Load map specification from xml string
-    return readFile(path.join(__dirname, 'map-config.xml'), 'utf-8')
+    return readFile(configName, 'utf-8')
         .then(xml => filterVisibleLayers(xml, layers))
         .then(xml => new Promise((resolve, reject) => {
             map.fromString(xml, (err, result) => {
@@ -65,13 +67,13 @@ const encodeAsPNG = renderedTile => new Promise((resolve, reject) => {
  * @param y
  * @returns {Promise<any>}
  */
-export const image = (z, x, y, layers) => {
+export const image = (z, x, y, layers, config) => {
     // create mapnik image
     const img = new mapnik.Image(TILE_WIDTH, TILE_HEIGHT)
 
     // render map to image
     // return asynchronous rendering method as a promise
-    return createMap(z, x, y, layers)
+    return createMap(z, x, y, layers, config)
         .then(map => new Promise((resolve, reject) => {
             map.render(img, {}, (err, result) => {
                 if (err) reject(err)
@@ -92,10 +94,10 @@ export const image = (z, x, y, layers) => {
  * @param y
  * @returns {Promise<any>}
  */
-export const grid = (z, x, y, utfFields, layers) => {
+export const grid = (z, x, y, utfFields, layers, config) => {
     const grd = new mapnik.Grid(TILE_WIDTH, TILE_HEIGHT)
 
-    return createMap(z, x, y, layers)
+    return createMap(z, x, y, layers, config)
         .then(map => new Promise((resolve, reject) => {
             map.render(grd, {
                 layer: 0,
@@ -128,10 +130,10 @@ export const grid = (z, x, y, utfFields, layers) => {
  * @param layers
  * @returns {Promise<mapnik.Buffer>}
  */
-export const vectorTile = (z, x, y, layers) => {
+export const vectorTile = (z, x, y, layers, config) => {
     const vt = new mapnik.VectorTile(z, x, y)
 
-    return createMap(z, x, y, layers)
+    return createMap(z, x, y, layers, config)
         .then(map => new Promise((resolve, reject) => {
             map.render(vt, (err, tile) => {
                 if (err) reject(err)

@@ -66,8 +66,9 @@ api.get(
         try {
             const { z, x, y } = processCoords(req)
             const layers = processLayers(req)
+            const { config } = req.queryString
 
-            return image(z, x, y, layers)
+            return image(z, x, y, layers, config)
                 .catch(e => messageTile(e.toString()))
         } catch (e) {
             return messageTile(e.toString())
@@ -85,8 +86,9 @@ api.get(
             const { z, x, y } = processCoords(req)
             const utfFields = processUTFQuery(req)
             const layers = processLayers(req)
+            const { config } = req.queryString
 
-            return grid(z, x, y, utfFields, layers)
+            return grid(z, x, y, utfFields, layers, config)
                 .catch(e => JSON.stringify(e))
         } catch (e) {
             return JSON.stringify(e)
@@ -100,8 +102,9 @@ api.get(
     (req) => {
         const { z, x, y } = processCoords(req)
         const layers = processLayers(req)
+        const { config } = req.queryString
 
-        return vectorTile(z, x, y, layers)
+        return vectorTile(z, x, y, layers, config)
     },
     VECTOR_RESPONSE,
 )
