@@ -15,7 +15,6 @@ Options:
     -h, --help          Display this help text
     -i, --in <path>     Relative path to input directory [${in_dir}]
     -o, --out <path>    Relative path to output directory [${out_dir}]
-    -b, --bucket <name> Uploads built XML to the specified S3 bucket, instead of to disk (requires AWS CLI installed on your machine)
     -b, --s3_bucket <name> Uploads XML to the specified S3 bucket, instead of saving to disk (requires AWS CLI installed on your machine, uses credentials from .env)
     -d, --development   Build using development variables, instead of production ones
 "
