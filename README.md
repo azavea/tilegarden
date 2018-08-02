@@ -4,7 +4,7 @@
  * [About](#About)
  * [Usage](#Usage)
    * [Local Development](#local-development)
-     * [Configuration Selection](#configuration-selection)
+     * [Configuration Selection and Storage](#configuration-selection-and-storage)
      * [Map Styles](#map-styles)
      * [Filters](#filters)
      * [UTF Grids](#utf-grids)
@@ -35,9 +35,13 @@ Dependencies: docker, docker-compose
    * (Optional) If you downloaded the example data using `./scripts/update --download`, opening [`index.html`](index.html) (or any of the pages in [`demo/`](demo/)) should show you working demos.
  * The local development environment can be reset by running `./scripts/clean`, which removes all development artifacts including Docker containers and volumes.
  
-#### Configuration Selection
+#### Configuration Selection and Storage
 Multiple map configuration `.mml` files can be included in your project's [`src/tiler/src/config`](src/tiler/src/config) to be dynamically loaded at run-time. Use the query string `config` with the name of your configuration file (without the file extension) to select which file gets loaded when rendering tiles. If no `config` is provided, Tilegarden tries to load the config file named `map-config`. 
  * _Example_: if you have a configuration file named `my-good-map.mml`, you can tell Tilegarden to use it with the endpoint `/tile/{z}/{x}/{y}.png?config=my-good-map`
+ 
+ Configuration files can also be optionally loaded from an AWS S3 bucket, which allows you to add/remove/replace available maps without having to redeploy your entire project. To do so, add `&s3bucket=<bucket-name>` to your query string, and treat the `config` parameter as the desired config file's key. You can use the `build-xml` script to generate config files for this purpose without having to spin up the entire development environment, run `./scripts/build-xml --help` for more info.
+  * Accessing config files stored in S3 requires you to have deployed your Tilegarden instance using an AWS profile with read/write permissions for the desired S3 bucket. These permissions are passed on to the AWS Lambda function.
+  * `build-xml` has a `-b/--bucket <name>` flag which automatically uploads built files to S3 instead of saving them to disk. This requires you to have the AWS CLI installed on your machine, and uses the AWS credentials you've specified in `.env`.
  
 #### Datasources
 Tilegarden supports the use of any geospatial data source that Mapnik/Carto does (shapefile, postgis, pgraster, raster). However, bear in mind that only PostGIS data sources support custom queries, and are thus the only ones that allow you to perform additional filtering on your data (see [Filters](#filters)). Also, attempting to bundle large local data files into your Tilegarden deployment could lead to rejection by AWS Lambda due to size restrictions.
