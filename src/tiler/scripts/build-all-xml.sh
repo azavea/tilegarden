@@ -11,21 +11,21 @@ Options:
 }
 
 function main() {
-	for file in $(echo "${1}/*")
-	do
-		ext="${file#*.}"
-		if [ "$ext" == "mml" ]; then
-			# get output path
-			filename="${file##*/}"
-			base="${filename%%.*}"
-			outPath="${2}/${base}.xml"
+    for file in $(echo "${1}/*")
+    do
+        ext="${file#*.}"
+        if [ "$ext" == "mml" ]; then
+            # get output path
+            filename="${file##*/}"
+            base="${filename%%.*}"
+            outPath="${2}/${base}.xml"
 
-			mkdir -p ${2}
+            mkdir -p ${2}
 
-			echo "Transpiling ${file} => ${outPath}"
-			./scripts/build-xml.sh "${file}" "$(< ${file})" > ${outPath}
-		fi
-	done
+            echo "Transpiling ${file} => ${outPath}"
+            ./scripts/build-xml.sh "${file}" "$(< ${file})" > ${outPath}
+        fi
+    done
 }
 
 if [ "${BASH_SOURCE[0]}" = "${0}" ]

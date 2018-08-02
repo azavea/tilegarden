@@ -2,39 +2,105 @@
 
 set -e
 
+# cli args
+in_dir='src/tiler/src/config/'
+out_dir='transpiled-configs/'
+s3_bucket=''
+node_env='production'
+
 function usage() {
-    echo -n "Usage: $(basename "${0}") [input directory] [output directory]
+    echo -n "Usage: $(basename "${0}") -i <path> -o <path>
 Transpiles a directory's worth of MML+MSS files into Tilegarden-readable XML
 Options:
-    --help      Display this help text
+    -h, --help          Display this help text
+    -i, --in <path>     Relative path to input directory [${in_dir}]
+    -o, --out <path>    Relative path to output directory [${out_dir}]
+    -b, --bucket <name> Uploads built XML to the specified S3 bucket, instead of to disk (requires AWS CLI installed on your machine)
+    -d, --development   Build using development variables, instead of production ones
 "
+    exit 0
 }
 
 function main() {
-	for file in $(echo "${1}/*")
-	do
-		ext="${file##*.}"
-		if [ "$ext" == "mml" ]; then
-			# get output path
-			filename="${file##*/}"
-			base="${filename%%.*}"
-			outPath="${2}/${base}.xml"
+    # if s3_bucket has been set, send all files to a temporary directory
+    # rather than the default out_dir
+    if [ ! -z ${s3_bucket} ]; then
+        out_dir=$(mktemp -d)
+    fi
 
-			mkdir -p "${2}"
+    # transpile files and save in the out_dir directory
+    for file in $(echo "${in_dir}/*")
+    do
+        ext="${file##*.}"
+        if [ "$ext" == "mml" ]; then
+            # get output path
+            filename="${file##*/}"
+            base="${filename%%.*}"
+            outPath="${out_dir}/${base}.xml"
 
-			echo "Transpiling ${file} => ${outPath}"
-			docker-compose run -e NODE_ENV=production -v "$PWD/${1}:/home/tiler/configs" tiler ./scripts/build-xml.sh "/home/tiler/configs/${base}.mml" "$(< ${file})" > ${outPath}
-		fi
-	done
+            mkdir -p "${out_dir}"
+
+            echo "Transpiling ${file} => ${outPath}"
+            docker-compose run -e "NODE_ENV=${node_env}" -v "$PWD/${in_dir}:/home/tiler/configs" tiler ./scripts/build-xml.sh "/home/tiler/configs/${base}.mml" "$(< ${file})" > ${outPath}
+        fi
+    done
+
+    # Upload files to s3 if told to
+    if [ ! -z ${s3_bucket} ]; then
+        if [ ! -x "$(command -v aws)" ]; then
+            echo "ERROR: cannot upload to S3, AWS CLI not installed!"
+            exit 1
+        fi
+
+        s3_url="s3://${s3_bucket}/"
+        echo "Uploading files to ${s3_url}..."
+
+        # Load AWS profile settings from env, if possible
+        if [[ -f .env ]]; then
+            set -a
+            source ./.env
+            set +a
+        fi
+
+        for config in $(echo "${out_dir}/*"); do
+            aws s3 cp "${config}" ${s3_url}
+        done
+
+        echo "Cleaning up ${out_dir}..."
+        rm -rf ${out_dir}
+    fi
 }
 
 if [ "${BASH_SOURCE[0]}" = "${0}" ]
 then
-    if [ "${1:-}" = "--help" ]
-    then
-        usage
-    else
-        main "$1" "$2"
-    fi
-    exit
+# handle command line arguments
+# modified from https://stackoverflow.com/a/7069755
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            -n| --in)
+                shift
+                in_dir=$1
+                shift
+                ;;
+            -o| --out)
+                shift
+                out_dir=$1
+                shift
+                ;;
+            -b| --s3_bucket)
+                shift
+                s3_bucket=$1
+                shift
+                ;;
+            -d| --development)
+                node_env='development'
+                shift
+                ;;
+            -h| --help| *)
+                usage
+                ;;
+        esac
+    done
 fi
+
+main

@@ -6,16 +6,16 @@
 # version of carto installed on the docker container.
 
 function main() {
-	tempFile="${1%%.*}.temp.mml"
+    tempFile="${1%%.*}.temp.mml"
 
-	# fill in environment variables
-	node scripts/template-vars.js "${2}" > ${tempFile}
+    # fill in environment variables
+    node scripts/template-vars.js "${2}" > ${tempFile}
 
-	# compile with carto
-	carto ${tempFile}
+    # compile with carto
+    carto ${tempFile}
 
-	# clean up
-	rm ${tempFile}
+    # clean up
+    rm ${tempFile}
 }
 
 main "${1}" "${2}"
