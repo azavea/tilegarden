@@ -4,6 +4,7 @@
  * [About](#About)
  * [Usage](#Usage)
    * [Local Development](#local-development)
+     * [Configuration Selection](#configuration-selection)
      * [Map Styles](#map-styles)
      * [Filters](#filters)
      * [UTF Grids](#utf-grids)
@@ -33,6 +34,10 @@ Dependencies: docker, docker-compose
  * The local development server exposes a node.js debugger, which can be attached to by Chrome DevTools or your IDE of choice [(see below)](#Debugging).
    * (Optional) If you downloaded the example data using `./scripts/update --download`, opening [`index.html`](index.html) (or any of the pages in [`demo/`](demo/)) should show you working demos.
  * The local development environment can be reset by running `./scripts/clean`, which removes all development artifacts including Docker containers and volumes.
+ 
+#### Configuration Selection
+Multiple map configuration `.mml` files can be included in your project's [`src/tiler/src/config`](src/tiler/src/config) to be dynamically loaded at run-time. Use the query string `config` with the name of your configuration file (without the file extension) to select which file gets loaded when rendering tiles. If no `config` is provided, Tilegarden tries to load the config file named `map-config`. 
+ * _Example_: if you have a configuration file named `my-good-map.mml`, you can tell Tilegarden to use it with the endpoint `/tile/{z}/{x}/{y}.png?config=my-good-map`
  
 #### Datasources
 Tilegarden supports the use of any geospatial data source that Mapnik/Carto does (shapefile, postgis, pgraster, raster). However, bear in mind that only PostGIS data sources support custom queries, and are thus the only ones that allow you to perform additional filtering on your data (see [Filters](#filters)). Also, attempting to bundle large local data files into your Tilegarden deployment could lead to rejection by AWS Lambda due to size restrictions.

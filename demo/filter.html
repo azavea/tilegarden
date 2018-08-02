@@ -42,7 +42,7 @@
 
             // add filtered layers
             function newLayer (filters) {
-                return L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?layers=' + filters)
+                return L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?config=point-example&layers=' + filters)
             }
 
             var EXAMPLE_PATH = 'https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?layers='
