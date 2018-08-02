@@ -35,14 +35,14 @@
 
             // dynamically set path based on host
             var PROD_PATH = 'https://d3hvvzen5hf4hb.cloudfront.net/';
-            var DEV_PATH = 'http://localhost:9001/';
+            var DEV_PATH = 'http://localhost:3000/';
             var TILESERVER_PATH;
             var host = window.location.hostname;
             if (!host || host === 'localhost') TILESERVER_PATH = DEV_PATH;
             else TILESERVER_PATH = PROD_PATH;
 
-            L.tileLayer(TILESERVER_PATH + '/tile/{z}/{x}/{y}.png?layers=inlets').addTo(map);
-            var grid = L.utfGrid(TILESERVER_PATH + '/grid/{z}/{x}/{y}?layers=inlets&utfFields=owner,operator', { useJsonP: false })
+            L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?layers=inlets').addTo(map);
+            var grid = L.utfGrid(TILESERVER_PATH + 'grid/{z}/{x}/{y}?layers=inlets&utfFields=owner,operator', { useJsonP: false })
 
             // keep track of currently active marker
             //var marker
@@ -65,14 +65,39 @@
     </script>
 </head>
 <body>
-<div class="container mt-1">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Utf Grids</li>
-        </ol>
+<div class="container">
+    <nav class="navbar navbar-expand-sm navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="../index.html">Home</a>
+                </li>
+                <li class="nav-item active dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="demoDropdown" role="button" data-toggle="dropdown">
+                        Demo
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="raster.html">Raster Tiles</a>
+                        <a class="dropdown-item" href="vector.html">Vector Tiles</a>
+                        <a class="dropdown-item" href="filter.html">Filtering</a>
+                        <a class="dropdown-item" href="#">UTF Grids</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://github.com/azavea/tilegarden/blob/develop/README.md">Documentation</a>
+                </li>
+            </ul>
+            <a class="navbar-brand" href="https://github.com/azavea/tilegarden/">
+                View on GitHub
+            </a>
+            <a class="github-button" href="https://github.com/azavea/tilegarden/archive/master.zip" data-icon="octicon-cloud-download" data-size="large" aria-label="Download azavea/tilegarden on GitHub">Download</a>
+        </div>
     </nav>
-    <div>
+    <div class="mt-3">
         <h2 class="display-4">UTF Grids</h2>
         <p class="lead">Serve UTF grids and interact with your data.</p>
         <div class="row">
