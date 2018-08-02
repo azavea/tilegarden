@@ -14,4 +14,4 @@ const templated = process.argv[2].replace(
     },
 )
 
-console.log(templated)
+process.stdout.write(templated)
