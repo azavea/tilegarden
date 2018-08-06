@@ -1,21 +1,16 @@
-/**
- * This function converts API coordinates to a [minX, minY, maxX, maxY]
- * bounding box in the target projection.
- */
-
 import mapnik from 'mapnik'
 
 const R2D = 180 / Math.PI
 
 /**
- * Following code was borrowed from
- * https://github.com/mapbox/sphericalmercator/blob/e33a8c8bf852ea7a7c57d1f9001b581fce4b6590/sphericalmercator.js
- *
- * To get the bounding box (lower left and upper right corners in lon/lat)
- * for an arbitrary projection/tile size, the respective corners (in pixel count)
- * are converted first to lon/lat in WGS84 with pxToLonLat(). The corner lon/lats
- * are then reprojected to the target projection and then concatenated together
- * to get the [minX, minY, maxX, maxY] number array that Mapnik needs.
+ * @author https://github.com/mapbox/sphericalmercator/blob/e33a8c8bf852ea7a7c57d1f9001b581fce4b6590/sphericalmercator.js
+ * @description Code borrowed from https://github.com/mapbox/sphericalmercator/blob/e33a8c8bf852ea7a7c57d1f9001b581fce4b6590/sphericalmercator.js
+ * @function pxToLonLat
+ * @private
+ * @param {number} px - Starting pixel size.
+ * @param {number} zoom - Target zoom level.
+ * @param {number} tileSize - Tile size in pixels.
+ * @returns {number[]} Coordinate in the form [lon, lat].
  */
 const pxToLonLat = (px, zoom, tileSize) => {
     const size = tileSize * (2 ** zoom)
@@ -29,12 +24,15 @@ const pxToLonLat = (px, zoom, tileSize) => {
 }
 
 /**
- * @param zoom: zoom level of the tile
- * @param x
- * @param y
- * @param tileSize: in pixels (e.g. 256)
- * @param projection: as an srs
- * @returns [minX, minY, maxX, maxY]
+ * @description To get the bounding box (lower left and upper right corners in lon/lat) for an arbitrary projection/tile size, the respective corners (in pixel count) are converted first to lon/lat in WGS84 with pxToLonLat(). The corner lon/lats are then reprojected to the target projection and then concatenated together to get the [minX, minY, maxX, maxY] number array that Mapnik needs.
+ * @function bbox
+ * @public
+ * @param {number} zoom - Tile zoom level.
+ * @param {number} x - Tile x-coordinate.
+ * @param {number} y - Tile y-coordinate.
+ * @param {number} tileSize - Size of the tile, in pixels.
+ * @param {string} projection - SRS of the target projection of the tile.
+ * @returns {number[]} Bounding box of the form [minX, minY, maxX, maxY].
  */
 export default (zoom, x, y, tileSize, projection) => {
     // convert pixels to wgs84 coordinates

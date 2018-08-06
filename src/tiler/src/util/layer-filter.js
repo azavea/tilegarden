@@ -1,10 +1,3 @@
-/**
- * Specifies a promise that accepts a string of XML and resolves
- * to a string of XML where all layers not in the list of enabled
- * layers have their "status" property set to false, excluding them
- * from rendering.
- */
-
 import xmlParser from 'xml2js'
 
 // Promisified conversion of an xml string to a JSON object
@@ -15,9 +8,7 @@ const parsePromise = xmlString => new Promise((resolve, reject) => {
     })
 })
 
-/**
- * Set the status of each layer NOT in the list to false to disable
- */
+// Set the status of each layer NOT in the list to false to disable
 const filter = (xmlJson, enabledLayers) => {
     xmlJson.Map.Layer.forEach((layer) => {
         /* eslint-disable-next-line no-param-reassign */
@@ -32,6 +23,14 @@ const returnToXml = (xmlJson) => {
     return builder.buildObject(xmlJson)
 }
 
+/**
+ * @function filterVisibleLayers
+ * @public
+ * @description Returns a promise that accepts a string of XML and resolves to a string of XML where all layers not in the list of enabled layers have their "status" property set to false, excluding them from rendering.
+ * @param {string} xmlString - Map config file, as a string.
+ * @param {string[]} enabledLayers - List of layer names to make visible.
+ * @returns {Promise<string>} Promise object that resolves to processed XML, as a string.
+ */
 export default (xmlString, enabledLayers) => {
     // skip entire process if no layers are to be parsed
     if (!enabledLayers || enabledLayers.length < 1) {

@@ -1,7 +1,3 @@
-/**
- * Creates an image with nothing but an error description on it
- * so that users can actually receive error messages
- */
 import Jimp from 'jimp'
 
 const createImage = () => new Promise((resolve, reject) => {
@@ -21,6 +17,14 @@ const toBuffer = image => new Promise((resolve, reject) => {
     })
 })
 
+/**
+ * @description Creates an image with nothing but an error description on it
+ * so that users can visually receive image tile error messages.
+ * @function messageTile
+ * @public
+ * @param {string} message - Message to display.
+ * @returns {Promise<Buffer>} Promise object that resolves to a buffer containing a 256x256 PNG.
+ */
 export default message => createImage()
     .then(tile => Jimp.loadFont(Jimp.FONT_SANS_16_BLACK)
         .then((font) => {

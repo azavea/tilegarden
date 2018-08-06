@@ -1,6 +1,6 @@
 /**
- * Module that handles tile creation and other
- * map drawing functionality
+ * @module tiler
+ * @description Module that handles tile creation and other map drawing functionality.
  */
 
 /* eslint-disable no-console */
@@ -20,10 +20,13 @@ const TILE_WIDTH = 256
 mapnik.register_default_input_plugins()
 
 /**
- * Based off the config options object, search for a config.xml
- * file and return it as a Promise that evaluates to an XML string.
- * @param options
- * @returns {Promise<any>}
+ *@description Use config options to read in a configuration file at the specified location.
+ * @function fetchMapFile
+ * @private
+ * @param {Object} options - Map configuration object.
+ * @param {string} [options.config=map-config.xml] - File name or S3 Key of map configuration file.
+ * @param {string} [options.s3bucket] - Name of the S3 bucket where the configuration file is stored.
+ * @returns {Promise<Buffer>} Promise object that resolves to a Buffer containing a configuration file.
  */
 const fetchMapFile = (options) => {
     const { s3bucket, config = 'map-config.xml' } = options
@@ -50,11 +53,17 @@ const fetchMapFile = (options) => {
 }
 
 /**
- * Creates a map based on configured datasource and style information
- * @param z
- * @param x
- * @param y
- * @returns {Promise<mapnik.Map>}
+ * @description Create a new mapnik Map object of a given map coordinate.
+ * @function createMap
+ * @public
+ * @param {number} z - Map zoom level.
+ * @param {number} x - Map x-coordinate.
+ * @param {number} y - Map y-coordinate.
+ * @param {Array.<string>} layers - List of names of layers to display.
+ * @param {Object} configOptions - Map configuration object.
+ *  * @param {string} [configOptions.config=map-config.xml] - File name or S3 Key of map configuration file.
+ * @param {string} [configOptions.s3bucket] - Name of the S3 bucket where the configuration file is stored.
+ * @returns {Promise<mapnik.Map>} Promise object that resolves to a mapnik Map
  */
 export const createMap = (z, x, y, layers, configOptions) => {
     // Create a webmercator map with specified bounds
@@ -82,11 +91,11 @@ export const createMap = (z, x, y, layers, configOptions) => {
 }
 
 /**
- * Returns a promise that renders a map tile for a given map coordinate
- * @param z
- * @param x
- * @param y
- * @returns {Promise<any>}
+ * @description Render a mapnik Map to an image file
+ * @function image
+ * @public
+ * @param {Promise<mapnik.Map>} map - mapnik Map to render.
+ * @returns {Promise<Buffer>} Promise object that resolves to a buffer containing a PNG-encoded image file.
  */
 export const imageTile = (map) => {
     // create mapnik image
@@ -114,11 +123,12 @@ export const imageTile = (map) => {
 }
 
 /**
- * Return a promise that renders a utf grid for a given map coordinate
- * @param z
- * @param x
- * @param y
- * @returns {Promise<any>}
+ * @description Render a mapnik Map to a UTF grid
+ * @function grid
+ * @public
+ * @param {Promise<mapnik.Map>} map - mapnik Map to render.
+ * @param {string[]} utfFields - List of database fields to expose in the UTF grid.
+ * @returns {Promise<string>} Promise object that resolves to a UTF grid, as a JSON string.
  */
 export const utfGrid = (map, utfFields) => {
     const grid = new mapnik.Grid(TILE_WIDTH, TILE_HEIGHT)
@@ -148,13 +158,14 @@ export const utfGrid = (map, utfFields) => {
 }
 
 /**
- * Return a promise that resolves to a vector tile of the input
- * coordinates, compressed as a gzip
- * @param z
- * @param x
- * @param y
- * @param layers
- * @returns {Promise<mapnik.Buffer>}
+ * @description Render a mapnik Map to a vector tile file
+ * @function vectorTile
+ * @public
+ * @param {Promise<mapnik.Map>} map - mapnik Map to render.
+ * @param {number} z - Map z-coordinate.
+ * @param {number} x - Map x-coordinate.
+ * @param {number} y - Map y-coordinate.
+ * @returns {Promise<Buffer>} Promise object that resolves to a gzipped Mapnik vector tile.
  */
 export const vectorTile = (map, z, x, y) => {
     const vt = new mapnik.VectorTile(z, x, y)
