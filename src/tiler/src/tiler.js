@@ -81,14 +81,6 @@ export const createMap = (z, x, y, layers, configOptions) => {
         })
 }
 
-const encodeAsPNG = renderedTile => new Promise((resolve, reject) => {
-    renderedTile.encode('png', {}, (err, result) => {
-        if (err) reject(err)
-        else resolve(result)
-    })
-})
-
-
 /**
  * Returns a promise that renders a map tile for a given map coordinate
  * @param z
@@ -109,7 +101,12 @@ export const image = (map) => {
                 else resolve(result)
             })
         }))
-        .then(encodeAsPNG)
+        .then(renderedTile => new Promise((resolve, reject) => {
+            renderedTile.encode('png', {}, (err, result) => {
+                if (err) reject(err)
+                else resolve(result)
+            })
+        }))
         .catch((e) => {
             console.log(e)
             throw e
