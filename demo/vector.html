@@ -12,11 +12,7 @@
     <!--Mapbox GL-->
     <script src='https://api.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.css' rel='stylesheet' />
-    <style>
-        #map {
-            height: 500px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
     <script>
         "use-strict"
         document.addEventListener('DOMContentLoaded', function onload() {
@@ -112,7 +108,7 @@
     </script>
 </head>
 <body>
-<div class="container">
+<div class="container content">
     <nav class="navbar navbar-expand-sm navbar-light bg-light">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
             <span class="navbar-toggler-icon"></span>
@@ -180,7 +176,11 @@
     </div>
 </div>
 
-
+<footer>
+    <div class="container text-center">
+        <span class="text-muted">&copy; 2018 Azavea. Built for the <a href="https://fellowship.azavea.com/">2018 Azavea Open Source Fellowship.</a></span>
+    </div>
+</footer>
 
 </body>
 </html>
