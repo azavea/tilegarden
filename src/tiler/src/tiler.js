@@ -96,7 +96,7 @@ export const createMap = (z, x, y, layers, configOptions) => {
  * @param y
  * @returns {Promise<any>}
  */
-export const image = (map) => {
+export const imageTile = (map) => {
     // create mapnik image
     const img = new mapnik.Image(TILE_WIDTH, TILE_HEIGHT)
 
@@ -125,12 +125,12 @@ export const image = (map) => {
  * @param y
  * @returns {Promise<any>}
  */
-export const grid = (map, utfFields) => {
-    const grd = new mapnik.Grid(TILE_WIDTH, TILE_HEIGHT)
+export const utfGrid = (map, utfFields) => {
+    const grid = new mapnik.Grid(TILE_WIDTH, TILE_HEIGHT)
 
     return map
         .then(m => new Promise((resolve, reject) => {
-            m.render(grd, {
+            m.render(grid, {
                 layer: 0,
                 fields: utfFields,
             }, (err, rendered) => {

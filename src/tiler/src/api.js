@@ -4,7 +4,7 @@
 
 import APIBuilder from 'claudia-api-builder'
 
-import { image, grid, vectorTile, createMap } from './tiler'
+import { imageTile, utfGrid, vectorTile, createMap } from './tiler'
 import HTTPError from './util/error-builder'
 
 const IMAGE_HEADERS = {
@@ -93,7 +93,7 @@ api.get(
             const layers = processLayers(req)
             const configOptions = processConfig(req)
 
-            return image(createMap(z, x, y, layers, configOptions))
+            return imageTile(createMap(z, x, y, layers, configOptions))
                 .then(img => new APIBuilder.ApiResponse(img, IMAGE_HEADERS, 200))
                 .catch(handleError)
         } catch (e) {
@@ -114,7 +114,7 @@ api.get(
             const layers = processLayers(req)
             const configOptions = processConfig(req)
 
-            return grid(createMap(z, x, y, layers, configOptions), utfFields)
+            return utfGrid(createMap(z, x, y, layers, configOptions), utfFields)
                 .then(g => new APIBuilder.ApiResponse(g, UTF_HEADERS, 200))
                 .catch(handleError)
         } catch (e) {
