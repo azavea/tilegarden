@@ -4,7 +4,7 @@
 
 import APIBuilder from 'claudia-api-builder'
 
-import { image, grid, vectorTile, createMap } from './tiler'
+import { imageTile, utfGrid, vectorTile, createMap } from './tiler'
 import messageTile from './util/message-tile'
 
 const IMAGE_RESPONSE = {
@@ -74,7 +74,7 @@ api.get(
             const layers = processLayers(req)
             const configOptions = processConfig(req)
 
-            return image(createMap(z, x, y, layers, configOptions))
+            return imageTile(createMap(z, x, y, layers, configOptions))
                 .catch(e => messageTile(e.toString()))
         } catch (e) {
             return messageTile(e.toString())
@@ -94,7 +94,7 @@ api.get(
             const layers = processLayers(req)
             const configOptions = processConfig(req)
 
-            return grid(createMap(z, x, y, layers, configOptions), utfFields)
+            return utfGrid(createMap(z, x, y, layers, configOptions), utfFields)
                 .catch(e => JSON.stringify(e))
         } catch (e) {
             return JSON.stringify(e)
