@@ -5,26 +5,22 @@
 import APIBuilder from 'claudia-api-builder'
 
 import { image, grid, vectorTile } from './tiler'
-import messageTile from './util/message-tile'
+import HTTPError from './util/error-builder'
 
-const IMAGE_RESPONSE = {
-    success: {
-        contentType: 'image/png',
-        contentHandling: 'CONVERT_TO_BINARY',
-    },
+const IMAGE_HEADERS = {
+    'Content-Type': 'image/png',
+}
+
+const UTF_HEADERS = {
+    'Content-Type': 'application/json',
+}
+
+const VECTOR_HEADERS = {
+    'Content-Encoding': 'gzip',
+    'Content-Type': 'application/vnd.mapbox-vector-tile',
 }
 
 const HTML_RESPONSE = { success: { contentType: 'text/html' } }
-
-const VECTOR_RESPONSE = {
-    success: {
-        headers: {
-            'Content-Encoding': 'gzip',
-        },
-        contentType: 'application/vnd.mapbox-vector-tile',
-        contentHandling: 'CONVERT_TO_BINARY',
-    },
-}
 
 // Converts a req object to a set of coordinates
 const processCoords = (req) => {
@@ -38,14 +34,16 @@ const processCoords = (req) => {
 
     // Check type of coords
     /* eslint-disable-next-line no-restricted-globals */
-    if (isNaN(x) || isNaN(y) || isNaN(z)) throw new Error('Coordinate values must be numbers!')
+    if (isNaN(x) || isNaN(y) || isNaN(z)) {
+        throw HTTPError('Error: Coordinate values must be numbers!', 400)
+    }
     return { z, x, y }
 }
 
 // Makes sure utf fields exist and returns them in the correct format
 const processUTFQuery = (req) => {
     const queryString = req.queryString.utfFields
-    if (!queryString) throw new Error('UTF grid missing field query!')
+    if (!queryString) throw HTTPError('Error: UTF grid missing field query!', 400)
     return queryString.split(',')
 }
 
@@ -59,6 +57,17 @@ const processLayers = (req) => {
 // Create new lambda API
 const api = new APIBuilder()
 
+// Handles error by returning an API response object
+const handleError = (e) => {
+    /* eslint-disable-next-line no-console */
+    console.error(e)
+    return new APIBuilder.ApiResponse(
+        { message: e.message || e.toString() },
+        { 'Content-Type': 'application/json' },
+        e.http_code || 500,
+    )
+}
+
 // Get tile for some zxy bounds
 api.get(
     '/tile/{z}/{x}/{y}',
@@ -69,12 +78,13 @@ api.get(
             const { config } = req.queryString
 
             return image(z, x, y, layers, config)
-                .catch(e => messageTile(e.toString()))
+                .then(img => new APIBuilder.ApiResponse(img, IMAGE_HEADERS, 200))
+                .catch(handleError)
         } catch (e) {
-            return messageTile(e.toString())
+            return handleError(e)
         }
     },
-    IMAGE_RESPONSE,
+    { success: { contentHandling: 'CONVERT_TO_BINARY' } },
 )
 
 // Get utf grid for some zxy bounds
@@ -89,9 +99,10 @@ api.get(
             const { config } = req.queryString
 
             return grid(z, x, y, utfFields, layers, config)
-                .catch(e => JSON.stringify(e))
+                .then(g => new APIBuilder.ApiResponse(g, UTF_HEADERS, 200))
+                .catch(handleError)
         } catch (e) {
-            return JSON.stringify(e)
+            return handleError(e)
         }
     },
 )
@@ -100,13 +111,19 @@ api.get(
 api.get(
     '/vector/{z}/{x}/{y}',
     (req) => {
-        const { z, x, y } = processCoords(req)
-        const layers = processLayers(req)
-        const { config } = req.queryString
+        try {
+            const { z, x, y } = processCoords(req)
+            const layers = processLayers(req)
+            const { config } = req.queryString
 
-        return vectorTile(z, x, y, layers, config)
+            return vectorTile(z, x, y, layers, config)
+                .then(vector => new APIBuilder.ApiResponse(vector, VECTOR_HEADERS, 200))
+                .catch(handleError)
+        } catch (e) {
+            return handleError(e)
+        }
     },
-    VECTOR_RESPONSE,
+    { success: { contentHandling: 'CONVERT_TO_BINARY' } },
 )
 
 api.get(

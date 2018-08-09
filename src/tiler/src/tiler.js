@@ -46,10 +46,6 @@ const createMap = (z, x, y, layers, config = 'map-config') => {
                 }
             })
         }))
-        .catch((e) => {
-            console.log(e)
-            throw e
-        })
 }
 
 const encodeAsPNG = renderedTile => new Promise((resolve, reject) => {
@@ -81,10 +77,6 @@ export const image = (z, x, y, layers, config) => {
             })
         }))
         .then(encodeAsPNG)
-        .catch((e) => {
-            console.log(e)
-            throw e
-        })
 }
 
 /**
@@ -115,10 +107,6 @@ export const grid = (z, x, y, utfFields, layers, config) => {
                 else resolve(result)
             })
         }))
-        .catch((e) => {
-            console.log(e)
-            throw e
-        })
 }
 
 /**
@@ -151,8 +139,4 @@ export const vectorTile = (z, x, y, layers, config) => {
                 else resolve(data)
             })
         }))
-        .catch((e) => {
-            console.log(e)
-            throw e
-        })
 }
