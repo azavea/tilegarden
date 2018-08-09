@@ -152,5 +152,16 @@ api.get(
     HTML_RESPONSE,
 )
 
+// 404 response
+// This works in production but breaks the dev server just by existing
+api.get(
+    '/{wildcard+}',
+    () => new APIBuilder.ApiResponse(
+        { message: '404: Invalid path.' },
+        { 'Content-Type': 'application/json' },
+        404,
+    ),
+)
+
 // not es6-ic, but necessary for claudia to find the index
 module.exports = api
