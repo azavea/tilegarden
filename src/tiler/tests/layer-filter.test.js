@@ -48,5 +48,20 @@ describe('filterLayers', () => {
         expect.assertions(1)
         return expect(filterLayers(xml)).resolves.toBe(xml)
     })
+
+    test('Throw error if a layer doesn\'t exist', () => {
+        const layers = ['dog']
+        expect.assertions(1)
+
+        const xml =
+            `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Map>
+  <Layer name="PWD"/>
+  <Layer name="STATE"/>
+  <Layer name="AIRPRT"/>
+</Map>`
+
+        return expect(filterLayers(xml, layers)).rejects.toBeInstanceOf(Error)
+    })
 })
 
