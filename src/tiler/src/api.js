@@ -42,8 +42,14 @@ const processCoords = (req) => {
 
 // Makes sure utf fields exist and returns them in the correct format
 const processUTFQuery = (req) => {
+    if (req.queryString.utf || req.queryString.fields || req.queryString.grid) {
+        /* eslint-disable-next-line quotes */
+        throw HTTPError("Invalid argument, did you mean '&utfFields='?", 400)
+    }
+
     const queryString = req.queryString.utfFields
     if (!queryString) throw HTTPError('Error: UTF grid missing field query!', 400)
+
     return queryString.split(',')
 }
 
@@ -51,6 +57,10 @@ const processUTFQuery = (req) => {
 // or an empty list if there are none
 const processLayers = (req) => {
     if (req.queryString.layers) return req.queryString.layers.split(',')
+    else if (req.queryString.layer || req.queryString.filter || req.queryString.filters) {
+        /* eslint-disable-next-line quotes */
+        throw HTTPError("Invalid argument, did you mean '&layers='?", 400)
+    }
     return []
 }
 
@@ -105,6 +115,16 @@ api.get(
             return handleError(e)
         }
     },
+)
+// Catch this error because I keep doing it myself
+api.get(
+    '/utf/{z}/{x}/{y}',
+    () => new APIBuilder.ApiResponse(
+        /* eslint-disable-next-line quotes */
+        { message: "Invalid path, did you mean '/grid/{z}/{x}/{y}'?" },
+        { 'Content-Type': 'application/json' },
+        404,
+    ),
 )
 
 // Get a vector tile for some zxy bounds
