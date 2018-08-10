@@ -29,7 +29,7 @@
     "destroy": "claudia destroy",
     "dev": "nodemon -e js,mss,json,mml,mss --ignore bin/ --exec yarn local",
     "lint": "eslint src",
-    "local": "yarn transpile && node --inspect=0.0.0.0:9229 node_modules/claudia-local-api/bin/claudia-local-api --abbrev 300 --api-module bin/api | bunyan -o short",
+    "local": "yarn transpile && node --inspect=0.0.0.0:9229 -- node_modules/claudia-local-api/bin/claudia-local-api --abbrev 300 --api-module bin/api | bunyan -o short",
     "parse-id": "jq -r '.api.id' claudia.json > .api-id",
     "test": "eslint src && jest --coverage",
     "transpile": "yarn build-xml && babel src -d bin --source-maps inline"
