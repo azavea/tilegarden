@@ -88,8 +88,8 @@ A deployed instance of Tilegarden consists of several AWS resources:
 
 #### Additional Configuration Options
  * `USER`: Left unspecified so that the code knows who the local user is from inside docker containers. Gets tacked on to the end of the project name at deployment.
- * `LAMBDA_TIMEOUT`: Time (in seconds) before your lambda function times out (maximum 300).
- * `LAMBDA_MEMORY`: Amount of memory (in MB) to allocate per function. Must be a multiple of 64, minimum 128, maximum 3008.
+ * `LAMBDA_TIMEOUT`: Time (in seconds) before your lambda function is automatically cancelled (maximum 300). You'll probably need to modify this value as tile rendering can take longer than AWS's default timeout, depending on the complexity of the data you're rendering.
+ * `LAMBDA_MEMORY`: Amount of memory (in MB) to allocate per function. Must be a multiple of 64, minimum 128, maximum 3008. As with `LAMBDA_TIMEOUT`, more complex data requires more allocated memory, but 128MB should be enough in most scenarios.
 
 #### Required AWS Permissions
 The AWS profile used for deployment must have at least the following policies and permissions:
