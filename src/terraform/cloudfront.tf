@@ -30,7 +30,7 @@ resource "aws_cloudfront_distribution" "tilegarden_test" {
   }
 
 
-
+  price_class = "PriceClass_100"
   enabled = true
   is_ipv6_enabled = true
   comment = "Proxy for ${var.source_name}"

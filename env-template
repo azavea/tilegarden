@@ -19,9 +19,11 @@ LAMBDA_REGION=us-east-1
 # name of role associated with this lambda function
 #LAMBDA_ROLE=role-name
 # Amount of time in seconds your lambdas will wait before timing out
-#LAMBDA_TIMEOUT=5
+# Increase this value if your tile requests are timing out
+#LAMBDA_TIMEOUT=15
 # Memory in MB allocated to your lambda functions
-#LAMBDA_MEMORY=3008
+# Increase this value if you plan on rendering vector tiles
+#LAMBDA_MEMORY=128
 # The following VPC (Virtual Private Cloud) settings should be used if you
 # need your lambdas to be able to connect to other AWS resources,
 # e.g. an RDS instance, and should match the subnets/security groups used
