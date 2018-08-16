@@ -41,7 +41,7 @@ function main() {
             mkdir -p "${out_dir}"
 
             echo "Transpiling ${file} => ${outPath}"
-            docker-compose run -e "NODE_ENV=${node_env}" -v "$PWD/${in_dir}:/home/tiler/configs" tiler ./scripts/build-xml.sh "/home/tiler/configs/${base}.mml" "$(< ${file})" > ${outPath}
+            docker-compose run -e "NODE_ENV=${node_env}" -v "$PWD/${in_dir}:/home/tiler/configs" tiler ./scripts/build-xml.sh "/home/tiler/configs/${base}.mml" > ${outPath}
         fi
     done
 

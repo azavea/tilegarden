@@ -9,7 +9,7 @@ function main() {
     tempFile="${1%%.*}.temp.mml"
 
     # fill in environment variables
-    node scripts/template-vars.js "${2}" > ${tempFile}
+    node scripts/template-vars.js "${1}" > ${tempFile}
 
     # compile with carto
     carto ${tempFile}

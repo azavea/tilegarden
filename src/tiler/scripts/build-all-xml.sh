@@ -23,7 +23,7 @@ function main() {
             mkdir -p ${2}
 
             echo "Transpiling ${file} => ${outPath}"
-            ./scripts/build-xml.sh "${file}" "$(< ${file})" > ${outPath}
+            ./scripts/build-xml.sh "${file}" > ${outPath}
         fi
     done
 }
