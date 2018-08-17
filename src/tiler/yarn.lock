@@ -1199,7 +1199,7 @@ claudia-api-builder@^4.1.0:
 
 "claudia-local-api@https://github.com/mattdelsordo/claudia-local-api.git":
   version "2.0.0"
-  resolved "https://github.com/mattdelsordo/claudia-local-api.git#8f02560c3582ecface1aebdfebdbd1130df7e6ef"
+  resolved "https://github.com/mattdelsordo/claudia-local-api.git#cd3d41804118006aefcbac055633b65d366383af"
   dependencies:
     body-parser "^1.0.0"
     bunyan "^1.0.0"
