@@ -11,28 +11,13 @@ Options:
 "
 }
 
-function main() {
-    if [ "${1}" = "--new" ]
-    then
-        docker-compose run --rm -e NODE_ENV=production tiler yarn deploy-new
-    else
-        docker-compose run --rm -e NODE_ENV=production tiler yarn deploy
-    fi
-
-	# Deploy CloudFront proxy
-	docker-compose run terraform init
-	docker-compose run --rm -e TF_VAR_source_id=$(<src/tiler/.api-id) terraform apply -auto-approve && \
-	echo "Success! Your tiles will be available at the above URL shortly."
-}
-
 if [ "${BASH_SOURCE[0]}" = "${0}" ]
 then
     if [ "${1:-}" = "--help" ]
     then
         usage
     else
-        SERVER_COMMAND=${1:-start}
-        main $SERVER_COMMAND
+        docker-compose run --rm -e NODE_ENV=production tiler ./scripts/deploy.sh "${1}"
     fi
     exit
 fi
