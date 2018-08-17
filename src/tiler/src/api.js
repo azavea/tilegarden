@@ -64,6 +64,12 @@ const processLayers = (req) => {
     return []
 }
 
+// Parses out the configuration specifications
+const processConfig = req => ({
+    s3bucket: req.queryString.s3bucket,
+    config: req.queryString.config,
+})
+
 // Create new lambda API
 const api = new APIBuilder()
 
@@ -85,9 +91,9 @@ api.get(
         try {
             const { z, x, y } = processCoords(req)
             const layers = processLayers(req)
-            const { config } = req.queryString
+            const configOptions = processConfig(req)
 
-            return image(z, x, y, layers, config)
+            return image(z, x, y, layers, configOptions)
                 .then(img => new APIBuilder.ApiResponse(img, IMAGE_HEADERS, 200))
                 .catch(handleError)
         } catch (e) {
@@ -106,9 +112,9 @@ api.get(
             const { z, x, y } = processCoords(req)
             const utfFields = processUTFQuery(req)
             const layers = processLayers(req)
-            const { config } = req.queryString
+            const configOptions = processConfig(req)
 
-            return grid(z, x, y, utfFields, layers, config)
+            return grid(z, x, y, utfFields, layers, configOptions)
                 .then(g => new APIBuilder.ApiResponse(g, UTF_HEADERS, 200))
                 .catch(handleError)
         } catch (e) {
@@ -134,9 +140,9 @@ api.get(
         try {
             const { z, x, y } = processCoords(req)
             const layers = processLayers(req)
-            const { config } = req.queryString
+            const configOptions = processConfig(req)
 
-            return vectorTile(z, x, y, layers, config)
+            return vectorTile(z, x, y, layers, configOptions)
                 .then(vector => new APIBuilder.ApiResponse(vector, VECTOR_HEADERS, 200))
                 .catch(handleError)
         } catch (e) {
