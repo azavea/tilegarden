@@ -66,7 +66,7 @@ const fetchMapFile = (options) => {
  * @param y
  * @returns {Promise<mapnik.Map>}
  */
-const createMap = (z, x, y, layers, configOptions) => {
+export const createMap = (z, x, y, layers, configOptions) => {
     // Create a webmercator map with specified bounds
     const map = new mapnik.Map(TILE_WIDTH, TILE_HEIGHT)
     map.bufferSize = 64
@@ -89,14 +89,6 @@ const createMap = (z, x, y, layers, configOptions) => {
         .catch(postgisFilter)
 }
 
-const encodeAsPNG = renderedTile => new Promise((resolve, reject) => {
-    renderedTile.encode('png', {}, (err, result) => {
-        if (err) reject(err)
-        else resolve(result)
-    })
-})
-
-
 /**
  * Returns a promise that renders a map tile for a given map coordinate
  * @param z
@@ -104,20 +96,25 @@ const encodeAsPNG = renderedTile => new Promise((resolve, reject) => {
  * @param y
  * @returns {Promise<any>}
  */
-export const image = (z, x, y, layers, configOptions) => {
+export const imageTile = (map) => {
     // create mapnik image
     const img = new mapnik.Image(TILE_WIDTH, TILE_HEIGHT)
 
     // render map to image
     // return asynchronous rendering method as a promise
-    return createMap(z, x, y, layers, configOptions)
-        .then(map => new Promise((resolve, reject) => {
-            map.render(img, {}, (err, result) => {
+    return map
+        .then(m => new Promise((resolve, reject) => {
+            m.render(img, {}, (err, result) => {
                 if (err) reject(err)
                 else resolve(result)
             })
         }))
-        .then(encodeAsPNG)
+        .then(renderedTile => new Promise((resolve, reject) => {
+            renderedTile.encode('png', {}, (err, result) => {
+                if (err) reject(err)
+                else resolve(result)
+            })
+        }))
         .catch(postgisFilter)
 }
 
@@ -128,12 +125,12 @@ export const image = (z, x, y, layers, configOptions) => {
  * @param y
  * @returns {Promise<any>}
  */
-export const grid = (z, x, y, utfFields, layers, configOptions) => {
-    const grd = new mapnik.Grid(TILE_WIDTH, TILE_HEIGHT)
+export const utfGrid = (map, utfFields) => {
+    const grid = new mapnik.Grid(TILE_WIDTH, TILE_HEIGHT)
 
-    return createMap(z, x, y, layers, configOptions)
-        .then(map => new Promise((resolve, reject) => {
-            map.render(grd, {
+    return map
+        .then(m => new Promise((resolve, reject) => {
+            m.render(grid, {
                 layer: 0,
                 fields: utfFields,
             }, (err, rendered) => {
@@ -161,12 +158,12 @@ export const grid = (z, x, y, utfFields, layers, configOptions) => {
  * @param layers
  * @returns {Promise<mapnik.Buffer>}
  */
-export const vectorTile = (z, x, y, layers, configOptions) => {
+export const vectorTile = (map, z, x, y) => {
     const vt = new mapnik.VectorTile(z, x, y)
 
-    return createMap(z, x, y, layers, configOptions)
-        .then(map => new Promise((resolve, reject) => {
-            map.render(vt, (err, tile) => {
+    return map
+        .then(m => new Promise((resolve, reject) => {
+            m.render(vt, (err, tile) => {
                 if (err) reject(err)
                 else resolve(tile)
             })
