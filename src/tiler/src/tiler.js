@@ -11,12 +11,22 @@ import path from 'path'
 import { readFile } from './util/fs-promise'
 import filterVisibleLayers from './util/layer-filter'
 import bbox from './util/bounding-box'
+import HTTPError from './util/error-builder'
 
 const TILE_HEIGHT = 256
 const TILE_WIDTH = 256
 
 // Register plugins
 mapnik.register_default_input_plugins()
+
+// If there's a problem with the database, the details of that shouldn't be exposed to the user.
+const postgisFilter = (e) => {
+    console.error(e)
+    if (e.toString().indexOf('Postgis Plugin') > -1) {
+        throw HTTPError('Postgis Error', 500)
+    }
+    throw e
+}
 
 /**
  * Creates a map based on configured datasource and style information
@@ -37,8 +47,9 @@ const createMap = (z, x, y, layers, config = 'map-config') => {
         .then(xml => filterVisibleLayers(xml, layers))
         .then(xml => new Promise((resolve, reject) => {
             map.fromString(xml, (err, result) => {
-                if (err) reject(err)
-                else {
+                if (err) {
+                    reject(err)
+                } else {
                     /* eslint-disable-next-line no-param-reassign */
                     result.extent = bbox(z, x, y, TILE_HEIGHT, result.srs)
 
@@ -46,10 +57,7 @@ const createMap = (z, x, y, layers, config = 'map-config') => {
                 }
             })
         }))
-        .catch((e) => {
-            console.log(e)
-            throw e
-        })
+        .catch(postgisFilter)
 }
 
 const encodeAsPNG = renderedTile => new Promise((resolve, reject) => {
@@ -81,10 +89,7 @@ export const image = (z, x, y, layers, config) => {
             })
         }))
         .then(encodeAsPNG)
-        .catch((e) => {
-            console.log(e)
-            throw e
-        })
+        .catch(postgisFilter)
 }
 
 /**
@@ -115,10 +120,7 @@ export const grid = (z, x, y, utfFields, layers, config) => {
                 else resolve(result)
             })
         }))
-        .catch((e) => {
-            console.log(e)
-            throw e
-        })
+        .catch(postgisFilter)
 }
 
 /**
@@ -151,8 +153,5 @@ export const vectorTile = (z, x, y, layers, config) => {
                 else resolve(data)
             })
         }))
-        .catch((e) => {
-            console.log(e)
-            throw e
-        })
+        .catch(postgisFilter)
 }

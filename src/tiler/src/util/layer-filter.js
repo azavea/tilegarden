@@ -7,6 +7,8 @@
 
 import xmlParser from 'xml2js'
 
+import HTTPError from './error-builder'
+
 // Promisified conversion of an xml string to a JSON object
 const parsePromise = xmlString => new Promise((resolve, reject) => {
     xmlParser.parseString(xmlString, (err, result) => {
@@ -19,6 +21,13 @@ const parsePromise = xmlString => new Promise((resolve, reject) => {
  * Set the status of each layer NOT in the list to false to disable
  */
 const filter = (xmlJson, enabledLayers) => {
+    const dne = enabledLayers.filter(a =>
+        xmlJson.Map.Layer.filter(b => b.$.name === a).length === 0)
+
+    if (dne.length > 0) {
+        throw HTTPError(`No layer(s) found with the name(s) '${dne.join(', ')}'.`, 400)
+    }
+
     xmlJson.Map.Layer.forEach((layer) => {
         /* eslint-disable-next-line no-param-reassign */
         if (!enabledLayers.includes(layer.$.name)) layer.$.status = 'false'
