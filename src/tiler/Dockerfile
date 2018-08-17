@@ -2,7 +2,14 @@ FROM node:8.10-slim
 
 # Install git for git dependencies
 RUN apt-get update -y
-RUN apt-get install git jq -y
+RUN apt-get install git jq unzip -y
+
+# Install terraform for deployment
+RUN wget https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip && \
+unzip terraform_0.11.8_linux_amd64.zip && \
+mv terraform /usr/local/bin/
+
+# Install carto from npm
 RUN yarn global add carto
 
 # Copy files needed for installing packages first

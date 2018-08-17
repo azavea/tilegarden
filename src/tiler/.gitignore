@@ -8,3 +8,7 @@ claudia.json
 #Ignore coverage data from jest
 /coverage/
 
+# terraform config files
+.terraform
+terraform.tfstate*
+
