@@ -1,0 +1,15 @@
+# Ignore lambda settings to avoid blocking new users
+claudia.json
+.api-id
+
+# Ignore the folder of transpiled es6
+/bin/
+
+#Ignore coverage data from jest
+/coverage/
+
+# terraform config files
+.terraform
+terraform.tfstate*
+
+yarn-error.log
