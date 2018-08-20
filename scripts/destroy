@@ -10,37 +10,13 @@ Options:
 "
 }
 
-function main() {
-    echo "WARNING: you are about to destroy all your deployed resources!"
-    printf "That includes:\n - Associated AWS Lambda functions\n - Associated API Gateways\n - Associated IAM roles (if automatically generated)\n - Associated CloudFront distributions\n"
-    read -p "If this is what you want, type 'yes' to continue: " -r
-    echo
-    if [[ $REPLY =~ ^[yY][eE][sS]$ ]]
-    then
-
-        # Destroy deployed resources
-        # If any part of this fails, the parts that didn't fail
-        # remain destroyed, so it's best to just carry on and
-        # follow through.
-        docker-compose run tiler yarn destroy || true
-        docker-compose run -e TF_VAR_source_id=$(<src/tiler/.api-id) terraform destroy -auto-approve
-
-        # Remove local config files
-        docker-compose run tiler rm claudia.json .api-id
-        docker-compose run --entrypoint rm terraform -rf .terraform terraform.tfstate terraform.tfstate.backup
-
-    else
-        echo "Aborting destroy"
-    fi
-}
-
 if [ "${BASH_SOURCE[0]}" = "${0}" ]
 then
     if [ "${1:-}" = "--help" ]
     then
         usage
     else
-        main
+        docker-compose run tiler destroy
     fi
     exit
 fi

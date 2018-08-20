@@ -14,6 +14,6 @@ script: yarn test
 deploy:
   - provider: script
     skip-cleanup: true
-    script: cd ../.. && bash scripts/deploy-demo.sh
+    script: cd ../.. && bash .travis/deploy-demo.sh
     on:
       branch: develop

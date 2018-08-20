@@ -12,3 +12,4 @@ claudia.json
 .terraform
 terraform.tfstate*
 
+yarn-error.log

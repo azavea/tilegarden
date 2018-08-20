@@ -1,4 +1,0 @@
-# terraform config files
-.terraform
-terraform.tfstate*
-
