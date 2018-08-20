@@ -1,0 +1,50 @@
+#!/bin/bash
+
+set -e
+
+function usage() {
+    echo -n "Usage: $(basename "${0}")
+Removes all published resources from AWS
+Options:
+    --help      Display this help text
+"
+}
+
+function main() {
+    echo "WARNING: you are about to destroy all your deployed resources!"
+    printf "That includes:\n - Associated AWS Lambda functions\n - Associated API Gateways\n - Associated IAM roles (if automatically generated)\n - Associated CloudFront distributions\n"
+    read -p "If this is what you want, type 'yes' to continue: " -r
+    echo
+    if [[ $REPLY =~ ^[yY][eE][sS]$ ]]
+    then
+
+        # Destroy deployed resources
+        # If any part of this fails, the parts that didn't fail
+        # remain destroyed, so it's best to just carry on and
+        # follow through.
+
+        # Destroy terraform first because claudia will delete it's own json file
+        TF_VAR_source_id=$(jq -r '.api.id' claudia.json) \
+		TF_VAR_region=${LAMBDA_REGION} \
+		TF_VAR_source_name=${PROJECT_NAME} \
+		terraform destroy -auto-approve
+
+		yarn destroy
+
+		rm -rf claudia.json .terraform terraform.tfstate terraform.tfstate.backup
+
+    else
+        echo "Aborting destroy"
+    fi
+}
+
+if [ "${BASH_SOURCE[0]}" = "${0}" ]
+then
+    if [ "${1:-}" = "--help" ]
+    then
+        usage
+    else
+        main
+    fi
+    exit
+fi
