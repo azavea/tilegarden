@@ -6,7 +6,6 @@ set -e
 in_dir='/home/tiler/config/'
 out_dir='/home/tiler/bin/config/'
 s3_bucket=''
-node_env='production'
 
 function usage() {
     echo -n "Usage: $(basename "${0}")
@@ -15,16 +14,14 @@ Transpiles a directory's worth of MML+MSS files into Tilegarden-readable XML
 Options:
     -h, --help          Display this help text
     -b, --s3_bucket <name> Uploads XML to the specified S3 bucket, instead of saving to disk (requires AWS CLI installed on your machine, uses credentials from .env)
-    -d, --development   Build using development variables, instead of production ones
-    -e, --environment   Variably specify development/production
+    -e, --environment   Variably specify development/production [development|production]
+    -d, --development   Template variables as development versions.
+    -p, --production	Template variables as production versions.
 "
     exit 0
 }
 
 function main() {
-	# set environment variable to keep track of what variables to template
-	export NODE_ENV="${node_env}"
-
     # if s3_bucket has been set, send all files to a temporary directory
     # rather than the default out_dir
     if [ ! -z ${s3_bucket} ]; then
@@ -86,13 +83,16 @@ then
                 shift
                 ;;
             -d| --development)
+            	export NODE_ENV="development"
             	shift
-                node_env='development'
-                shift
-                ;;
+            	;;
+            -p| --production)
+            	export NODE_ENV="production"
+            	shift
+            	;;
             -e| --environment)
             	shift
-                node_env=$1
+                export NODE_ENV=$1
                 shift
                 ;;
             -h| --help| *)

@@ -6,7 +6,7 @@ set -e
 in_dir='src/tiler/config/'
 out_dir='transpiled-configs/'
 s3_bucket=''
-node_env='production'
+nenv='production'
 
 function usage() {
     echo -n "Usage: $(basename "${0}") -i <path> -o <path>
@@ -41,7 +41,7 @@ function main() {
             mkdir -p "${out_dir}"
 
             echo "Transpiling ${file} => ${outPath}"
-            docker-compose run -e "NODE_ENV=${node_env}" -v "$PWD/${in_dir}:/home/tiler/configs" tiler ./scripts/build-one-xml.sh "/home/tiler/configs/${base}.mml" > ${outPath}
+            docker-compose run -e "NODE_ENV=${nenv}" -v "$PWD/${in_dir}:/home/tiler/configs" tiler ./scripts/build-one-xml.sh "/home/tiler/configs/${base}.mml" > ${outPath}
         fi
     done
 
@@ -93,7 +93,7 @@ then
                 shift
                 ;;
             -d| --development)
-                node_env='development'
+                nenv='development'
                 shift
                 ;;
             -h| --help| *)
