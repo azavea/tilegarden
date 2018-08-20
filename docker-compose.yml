@@ -24,6 +24,7 @@ services:
       - DEV_TILEGARDEN_DB=postgres
       - DEV_TILEGARDEN_HOST=database.lambnik.azavea.com
       - PROJECT_NAME=${PROJECT_NAME}-${USER}
+      - NODE_ENV=development
     env_file: .env
     links:
       - database:database.lambnik.azavea.com

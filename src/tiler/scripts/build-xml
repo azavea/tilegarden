@@ -3,25 +3,28 @@
 set -e
 
 # cli args
-in_dir='src/tiler/config/'
-out_dir='transpiled-configs/'
+in_dir='/home/tiler/config/'
+out_dir='/home/tiler/bin/config/'
 s3_bucket=''
 node_env='production'
 
 function usage() {
-    echo -n "Usage: $(basename "${0}") -i <path> -o <path>
+    echo -n "Usage: $(basename "${0}")
 Transpiles a directory's worth of MML+MSS files into Tilegarden-readable XML
+	!! Mount input directory to /home/tiler/config/ and output directory to /home/tiler/bin/config/ to build from external config files/build to external XML files.
 Options:
     -h, --help          Display this help text
-    -i, --in <path>     Relative path to input directory [${in_dir}]
-    -o, --out <path>    Relative path to output directory [${out_dir}]
     -b, --s3_bucket <name> Uploads XML to the specified S3 bucket, instead of saving to disk (requires AWS CLI installed on your machine, uses credentials from .env)
     -d, --development   Build using development variables, instead of production ones
+    -e, --environment   Variably specify development/production
 "
     exit 0
 }
 
 function main() {
+	# set environment variable to keep track of what variables to template
+	export NODE_ENV="${node_env}"
+
     # if s3_bucket has been set, send all files to a temporary directory
     # rather than the default out_dir
     if [ ! -z ${s3_bucket} ]; then
@@ -41,7 +44,7 @@ function main() {
             mkdir -p "${out_dir}"
 
             echo "Transpiling ${file} => ${outPath}"
-            docker-compose run -e "NODE_ENV=${node_env}" -v "$PWD/${in_dir}:/home/tiler/configs" tiler ./scripts/build-one-xml.sh "/home/tiler/configs/${base}.mml" > ${outPath}
+            ./scripts/build-one-xml.sh "${in_dir}${base}.mml" > ${outPath}
         fi
     done
 
@@ -77,23 +80,19 @@ then
 # modified from https://stackoverflow.com/a/7069755
     while [ $# -gt 0 ]; do
         case "$1" in
-            -n| --in)
-                shift
-                in_dir=$1
-                shift
-                ;;
-            -o| --out)
-                shift
-                out_dir=$1
-                shift
-                ;;
             -b| --s3_bucket)
                 shift
                 s3_bucket=$1
                 shift
                 ;;
             -d| --development)
+            	shift
                 node_env='development'
+                shift
+                ;;
+            -e| --environment)
+            	shift
+                node_env=$1
                 shift
                 ;;
             -h| --help| *)

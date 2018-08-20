@@ -17,7 +17,7 @@ then
     then
         usage
     else
-        docker-compose run --rm -e NODE_ENV=production tiler ./scripts/deploy.sh "${1}"
+        docker-compose run --rm -e NODE_ENV=production tiler deploy "${1}"
     fi
     exit
 fi

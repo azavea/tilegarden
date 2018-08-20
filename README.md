@@ -26,7 +26,7 @@ Dependencies: docker, docker-compose
    * Add your geospatial data to the `data/` directory. .zipped shapefiles and gzipped SQL dumps will be loaded in to the development database automatically.
    * Make sure the name of the file matches the name of the SQL table that contains the data.
  * Configure your map:
-   * Open the file [`src/tiler/src/config/map-config.mml`](src/tiler/src/config/map-config.mml). This is where you specify your map settings. [A full specification for Carto's .mml format can be found here.](https://cartocss.readthedocs.io/en/latest/mml.html)
+   * Open the file [`src/tiler/src/config/map-config.mml`](src/tiler/config/map-config.mml). This is where you specify your map settings. [A full specification for Carto's .mml format can be found here.](https://cartocss.readthedocs.io/en/latest/mml.html)
    * Of particular note is the “Layer” property, which specifies the layers of your map (as an array). Odds are you won't have to change the target srs (at the top of the file), but make sure that the srs of each layer is specified properly. By default, all layers of your map are displayed at once, but different combinations of layers can be selected using the `layers` query string. See [Filters](#filters) for more info.
  * Create a copy of [`env-template`](env-template) named `.env`. This contains production-specific configuration options and doesn't need to be filled out right now (but must exist in order to run the development server).
  * Run `./scripts/update` to create your Docker containers and populate the development database. The optional flag `--download` will download the data sets used for our demos.
@@ -36,7 +36,7 @@ Dependencies: docker, docker-compose
  * The local development environment can be reset by running `./scripts/clean`, which removes all development artifacts including Docker containers and volumes.
  
 #### Configuration Selection and Storage
-Multiple map configuration `.mml` files can be included in your project's [`src/tiler/src/config`](src/tiler/src/config) to be dynamically loaded at run-time. Use the query string `config` with the name of your configuration file (without the file extension) to select which file gets loaded when rendering tiles. If no `config` is provided, Tilegarden tries to load the config file named `map-config`. 
+Multiple map configuration `.mml` files can be included in your project's [`src/tiler/src/config`](src/tiler/config) to be dynamically loaded at run-time. Use the query string `config` with the name of your configuration file (without the file extension) to select which file gets loaded when rendering tiles. If no `config` is provided, Tilegarden tries to load the config file named `map-config`. 
  * _Example_: if you have a configuration file named `my-good-map.mml`, you can tell Tilegarden to use it with the endpoint `/tile/{z}/{x}/{y}.png?config=my-good-map`
  
  Configuration files can also be optionally loaded from an AWS S3 bucket, which allows you to add/remove/replace available maps without having to redeploy your entire project. To do so, add `&s3bucket=<bucket-name>` to your query string, and treat the `config` parameter as the desired config file's key. You can use the `build-xml` script to generate config files for this purpose without having to spin up the entire development environment, run `./scripts/build-xml --help` for more info.
@@ -47,10 +47,10 @@ Multiple map configuration `.mml` files can be included in your project's [`src/
 Tilegarden supports the use of any geospatial data source that Mapnik/Carto does (shapefile, postgis, pgraster, raster). However, bear in mind that only PostGIS data sources support custom queries, and are thus the only ones that allow you to perform additional filtering on your data (see [Filters](#filters)). Also, attempting to bundle large local data files into your Tilegarden deployment could lead to rejection by AWS Lambda due to size restrictions.
 
 #### Map Styles
-Map styles are specified in CartoCSS, [the specification for which can be found here.](https://cartocss.readthedocs.io/en/latest/) The default stylesheet is located at [`src/tiler/src/config/style.mss`](src/tiler/src/config/style.mss). Multiple stylesheets can be used by adding them to the parameter “Stylesheet” in [`src/tiler/src/config/map-config.mml`](src/tiler/src/config/map-config.mml). Each .mss “class” refers to a map layer (its “id” property), specified in `map-config.mml`. 
+Map styles are specified in CartoCSS, [the specification for which can be found here.](https://cartocss.readthedocs.io/en/latest/) The default stylesheet is located at [`src/tiler/src/config/style.mss`](src/tiler/config/style.mss). Multiple stylesheets can be used by adding them to the parameter “Stylesheet” in [`src/tiler/src/config/map-config.mml`](src/tiler/config/map-config.mml). Each .mss “class” refers to a map layer (its “id” property), specified in `map-config.mml`. 
 
 #### Filters
-Filters are specified by altering the query of one of your map's layers in [`src/tiler/src/config/map-config.mml`](src/tiler/src/config/map-config.mml), and can then be fetched through the API. To create a filtered layer, modify the “table” property of the layer to have the format `(QUERY) as VARIABLE`. 
+Filters are specified by altering the query of one of your map's layers in [`src/tiler/src/config/map-config.mml`](src/tiler/config/map-config.mml), and can then be fetched through the API. To create a filtered layer, modify the “table” property of the layer to have the format `(QUERY) as VARIABLE`. 
    * Make sure each layer has a unique “id” value.
    * Make sure to include the geometry column in this query, along with whatever columns you are filtering by.
    * *Example:* `(SELECT geom,homes FROM table_name WHERE homes='big') as q` would create a filtered layer for all points that have a “homes” value of “big” in your database.
