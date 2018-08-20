@@ -3,6 +3,7 @@
 ## Contents
  * [About](#About)
  * [Usage](#Usage)
+   * [Docker Image](#docker-image)
    * [Local Development](#local-development)
      * [Configuration Selection and Storage](#configuration-selection-and-storage)
      * [Map Styles](#map-styles)
@@ -19,6 +20,8 @@
 Tilegarden is a serverless tile-rendering tool using [Mapnik](http://mapnik.org/), built for AWS Lambda. Serve custom-generated map tiles without having to worry about server maintenance, scaling, or paying for resources that aren't being accessed.
 
 ## Usage
+### Docker Image
+The following documentation is focused on using the project from the git repository. [See here](docs/docker-image-setup.md) for Docker-image specific usage information.
 ### Local Development
 Dependencies: docker, docker-compose
  * Clone the Tilegarden repository to your machine.
