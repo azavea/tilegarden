@@ -22,4 +22,9 @@ RUN yarn install
 # Copy remaining files after package installation to benefit from layer caching
 COPY . /home/tiler
 
+ # Tile server
+EXPOSE 3000
+ # Debugger
+EXPOSE 9229
+
 CMD ["yarn", "dev"]
