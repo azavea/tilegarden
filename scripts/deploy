@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+set -e
+
+deploy_new=""
+no_cache=""
+
+function usage() {
+    echo -n "Usage: $(basename "${0}") [OPTION]
+Deploys a Tilegarden instance to AWS by building docker containers first
+Options:
+    --help        Show usage
+    --new        Deploy as a new lambda
+    --no-cache    Don't use cache when building containers
+"
+    exit 0
+}
+
+function main() {
+	if [[ $deploy_new != "--new" && ! -f /src/tiler/claudia.json ]]; then
+		echo "No existing deployment found to update! (did you mean to use '--new'?)"
+		exit 1
+	fi
+
+    docker-compose build terraform
+
+	if [ "${no_cache}" == "--no-cache" ]; then
+    	docker-compose build --no-cache tiler
+    else
+    	docker-compose build tiler
+    fi
+
+	# Capture output to check for specific error
+	./scripts/publish "${deploy_new}"
+}
+
+
+if [ "${BASH_SOURCE[0]}" = "${0}" ]
+then
+    # handle command line arguments
+    # modified from https://stackoverflow.com/a/7069755
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            -n| --new)
+                deploy_new='--new'
+                shift
+                ;;
+            --no-cache)
+                no_cache='--no-cache'
+                shift
+                ;;
+            -h| --help| *)
+                usage
+                ;;
+        esac
+    done
+
+    main
+fi
+
