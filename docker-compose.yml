@@ -50,6 +50,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./src/pug:/home/pug
+      - ./src/pug/out:/home/pug/out
 
 volumes:
   node_modules:

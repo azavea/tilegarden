@@ -5,4 +5,4 @@ RUN yarn global add pug-cli
 COPY . /home/pug
 WORKDIR /home/pug
 
-ENTRYPOINT ["pug", "pages"]
+ENTRYPOINT ["pug", "pages", "-o", "out/", "-P"]

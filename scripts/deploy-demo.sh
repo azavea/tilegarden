@@ -15,6 +15,13 @@ cd "${REPO_TEMP}"
 git checkout gh-pages
 echo "Merging with ${CURRENT_BRANCH}"
 git merge "${CURRENT_BRANCH}"
+
+# Generate new github pages
+./scripts/update
+./scripts/build-demo-pages
+git add -A
+git commit -m "Re-build html pages"
+
 # make sure there wasn't a merge conflict
 # exit if there's a merge conflict, this can be handled
 # normally, but the actual tests haven't failed
@@ -22,6 +29,7 @@ if [[ $(git ls-files -u) ]]; then
 	echo "WARNING: Merge conflict! This branch must have its conflicts resolved manually before deployment."
 	exit 0
 fi
+
 
 # Decrypt .env
 openssl aes-256-cbc -K $encrypted_f456ba71c182_key -iv $encrypted_f456ba71c182_iv -in .env.enc -out .env -d

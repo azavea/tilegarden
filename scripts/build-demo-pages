@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -e
+
+docker-compose run pug
+cp -R src/pug/out/* .
+cp -R src/pug/pages/demo/scripts/ demo/
