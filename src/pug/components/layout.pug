@@ -26,17 +26,19 @@ html
             crossorigin='anonymous'
         )
 
+        // Github button
+        script(
+            async
+            defer
+            src='https://buttons.github.io/buttons.js'
+        )
+
         // Custom stylesheet
         link(
             rel='stylesheet'
             href='demo/style.css'
         )
     body
-        block navbar
+        include ../components/header.pug
         block content
-        footer
-            .container.text-center
-                span(class='.text-muted') &copy; 2018 Azavea. Built for the
-                |
-                |
-                a(href='https://fellowship.azavea.com/') 2018 Azavea Open Source Fellowship.
+        include ../components/footer.pug
