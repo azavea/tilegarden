@@ -1,7 +1,42 @@
 extends ../components/layout.pug
 
+mixin demoLinks(page)
+    - var demoPath = 'demo/' + page.path
+    a.btn.btn-primary.m-1(href=demoPath type='button')= page.title
+
 block vars
-    - var pageTitle = 'Tilegarden'
+    - var pageTitle = 'Home'
+    -
+        var demoPages = [
+            {
+                path: 'raster.html',
+                title: 'Serve Raster Tiles'
+            },
+            {
+                path: 'vector.html',
+                title: 'Serve Vector Tiles'
+            },
+            {
+                path: 'layer-filter.html',
+                title: 'Queryable Layers'
+            },
+            {
+                path: 'client-filter.html',
+                title: 'Client-Side Filtering'
+            },
+            {
+                path: 'utf-grid.html',
+                title: 'UTF Grid Support'
+            }
+        ]
 
 block content
-    p And this is where the content goes
+    h1.display-3 Tilegarden: Serverless Mapnik Rendering
+    p.lead Tilegarden is a serverless tileserver built for AWS Lambda. All the power of a conventional tileserver without needing to worry about provisioning, scaling, or uptime costs.
+    p.lead Click below for demos of Tilegarden's functionality:
+    div
+        .text-center
+            each page in demoPages
+                +demoLinks(page)
+
+

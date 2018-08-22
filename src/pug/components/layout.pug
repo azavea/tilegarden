@@ -2,7 +2,7 @@ doctype html
 html
     block vars
     head
-        title #{pageTitle}
+        title Tilegarden | #{pageTitle}
         // Bootstrap content
         link(
             rel='stylesheet'
@@ -34,11 +34,12 @@ html
         )
 
         // Custom stylesheet
-        link(
-            rel='stylesheet'
-            href='demo/style.css'
-        )
+        include ../components/styles.pug
+
+        block scripts
     body
         include ../components/header.pug
-        block content
+        .container.content
+            .mt-3
+                block content
         include ../components/footer.pug
