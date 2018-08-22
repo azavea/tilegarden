@@ -1,0 +1,48 @@
+extends ../../components/layout.pug
+
+mixin selectorOption(option, selected)
+    option(selected=selected)= option
+
+block vars
+    - var pageTitle = 'Queryable Layers'
+    -
+        var options = [
+            'AIRPRT',
+            'CHEL',
+            'FEDERAL',
+            'LM',
+            'PARK',
+            'PRIV',
+            'PRIVPWDMAINT',
+            'PWD',
+            'STATE',
+            'USNAVY'
+        ]
+
+block scripts
+    include ../../components/leaflet-scripts.pug
+    script(src='./scripts/layer-filter.js')
+
+block content
+    h2.display-4 Filter by Layer
+    p.lead Define customizable map layers that can be queried by your users.
+    .row
+        .m-auto
+            code#urlExample https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?layers=["PARK","PRIV"]
+        .col-8
+            figure.figure
+                .figure-img#map
+                figcaption.figure-caption#dataDesc
+                    | This point layer contains all the wastewater and stormwater inlets in Philadelphia with latitude and longitude coordinates. |
+                    |
+                    a(href="https://www.opendataphilly.org/dataset/water-inlets") City of Philadelphia
+        .col
+            .form-group.h-75
+                label(for='selector') Filter (by inlet owner):
+                select.custom-select.h-75#selector(multiple)
+                    each option in options
+                        if option === 'PARK' || option === 'PRIV'
+                            +selectorOption(option, true)
+                        else
+                            +selectorOption(option, false)
+

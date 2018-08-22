@@ -1,0 +1,29 @@
+extends ../../components/layout.pug
+
+block vars
+    - var pageTitle = 'Client-Side Filtering'
+
+block scripts
+    include ../../components/leaflet-scripts.pug
+    script(src='./scripts/client-filter.js')
+
+block content
+    h2.display-4 Filter by Query
+    p.lead Allow users to modify pre-defined layers by specifying filter conditions.
+    .row
+        .m-auto
+            code#urlExample https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?layers=["PARK","PRIV"]
+        .col-8
+            figure.figure
+                .figure-img#map
+                figcaption.figure-caption#dataDesc
+                    | This point layer contains all the wastewater and stormwater inlets in Philadelphia with latitude and longitude coordinates. |
+                    |
+                    a(href="https://www.opendataphilly.org/dataset/water-inlets") City of Philadelphia
+        .col
+            .form-group
+                label(for='querybox') Query Schema
+                textarea.form-control#querybox(rows="14")
+                .w-100.text-right
+                    button.btn.btn-primary.mt-1#btnUpdateQuery Set query
+

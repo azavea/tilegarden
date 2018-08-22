@@ -1,0 +1,29 @@
+extends ../../components/layout.pug
+
+block vars
+    - var pageTitle = 'UTF Grids'
+
+block scripts
+    include ../../components/leaflet-scripts.pug
+    script(src='./scripts/L.UTFGrid-min.js')
+    script(src='./scripts/utf-grid.js')
+
+block content
+    h2.display-4 UTF Grids
+    p.lead Serve UTF grids and interact with your data.
+    .row
+        .m-auto
+            code#urlExample https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?utfFields=owner,operator
+        figure.figure.w-100(style={'position': 'relative'})
+            .figure-img#map(style={'position': 'absolute', 'z-index': '1'})
+            .jumbotron.w-100.display-4.text-center#mousePrompt(style={
+                'position': 'absolute',
+                'z-index': '2',
+                'height': '500px',
+                'opacity': '0.5'
+            }) Mouse over me!
+            figcaption.figure-caption#dataDesc(style={'position': 'absolute', 'top': '500px', 'z-index': '3'})
+                | This point layer contains all the wastewater and stormwater inlets in Philadelphia with latitude and longitude coordinates. |
+                |
+                a(href="https://www.opendataphilly.org/dataset/water-inlets") City of Philadelphia
+
