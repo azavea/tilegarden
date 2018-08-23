@@ -28,7 +28,7 @@ Dependencies: docker, docker-compose
  * Configure your map:
    * Open the file [`src/tiler/src/config/map-config.mml`](src/tiler/src/config/map-config.mml). This is where you specify your map settings. [A full specification for Carto's .mml format can be found here.](https://cartocss.readthedocs.io/en/latest/mml.html)
    * Of particular note is the “Layer” property, which specifies the layers of your map (as an array). Odds are you won't have to change the target srs (at the top of the file), but make sure that the srs of each layer is specified properly. By default, all layers of your map are displayed at once, but different combinations of layers can be selected using the `layers` query string. See [Filters](#filters) for more info.
- * Create a copy of [`env-template`](env-template) named `.env`. This contains production-specific configuration options and doesn't need to be filled out right now (but must exist in order to run the development server).
+ * Create a copy of [`env-template`](.env.template) named `.env`. This contains production-specific configuration options and doesn't need to be filled out right now (but must exist in order to run the development server).
  * Run `./scripts/update` to create your Docker containers and populate the development database. The optional flag `--download` will download the data sets used for our demos.
  * Run `./scripts/server` to start the development server. It will be available at [localhost:3000](http://localhost:3000/), your tiles can be found at `/tile/{z}/{x}/{y}.png`.
  * The local development server exposes a node.js debugger, which can be attached to by Chrome DevTools or your IDE of choice [(see below)](#Debugging).
