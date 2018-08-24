@@ -44,7 +44,7 @@
             else TILESERVER_PATH = PROD_PATH;
 
             function makeLayer (layer) {
-                return L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?config=data-type-example&layers=' + layer);
+                return L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?config=data-type-example&layers=["' + layer + '"]');
             }
 
             var currentLayer;
@@ -81,7 +81,8 @@
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="#">Raster Tiles</a>
                         <a class="dropdown-item" href="vector.html">Vector Tiles</a>
-                        <a class="dropdown-item" href="filter.html">Filtering</a>
+                        <a class="dropdown-item" href="layer-filter.html">Queryable Layers</a>
+                        <a class="dropdown-item" href="client-filter.html">Client-side Filtering</a>
                         <a class="dropdown-item" href="utf-grid.html">UTF Grids</a>
                     </div>
                 </li>

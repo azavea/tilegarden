@@ -50,13 +50,34 @@ Tilegarden supports the use of any geospatial data source that Mapnik/Carto does
 Map styles are specified in CartoCSS, [the specification for which can be found here.](https://cartocss.readthedocs.io/en/latest/) The default stylesheet is located at [`src/tiler/src/config/style.mss`](src/tiler/src/config/style.mss). Multiple stylesheets can be used by adding them to the parameter “Stylesheet” in [`src/tiler/src/config/map-config.mml`](src/tiler/src/config/map-config.mml). Each .mss “class” refers to a map layer (its “id” property), specified in `map-config.mml`. 
 
 #### Filters
-Filters are specified by altering the query of one of your map's layers in [`src/tiler/src/config/map-config.mml`](src/tiler/src/config/map-config.mml), and can then be fetched through the API. To create a filtered layer, modify the “table” property of the layer to have the format `(QUERY) as VARIABLE`. 
+Filtering your geospatial data can be done in two ways:
+##### Custom Layer Queries
+Filters can be specified on the back-end by altering the query of one of your map's layers in [`src/tiler/src/config/map-config.mml`](src/tiler/src/config/map-config.mml), and can then be fetched through the API. To create a filtered layer, modify the “table” property of the layer to have the format `(QUERY) as VARIABLE`. 
    * Make sure each layer has a unique “id” value.
    * Make sure to include the geometry column in this query, along with whatever columns you are filtering by.
    * *Example:* `(SELECT geom,homes FROM table_name WHERE homes='big') as q` would create a filtered layer for all points that have a “homes” value of “big” in your database.
    
-Layers can be accessed from the API by adding `?layers=layer1,layer2,etc.` as a query string to a tile or UTF grid URL. If no layers are specified in the query string, all layers specified in `map-config.mml` are displayed simultaneously.
+Layers can be accessed from the API by adding `?layers=["layer1","layer2",etc.]` (a valid JSON array)as a query string to a tile or UTF grid URL. If no layers are specified in the query string, all layers specified in `map-config.mml` are displayed simultaneously.
 
+##### Client-specified Filtering
+Layers can also be filtered dynamically by passing a JSON object as a value of a layer in the `?layers` array. The schema for this sort of request looks like the following:
+```
+[
+    {
+        "name":"layer1",
+        "mode": "AND" // optional, operator to use to combine filters, can either be AND or OR, defaults to AND
+        "filters": [ // optional, applies no filters if missing
+            {
+                "col":"column1", // table column you wish to filter by
+                "val":"value1", // value to filter on
+                "op": ">" // optional, boolean operator to use when comparing col to val, = by default
+            }
+        ]
+    }
+]
+```
+The resulting url would have the query string `?layers=[{"name":"layer1","filters":[{"col":"column1","val":"value1","like": true}]}]`. Filtering layers in this way appends `WHERE col='val'` to the existing query defined for the layer. Defining multiple filters in the "filters" array of the layer object `AND`s the filters together in the query.
+ * **NOTE:** Be careful with `%`s in your JSON! Browsers/Tilegarden automatically handle most percent-encodable characters, but `%`s especially can cause your JSON to become unparsable. Call `encodeURIComponent()` on your filter objects for safety.
 
 #### UTF Grids
 UTF grids can be generated at the url `/grid/{z}/{x}/{y}?utfFields=field1,field2,etc.`, where “utfFields” is a comma-separated list of one or more table columns from the database. Each grid url MUST have a “utfFields” query string. If you have already modified the table query of a layer to specify a filter, be sure the include the utf field column in the query. *Ex.* `(SELECT geom,homes,dog... )`, if you want to base a UTF grid off the value of “dog”.

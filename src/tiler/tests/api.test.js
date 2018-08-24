@@ -114,7 +114,7 @@ describe('processLayers', () => {
     test('properly parses list of layer', () => {
         const req = {
             queryString: {
-                layers: 'layer1,layer2,layer3,layer4'
+                layers: '["layer1","layer2","layer3","layer4"]'
             }
         }
         expect(processLayers(req)).toEqual(['layer1','layer2','layer3','layer4'])
@@ -123,7 +123,7 @@ describe('processLayers', () => {
     test('properly parses just one layer', () => {
         const req = {
             queryString: {
-                layers: 'layer'
+                layers: '["layer"]'
             }
         }
         expect(processLayers(req)).toEqual(['layer'])
