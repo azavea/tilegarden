@@ -17,7 +17,7 @@
 
         document.addEventListener('DOMContentLoaded', function pageLoaded() {
             var map = L.map('map', {
-                center: [39.99, -75.15], zoom: 11
+                center: [39.97, -75.15], zoom: 11
             });
 
             // add basemap
@@ -37,28 +37,50 @@
 
             // add filtered layers
             function newLayer (filters) {
-                return L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?config=point-example&layers=' + filters)
+                return L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?config=data-type-example&layers=' + encodeURIComponent(JSON.stringify(filters)))
             }
 
             var EXAMPLE_PATH = 'https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?layers='
 
+            var INITIAL_QUERY = [
+                {
+                    name: 'pwd_parcels',
+                    mode: 'AND',
+                    filters: [
+                        {
+                            col: 'owner2',
+                            val: 'OF PHILADELPHIA',
+                        },
+                        {
+                            col: 'gross_area',
+                            op: '>',
+                            val: '3000'
+                        }
+                    ]
+                }
+            ]
+
             // keep track of active layers so
             var currentSelection;
-            document.getElementById("selector").addEventListener('mouseup', function selectorMouseUp() {
+            document.getElementById("btnUpdateQuery").addEventListener('click', function selectorMouseUp() {
                 // remove old layer
                 map.removeLayer(currentSelection);
 
-                // get new layer names from selector
-                var layerNames = Object.values(this.selectedOptions).map(function(v) {
-                    return v.value;
-                }).join(',');
-
-                currentSelection = newLayer(layerNames);
-                currentSelection.addTo(map);
-                document.getElementById('urlExample').innerText = EXAMPLE_PATH + layerNames;
+                // get new layer schema
+                var layerObj;
+                try {
+                    layerObj = JSON.parse(document.getElementById('querybox').value);
+                    currentSelection = newLayer(layerObj);
+                    currentSelection.addTo(map);
+                    document.getElementById('urlExample').innerText = EXAMPLE_PATH + JSON.stringify(layerObj);
+                } catch (e) {
+                    console.error(e);
+                }
             });
 
-            currentSelection = newLayer('PRIV,PARK');
+            currentSelection = newLayer(INITIAL_QUERY);
+            document.getElementById('urlExample').innerText = EXAMPLE_PATH + JSON.stringify(INITIAL_QUERY);
+            document.getElementById('querybox').value = JSON.stringify(INITIAL_QUERY, null, 2);
             map.addLayer(currentSelection);
         });
     </script>
@@ -82,7 +104,8 @@
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="raster.html">Raster Tiles</a>
                         <a class="dropdown-item" href="vector.html">Vector Tiles</a>
-                        <a class="dropdown-item" href="#">Filtering</a>
+                        <a class="dropdown-item" href="layer-filter.html">Queryable Layers</a>
+                        <a class="dropdown-item" href="#">Client-side Filtering</a>
                         <a class="dropdown-item" href="utf-grid.html">UTF Grids</a>
                     </div>
                 </li>
@@ -97,8 +120,8 @@
         </div>
     </nav>
     <div class="mt-3">
-        <h2 class="display-4">Filtering</h2>
-        <p class="lead">Perform server-side filtering on raster data that can be queried by your users.</p>
+        <h2 class="display-4">Filter by Query</h2>
+        <p class="lead">Allow users to modify pre-defined layers by specifying filter conditions.</p>
         <div class="row">
             <div class="m-auto">
                 <code id="urlExample">https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?layers=PARK,PRIV</code>
@@ -107,27 +130,16 @@
                 <figure class="figure">
                     <div id="map" class="figure-img"></div>
                     <figcaption class="figure-caption"  id="dataDesc">
-                        This point layer contains all the wastewater and stormwater inlets in Philadelphia with latitude and longitude coordinates. | <a href="https://www.opendataphilly.org/dataset/water-inlets">City of Philadelphia</a>
+                        PWD stormwater billing parcels. The primary purpose of PWD_PARCEL layer is to calculate parcel-based stormwater charges for PWD customers under the new parcel-based stormwater billing program. | <a href="https://www.opendataphilly.org/dataset/pwd-stormwater-billing-parcels">City of Philadelphia</a>
                     </figcaption>
                 </figure>
             </div>
             <div class="col">
-                <div class="form-group h-75">
-                    <label for="selector">Filter (by inlet owner)</label>
-                    <select id="selector" class="custom-select h-75" multiple>
-                        <option>AIRPRT</option>
-                        <option>CHEL</option>
-                        <option>FEDERAL</option>
-                        <option>LM</option>
-                        <option selected>PARK</option>
-                        <option selected>PRIV</option>
-                        <option>PRIVPWDMAINT</option>
-                        <option>PWD</option>
-                        <option>STATE</option>
-                        <option>USNAVY</option>
-                    </select>
+                <div class="form-group">
+                    <label for="querybox">Query schema</label>
+                    <textarea rows="14" id=querybox class="form-control"></textarea>
+                    <div class="w-100 text-right"><button id="btnUpdateQuery" class="btn btn-primary mt-1">Set query</button></div>
                 </div>
-
             </div>
         </div>
     </div>

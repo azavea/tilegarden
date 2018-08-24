@@ -2,24 +2,22 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Tilegarden | UTF Grids</title>
-    <!--Bootstrap-->
+    <title>Tilegarden</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
-    <!--Leaflet-->
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.2/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.3.2/dist/leaflet.js"></script>
-    <script src="L.UTFGrid-min.js"></script>
     <link rel="stylesheet" href="style.css">
     <script>
         "use-strict"
 
         document.addEventListener('DOMContentLoaded', function pageLoaded() {
             var map = L.map('map', {
-                center: [39.96, -75.15],
-                zoom: 15,
+                center: [39.99, -75.15], zoom: 11
             });
 
             // add basemap
@@ -27,7 +25,7 @@
                 maxZoom: 19,
                 attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             });
-            map.addLayer(basemap);
+            map.addLayer(basemap)
 
             // dynamically set path based on host
             var PROD_PATH = 'https://d3hvvzen5hf4hb.cloudfront.net/';
@@ -37,26 +35,32 @@
             if (!host || host === 'localhost') TILESERVER_PATH = DEV_PATH;
             else TILESERVER_PATH = PROD_PATH;
 
-            L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?config=data-type-example&layers=["inlets"]').addTo(map);
-            var grid = L.utfGrid(TILESERVER_PATH + 'grid/{z}/{x}/{y}?config=data-type-example&layers=["inlets"]&utfFields=owner,operator', { useJsonP: false })
+            // add filtered layers
+            function newLayer (filters) {
+                return L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?config=point-example&layers=' + filters)
+            }
 
-            // keep track of currently active marker
-            //var marker
-            grid.on('mouseover', function gridClick(e) {
-                if (e.data) {
-                    L.popup()
-                        .setLatLng(e.latlng)
-                        .setContent("This inlet is owned by " + e.data.owner + " and operated by " + e.data.operator + ".")
-                        .openOn(map)
-                }
-            })
-            map.addLayer(grid);
+            var EXAMPLE_PATH = 'https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?layers='
 
+            // keep track of active layers so
+            var currentSelection;
+            document.getElementById("selector").addEventListener('mouseup', function selectorMouseUp() {
+                // remove old layer
+                map.removeLayer(currentSelection);
 
-            // prompt user to mouse over the map, remove mouseover div on mouseover
-            document.getElementById('mousePrompt').addEventListener('mouseover', function onMouseOver() {
-                this.parentNode.removeChild(this);
-            })
+                // get new layer names from selector
+                var layerNames = Object.values(this.selectedOptions).map(function(v) {
+                    return '"' + v.value + '"';
+                }).join(',');
+                layerNames = "[" + layerNames + "]"
+
+                currentSelection = newLayer(layerNames);
+                currentSelection.addTo(map);
+                document.getElementById('urlExample').innerText = EXAMPLE_PATH + layerNames;
+            });
+
+            currentSelection = newLayer('["PRIV","PARK"]');
+            map.addLayer(currentSelection);
         });
     </script>
 </head>
@@ -79,9 +83,9 @@
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="raster.html">Raster Tiles</a>
                         <a class="dropdown-item" href="vector.html">Vector Tiles</a>
-                        <a class="dropdown-item" href="layer-filter.html">Queryable Layers</a>
+                        <a class="dropdown-item" href="#">Queryable Layers</a>
                         <a class="dropdown-item" href="client-filter.html">Client-side Filtering</a>
-                        <a class="dropdown-item" href="#">UTF Grids</a>
+                        <a class="dropdown-item" href="utf-grid.html">UTF Grids</a>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -95,23 +99,39 @@
         </div>
     </nav>
     <div class="mt-3">
-        <h2 class="display-4">UTF Grids</h2>
-        <p class="lead">Serve UTF grids and interact with your data.</p>
+        <h2 class="display-4">Filter by Layer</h2>
+        <p class="lead">Define customizable map layers that can be queried by your users.</p>
         <div class="row">
             <div class="m-auto">
-                <code id="urlExample">https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?utfFields=owner,operator</code>
+                <code id="urlExample">https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?layers=["PARK","PRIV"]</code>
             </div>
-            <figure class="figure w-100" style="position: relative;">
-                <div id="map" class="figure-image" style="position:absolute;z-index:1;"></div>
+            <div class="col-8">
+                <figure class="figure">
+                    <div id="map" class="figure-img"></div>
+                    <figcaption class="figure-caption"  id="dataDesc">
+                        This point layer contains all the wastewater and stormwater inlets in Philadelphia with latitude and longitude coordinates. | <a href="https://www.opendataphilly.org/dataset/water-inlets">City of Philadelphia</a>
+                    </figcaption>
+                </figure>
+            </div>
+            <div class="col">
+                <div class="form-group h-75">
+                    <label for="selector">Filter (by inlet owner)</label>
+                    <select id="selector" class="custom-select h-75" multiple>
+                        <option>AIRPRT</option>
+                        <option>CHEL</option>
+                        <option>FEDERAL</option>
+                        <option>LM</option>
+                        <option selected>PARK</option>
+                        <option selected>PRIV</option>
+                        <option>PRIVPWDMAINT</option>
+                        <option>PWD</option>
+                        <option>STATE</option>
+                        <option>USNAVY</option>
+                    </select>
+                </div>
 
-                <div class="jumbotron w-100 display-4 text-center" style="position:absolute;z-index:2;height:500px;opacity:0.5;" id="mousePrompt">Mouse over me!</div>
-
-                <figcaption class="figure-caption" id="dataDesc" style="position:absolute;top:500px;z-index:3;">
-                    This point layer contains all the wastewater and stormwater inlets in Philadelphia with latitude and longitude coordinates. | <a href="https://www.opendataphilly.org/dataset/water-inlets">City of Philadelphia</a>
-                </figcaption>
-            </figure>
+            </div>
         </div>
-
     </div>
 </div>
 

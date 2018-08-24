@@ -56,11 +56,12 @@ const processUTFQuery = (req) => {
 // Returns a properly formatted list of layers
 // or an empty list if there are none
 const processLayers = (req) => {
-    if (req.queryString.layers) return req.queryString.layers.split(',')
+    if (req.queryString.layers) return JSON.parse(req.queryString.layers)
     else if (req.queryString.layer || req.queryString.filter || req.queryString.filters) {
         /* eslint-disable-next-line quotes */
         throw HTTPError("Invalid argument, did you mean '&layers='?", 400)
     }
+
     return []
 }
 
