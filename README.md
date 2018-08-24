@@ -3,38 +3,64 @@
 ## Contents
  * [About](#About)
  * [Usage](#Usage)
-   * [Local Development](#local-development)
+   * [Deployment to AWS](#deployment-to-aws)
+	 * [Additional Configuration Options](#additional-configuration-options)
+	 * [Required AWS Permissions](#required-aws-permissions)
+   * [Features](#features)
      * [Configuration Selection and Storage](#configuration-selection-and-storage)
      * [Map Styles](#map-styles)
      * [Filters](#filters)
      * [UTF Grids](#utf-grids)
      * [Vector Tiles](#vector-tiles)
+   * [Local Development](#local-development)
      * [Debugging](#debugging)
-   * [Deployment to AWS](#deployment-to-aws)
-     * [Additional Configuration Options](#additional-configuration-options)
-     * [Required AWS Permissions](#required-aws-permissions)
  * [Helpful Links](#helpful-links)
 
 ## About
 Tilegarden is a serverless tile-rendering tool using [Mapnik](http://mapnik.org/), built for AWS Lambda. Serve custom-generated map tiles without having to worry about server maintenance, scaling, or paying for resources that aren't being accessed.
 
 ## Usage
-### Local Development
-Dependencies: docker, docker-compose
- * Clone the Tilegarden repository to your machine.
- * Add any development data:
-   * Add your geospatial data to the `data/` directory. .zipped shapefiles and gzipped SQL dumps will be loaded in to the development database automatically.
-   * Make sure the name of the file matches the name of the SQL table that contains the data.
- * Configure your map:
-   * Open the file [`src/tiler/src/config/map-config.mml`](src/tiler/src/config/map-config.mml). This is where you specify your map settings. [A full specification for Carto's .mml format can be found here.](https://cartocss.readthedocs.io/en/latest/mml.html)
-   * Of particular note is the “Layer” property, which specifies the layers of your map (as an array). Odds are you won't have to change the target srs (at the top of the file), but make sure that the srs of each layer is specified properly. By default, all layers of your map are displayed at once, but different combinations of layers can be selected using the `layers` query string. See [Filters](#filters) for more info.
- * Create a copy of [`env-template`](.env.template) named `.env`. This contains production-specific configuration options and doesn't need to be filled out right now (but must exist in order to run the development server).
- * Run `./scripts/update` to create your Docker containers and populate the development database. The optional flag `--download` will download the data sets used for our demos.
- * Run `./scripts/server` to start the development server. It will be available at [localhost:3000](http://localhost:3000/), your tiles can be found at `/tile/{z}/{x}/{y}.png`.
- * The local development server exposes a node.js debugger, which can be attached to by Chrome DevTools or your IDE of choice [(see below)](#Debugging).
-   * (Optional) If you downloaded the example data using `./scripts/update --download`, opening [`index.html`](index.html) (or any of the pages in [`demo/`](demo/)) should show you working demos.
- * The local development environment can be reset by running `./scripts/clean`, which removes all development artifacts including Docker containers and volumes.
+
+### Deployment to AWS
+A deployed instance of Tilegarden consists of several AWS resources:
+ 1. An AWS Lambda function which handles the tiling logic.
+ 2. An API Gateway API that acts as an endpoint and routes HTTP requests to the lambda function.
+ 3. A CloudFront distribution that acts as a proxy in order to circumvent some issues that API Gateway has serving image content.
  
+ * Specify your map in a map configuration file and place it in [`src/tiler/src/config/`](src/tiler/src/config/) (where you can find pre-existing examples). [A full specification for Carto's .mml format can be found here.](https://cartocss.readthedocs.io/en/latest/mml.html)
+ * Specify your production credentials and lambda function settings in `.env`. The following variables are required:
+   * `AWS_PROFILE`: the name of the AWS user profile you want to deploy your project as. You may have this set already in your environment, otherwise you'll want to set it to one of the names of the sets of credentials specified in `~/.aws/credentials`. Defaults to “default”.
+   * `PROJECT_NAME`: the name of your project. This must be unique among the functions you currently have deployed to AWS Lambda.
+   * `PROD_TILEGARDEN_*`: the credentials necessary to connect to your production database.
+   * `LAMBDA_REGION`: the AWS region to which you want your lambda functions deployed.
+   * `LAMBDA_ROLE`: the name/ARN of the IAM role to give your lambda. Leave this blank to have one created for you automatically.
+   * `LAMBDA_SUBNETS` and `LAMBDA_SECURITY_GROUPS`: only required if you need to connect to other AWS resources (such as an RDS instance), in which case these should match the values that those resources have.
+   * [See below for more options.](#Additional-Configuration-Options)
+ * [See below to make sure your AWS profile has the requisite permissions for automated deployment.](#Required-AWS-Permissions)
+ * Run `./scripts/deploy --new` to create new instances of the necessary AWS resources.
+   * Updates to an existing project can be deployed by running `./scripts/deploy` (no “--new”). Note that only certain function settings (`LAMBDA_TIMEOUT` and `LAMBDA_MEMORY`) are updated by this command, changes to IAM Role/subnets/security groups/etc. must be made manually on the AWS dashboard.
+ * All deployed resources can be removed by running `./scripts/destroy`.
+
+#### Additional Configuration Options
+ * `USER`: Left unspecified so that the code knows who the local user is from inside docker containers. Gets tacked on to the end of the project name at deployment.
+ * `LAMBDA_TIMEOUT`: Time (in seconds) before your lambda function is automatically cancelled (maximum 300). You'll probably need to modify this value as tile rendering can take longer than AWS's default timeout, depending on the complexity of the data you're rendering.
+ * `LAMBDA_MEMORY`: Amount of memory (in MB) to allocate per function. Must be a multiple of 64, minimum 128, maximum 3008. As with `LAMBDA_TIMEOUT`, more complex data requires more allocated memory, but 128MB should be enough in most scenarios.
+
+#### Required AWS Permissions
+The AWS profile used for deployment must have at least the following policies and permissions:
+ * `CloudFrontFullAccess`
+ * `AmazonAPIGatewayAdministrator`
+ * `AWSLambdaFullAccess`
+ * If you don't specify a pre-existing execution role, at least the following IAM permissions
+   * `iam:DeleteRolePolicy`
+   * `iam:DeleteRole`
+   * `iam:CreateRole`
+   * `iam:AttachRolePolicy`
+   * `iam:PutRolePolicy`
+ * Your lambda functions will have whichever permissions the profile used to create them has, so keep this in mind if certain policies are required to access your data store.
+ 
+### Features
+
 #### Configuration Selection and Storage
 Multiple map configuration `.mml` files can be included in your project's [`src/tiler/src/config`](src/tiler/src/config) to be dynamically loaded at run-time. Use the query string `config` with the name of your configuration file (without the file extension) to select which file gets loaded when rendering tiles. If no `config` is provided, Tilegarden tries to load the config file named `map-config`. 
  * _Example_: if you have a configuration file named `my-good-map.mml`, you can tell Tilegarden to use it with the endpoint `/tile/{z}/{x}/{y}.png?config=my-good-map`
@@ -84,51 +110,29 @@ UTF grids can be generated at the url `/grid/{z}/{x}/{y}?utfFields=field1,field2
 
 #### Vector Tiles
 Vector tiles of your data can be generated at the endpoint `/vector/{z}/{x}/{y}`. Filtering by layer works via query string but can also be handled client side, as can styling. [See here for more info about the Mapbox Vector Tile specification.](https://www.mapbox.com/vector-tiles/)
-
+ 
+### Local Development
+Dependencies: docker, docker-compose
+ * Clone the Tilegarden repository to your machine.
+ * Add any development data:
+   * Add your geospatial data to the `data/` directory. .zipped shapefiles and gzipped SQL dumps will be loaded in to the development database automatically.
+   * Make sure the name of the file matches the name of the SQL table that contains the data.
+ * Configure your map:
+   * Open the file [`src/tiler/src/config/map-config.mml`](src/tiler/src/config/map-config.mml). This is where you specify your map settings. [A full specification for Carto's .mml format can be found here.](https://cartocss.readthedocs.io/en/latest/mml.html)
+   * Of particular note is the “Layer” property, which specifies the layers of your map (as an array). Odds are you won't have to change the target srs (at the top of the file), but make sure that the srs of each layer is specified properly. By default, all layers of your map are displayed at once, but different combinations of layers can be selected using the `layers` query string. See [Filters](#filters) for more info.
+ * Create a copy of [`env-template`](.env.template) named `.env`. This contains production-specific configuration options and doesn't need to be filled out right now (but must exist in order to run the development server).
+ * Run `./scripts/update` to create your Docker containers and populate the development database. The optional flag `--download` will download the data sets used for our demos.
+ * Run `./scripts/server` to start the development server. It will be available at [localhost:3000](http://localhost:3000/), your tiles can be found at `/tile/{z}/{x}/{y}.png`.
+ * The local development server exposes a node.js debugger, which can be attached to by Chrome DevTools or your IDE of choice [(see below)](#Debugging).
+   * (Optional) If you downloaded the example data using `./scripts/update --download`, opening [`index.html`](index.html) (or any of the pages in [`demo/`](demo/)) should show you working demos.
+ * The local development environment can be reset by running `./scripts/clean`, which removes all development artifacts including Docker containers and volumes.
+ 
 #### Debugging
 The local development server exposes a Node.js process WebSocket that can be attached to your IDE of choice to step through and debug your code. Here are instructions on how to do so using Google Chrome's Dev Tools:
- * Start the development server with `./scripts/server`.
- * Open Google Chrome and navigate to `about:inspect`.
- * There should be an option listed as something along the lines of "Target (v8.10.0)" with the Node.js logo and a path like `file:///home/tiler/bin`. Click "inspect", underneath.
- * A new window will open up. Enter `ctrl+p` to open a search bar that lets you navigate to your source code. _The transpiled code in `src/tiler/bin/` is what is actually being tracked by the debugger,_  not the source code in `src/tiler/src/`.
-
-### Deployment to AWS
-A deployed instance of Tilegarden consists of several AWS resources:
- 1. An AWS Lambda function which handles the tiling logic.
- 2. An API Gateway API that acts as an endpoint and routes HTTP requests to the lambda function.
- 3. A CloudFront distribution that acts as a proxy in order to circumvent some issues that API Gateway has serving image content.
- 
- * Specify your map in a map configuration file and place it in [`src/tiler/src/config/`](src/tiler/src/config/) (where you can find pre-existing examples). [A full specification for Carto's .mml format can be found here.](https://cartocss.readthedocs.io/en/latest/mml.html)
- * Specify your production credentials and lambda function settings in `.env`. The following variables are required:
-   * `AWS_PROFILE`: the name of the AWS user profile you want to deploy your project as. You may have this set already in your environment, otherwise you'll want to set it to one of the names of the sets of credentials specified in `~/.aws/credentials`. Defaults to “default”.
-   * `PROJECT_NAME`: the name of your project. This must be unique among the functions you currently have deployed to AWS Lambda.
-   * `PROD_TILEGARDEN_*`: the credentials necessary to connect to your production database.
-   * `LAMBDA_REGION`: the AWS region to which you want your lambda functions deployed.
-   * `LAMBDA_ROLE`: the name/ARN of the IAM role to give your lambda. Leave this blank to have one created for you automatically.
-   * `LAMBDA_SUBNETS` and `LAMBDA_SECURITY_GROUPS`: only required if you need to connect to other AWS resources (such as an RDS instance), in which case these should match the values that those resources have.
-   * [See below for more options.](#Additional-Configuration-Options)
- * [See below to make sure your AWS profile has the requisite permissions for automated deployment.](#Required-AWS-Permissions)
- * Run `./scripts/deploy --new` to create new instances of the necessary AWS resources.
-   * Updates to an existing project can be deployed by running `./scripts/deploy` (no “--new”). Note that only certain function settings (`LAMBDA_TIMEOUT` and `LAMBDA_MEMORY`) are updated by this command, changes to IAM Role/subnets/security groups/etc. must be made manually on the AWS dashboard.
- * All deployed resources can be removed by running `./scripts/destroy`.
-
-#### Additional Configuration Options
- * `USER`: Left unspecified so that the code knows who the local user is from inside docker containers. Gets tacked on to the end of the project name at deployment.
- * `LAMBDA_TIMEOUT`: Time (in seconds) before your lambda function is automatically cancelled (maximum 300). You'll probably need to modify this value as tile rendering can take longer than AWS's default timeout, depending on the complexity of the data you're rendering.
- * `LAMBDA_MEMORY`: Amount of memory (in MB) to allocate per function. Must be a multiple of 64, minimum 128, maximum 3008. As with `LAMBDA_TIMEOUT`, more complex data requires more allocated memory, but 128MB should be enough in most scenarios.
-
-#### Required AWS Permissions
-The AWS profile used for deployment must have at least the following policies and permissions:
- * `CloudFrontFullAccess`
- * `AmazonAPIGatewayAdministrator`
- * `AWSLambdaFullAccess`
- * If you don't specify a pre-existing execution role, at least the following IAM permissions
-   * `iam:DeleteRolePolicy`
-   * `iam:DeleteRole`
-   * `iam:CreateRole`
-   * `iam:AttachRolePolicy`
-   * `iam:PutRolePolicy`
- * Your lambda functions will have whichever permissions the profile used to create them has, so keep this in mind if certain policies are required to access your data store.
+* Start the development server with `./scripts/server`.
+* Open Google Chrome and navigate to `about:inspect`.
+* There should be an option listed as something along the lines of "Target (v8.10.0)" with the Node.js logo and a path like `file:///home/tiler/bin`. Click "inspect", underneath.
+* A new window will open up. Enter `ctrl+p` to open a search bar that lets you navigate to your source code. _The transpiled code in `src/tiler/bin/` is what is actually being tracked by the debugger,_  not the source code in `src/tiler/src/`.
 
 ## Helpful Links
   * [CartoCSS Documentation](https://cartocss.readthedocs.io/en/latest/index.html)
