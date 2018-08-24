@@ -98,7 +98,8 @@ A deployed instance of Tilegarden consists of several AWS resources:
  2. An API Gateway API that acts as an endpoint and routes HTTP requests to the lambda function.
  3. A CloudFront distribution that acts as a proxy in order to circumvent some issues that API Gateway has serving image content.
  
- * First, specify your production credentials and lambda function settings in `.env`. The following variables are required:
+ * Specify your map in a map configuration file and place it in [`src/tiler/src/config/`](src/tiler/src/config/) (where you can find pre-existing examples). [A full specification for Carto's .mml format can be found here.](https://cartocss.readthedocs.io/en/latest/mml.html)
+ * Specify your production credentials and lambda function settings in `.env`. The following variables are required:
    * `AWS_PROFILE`: the name of the AWS user profile you want to deploy your project as. You may have this set already in your environment, otherwise you'll want to set it to one of the names of the sets of credentials specified in `~/.aws/credentials`. Defaults to “default”.
    * `PROJECT_NAME`: the name of your project. This must be unique among the functions you currently have deployed to AWS Lambda.
    * `PROD_TILEGARDEN_*`: the credentials necessary to connect to your production database.
@@ -107,8 +108,8 @@ A deployed instance of Tilegarden consists of several AWS resources:
    * `LAMBDA_SUBNETS` and `LAMBDA_SECURITY_GROUPS`: only required if you need to connect to other AWS resources (such as an RDS instance), in which case these should match the values that those resources have.
    * [See below for more options.](#Additional-Configuration-Options)
  * [See below to make sure your AWS profile has the requisite permissions for automated deployment.](#Required-AWS-Permissions)
- * Run `./scripts/publish --new` to create new instances of the necessary AWS resources.
-   * Updates to an existing project can be deployed by running `./scripts/publish` (no “--new”). Note that only certain function settings (`LAMBDA_TIMEOUT` and `LAMBDA_MEMORY`) are updated by this command, changes to IAM Role/subnets/security groups/etc. must be made manually on the AWS dashboard.
+ * Run `./scripts/deploy --new` to create new instances of the necessary AWS resources.
+   * Updates to an existing project can be deployed by running `./scripts/deploy` (no “--new”). Note that only certain function settings (`LAMBDA_TIMEOUT` and `LAMBDA_MEMORY`) are updated by this command, changes to IAM Role/subnets/security groups/etc. must be made manually on the AWS dashboard.
  * All deployed resources can be removed by running `./scripts/destroy`.
 
 #### Additional Configuration Options
