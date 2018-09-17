@@ -24,8 +24,8 @@
   ],
   "scripts": {
     "build-all-xml": "./scripts/build-all-xml.sh src/config bin/config",
-    "deploy": "yarn transpile && claudia update ${LAMBDA_TIMEOUT:+--timeout ${LAMBDA_TIMEOUT}} ${LAMBDA_MEMORY:+--memory ${LAMBDA_MEMORY}} ${LAMBDA_SECURITY_GROUPS:+--security-group-ids ${LAMBDA_SECURITY_GROUPS}} ${LAMBDA_SUBNETS:+--subnet-ids ${LAMBDA_SUBNETS}}",
-    "deploy-new": "yarn transpile && claudia create --api-module bin/api --name ${PROJECT_NAME} --region ${LAMBDA_REGION} ${LAMBDA_ROLE:+--role ${LAMBDA_ROLE}} ${LAMBDA_TIMEOUT:+--timeout ${LAMBDA_TIMEOUT}} ${LAMBDA_MEMORY:+--memory ${LAMBDA_MEMORY}} ${LAMBDA_SECURITY_GROUPS:+--security-group-ids ${LAMBDA_SECURITY_GROUPS}} ${LAMBDA_SUBNETS:+--subnet-ids ${LAMBDA_SUBNETS}} && yarn parse-id",
+    "deploy": "yarn transpile && claudia update --no-optional-dependencies ${LAMBDA_TIMEOUT:+--timeout ${LAMBDA_TIMEOUT}} ${LAMBDA_MEMORY:+--memory ${LAMBDA_MEMORY}} ${LAMBDA_SECURITY_GROUPS:+--security-group-ids ${LAMBDA_SECURITY_GROUPS}} ${LAMBDA_SUBNETS:+--subnet-ids ${LAMBDA_SUBNETS}}",
+    "deploy-new": "yarn transpile && claudia create --no-optional-dependencies --api-module bin/api --name ${PROJECT_NAME} --region ${LAMBDA_REGION} ${LAMBDA_ROLE:+--role ${LAMBDA_ROLE}} ${LAMBDA_TIMEOUT:+--timeout ${LAMBDA_TIMEOUT}} ${LAMBDA_MEMORY:+--memory ${LAMBDA_MEMORY}} ${LAMBDA_SECURITY_GROUPS:+--security-group-ids ${LAMBDA_SECURITY_GROUPS}} ${LAMBDA_SUBNETS:+--subnet-ids ${LAMBDA_SUBNETS}} && yarn parse-id",
     "destroy": "claudia destroy",
     "dev": "nodemon -e js,mss,json,mml,mss --ignore bin/ --ignore '*.temp.mml' --exec yarn local",
     "lint": "eslint src",
@@ -49,11 +49,13 @@
     "rewire": "^4.0.1"
   },
   "dependencies": {
-    "aws-sdk": "^2.284.1",
     "babel-runtime": "6",
     "claudia-api-builder": "^4.1.0",
     "mapnik": "^3.7.2",
     "sql-escape-string": "^1.1.0",
     "xml2js": "^0.4.19"
+  },
+  "optionalDependencies": {
+    "aws-sdk": "^2.290.0"
   }
 }
