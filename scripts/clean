@@ -11,7 +11,7 @@ if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
         usage
     else
         # Remove build artifacts from local machine
-        docker-compose run tiler rm -rf bin/ node_modules/
+        docker-compose run --no-deps tiler rm -rf bin/ node_modules/
 
         # Stop containers and shut down the network
         docker-compose down --volumes

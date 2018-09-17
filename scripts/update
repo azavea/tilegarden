@@ -15,9 +15,7 @@ then
         usage
     else
         # Build containers.
-        docker-compose \
-            -f docker-compose.yml \
-            build
+        docker-compose build
 
         # Download sample data if flag is set
         if [ "${1:-}" = "--download" ]
