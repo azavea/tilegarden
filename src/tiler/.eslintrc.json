@@ -12,6 +12,7 @@
     "camelcase": 2,
     "vars-on-top": 2,
     "strict": 2,
-    "max-statements": ["error", 50]
+    "max-statements": ["error", 50],
+    "import/no-extraneous-dependencies": ["error", {"optionalDependencies": true}]
   }
 }
