@@ -27,13 +27,13 @@ function main() {
 
     if [ "${1}" = "start" ]
     then
-        docker-compose up
+        docker-compose up tiler
     elif [ "${1}" = "stop" ]
     then
         docker-compose stop
     elif [ "${1}" = "restart" ]
     then
-        docker-compose restart
+        docker-compose restart tiler
     elif [ "${1}" = "status" ]
     then
         docker-compose ps

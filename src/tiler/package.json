@@ -27,7 +27,7 @@
     "deploy": "yarn transpile && claudia update ${LAMBDA_TIMEOUT:+--timeout ${LAMBDA_TIMEOUT}} ${LAMBDA_MEMORY:+--memory ${LAMBDA_MEMORY}} ${LAMBDA_SECURITY_GROUPS:+--security-group-ids ${LAMBDA_SECURITY_GROUPS}} ${LAMBDA_SUBNETS:+--subnet-ids ${LAMBDA_SUBNETS}}",
     "deploy-new": "yarn transpile && claudia create --api-module bin/api --name ${PROJECT_NAME} --region ${LAMBDA_REGION} ${LAMBDA_ROLE:+--role ${LAMBDA_ROLE}} ${LAMBDA_TIMEOUT:+--timeout ${LAMBDA_TIMEOUT}} ${LAMBDA_MEMORY:+--memory ${LAMBDA_MEMORY}} ${LAMBDA_SECURITY_GROUPS:+--security-group-ids ${LAMBDA_SECURITY_GROUPS}} ${LAMBDA_SUBNETS:+--subnet-ids ${LAMBDA_SUBNETS}} && yarn parse-id",
     "destroy": "claudia destroy",
-    "dev": "nodemon -e js,mss,json,mml,mss --ignore bin/ --ignore '*.temp.mml' --exec yarn local",
+    "dev": "nodemon -e js,mss,json,mml,mss --ignore bin/ --ignore '*.*.mml' --exec yarn local",
     "lint": "eslint src",
     "local": "yarn transpile && node --inspect=0.0.0.0:9229 -- node_modules/claudia-local-api/bin/claudia-local-api --abbrev 300 --api-module bin/api | bunyan -o short",
     "parse-id": "jq -r '.api.id' claudia.json > .api-id",
@@ -44,6 +44,7 @@
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.12.0",
+    "handlebars-cmd": "^0.1.4",
     "jest": "^23.2.0",
     "nodemon": "^1.17.5",
     "rewire": "^4.0.1"

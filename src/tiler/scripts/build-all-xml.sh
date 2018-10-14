@@ -14,7 +14,7 @@ function main() {
     for file in $(echo "${1}/*")
     do
         ext="${file#*.}"
-        if [ "$ext" == "mml" ]; then
+        if [ "$ext" == "json" ]; then
             # get output path
             filename="${file##*/}"
             base="${filename%%.*}"

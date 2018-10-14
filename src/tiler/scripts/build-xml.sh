@@ -6,16 +6,20 @@
 # version of carto installed on the docker container.
 
 function main() {
-    tempFile="${1%%.*}.temp.mml"
+    base="${1%%.*}"
+    rendered="${base}.rendered.mml"
+    filled="${base}.filled.mml"
+
+    handlebars "${1}" < /home/tiler/src/config/map-config.mml.hbs > "${rendered}"
 
     # fill in environment variables
-    node scripts/template-vars.js "${1}" > ${tempFile}
+    node scripts/template-vars.js "${rendered}" > "${filled}"
 
     # compile with carto
-    carto ${tempFile}
+    carto "${filled}"
 
     # clean up
-    rm ${tempFile}
+    rm "${rendered}" "${filled}"
 }
 
 main "${1}" "${2}"

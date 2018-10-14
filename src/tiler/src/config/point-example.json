@@ -1,0 +1,56 @@
+{
+    "stylesheet": "point-example-style.mss",
+    "tables": [
+        {
+            "name": "PWD",
+            "geometry": "point",
+            "srs": "+proj=longlat +datum=WGS84 +no_defs",
+            "table": "(select geom,owner,inlettype from inlets where owner = 'PWD') as q"
+        }, {
+            "name": "AIRPRT",
+            "geometry": "point",
+            "srs": "+proj=longlat +datum=WGS84 +no_defs",
+            "table": "(select geom,owner,inlettype from inlets where owner = 'AIRPRT') as q"
+        }, {
+            "name": "STATE",
+            "geometry": "point",
+            "srs": "+proj=longlat +datum=WGS84 +no_defs",
+            "table": "(select geom,owner,inlettype from inlets where owner = 'STATE') as q"
+        }, {
+            "name": "PARK",
+            "geometry": "point",
+            "srs": "+proj=longlat +datum=WGS84 +no_defs",
+            "table": "(select geom,owner,inlettype from inlets where owner = 'PARK') as q"
+        }, {
+            "name": "LM",
+            "geometry": "point",
+            "srs": "+proj=longlat +datum=WGS84 +no_defs",
+            "table": "(select geom,owner,inlettype from inlets where owner = 'LM') as q"
+        }, {
+            "name": "FEDERAL",
+            "geometry": "point",
+            "srs": "+proj=longlat +datum=WGS84 +no_defs",
+            "table": "(select geom,owner,inlettype from inlets where owner = 'FEDERAL') as q"
+        }, {
+            "name": "PRIV",
+            "geometry": "point",
+            "srs": "+proj=longlat +datum=WGS84 +no_defs",
+            "table": "(select geom,owner,inlettype from inlets where owner = 'PRIV') as q"
+        }, {
+            "name": "CHEL",
+            "geometry": "point",
+            "srs": "+proj=longlat +datum=WGS84 +no_defs",
+            "table": "(select geom,owner,inlettype from inlets where owner = 'CHEL') as q"
+        }, {
+            "name": "USNAVY",
+            "geometry": "point",
+            "srs": "+proj=longlat +datum=WGS84 +no_defs",
+            "table": "(select geom,owner,inlettype from inlets where owner = 'USNAVY') as q"
+        }, {
+            "name": "PRIVPWDMAINT",
+            "geometry": "point",
+            "srs": "+proj=longlat +datum=WGS84 +no_defs",
+            "table": "(select geom,owner,inlettype from inlets where owner = 'PRIVPWDMAINT') as q"
+        }
+    ]
+}

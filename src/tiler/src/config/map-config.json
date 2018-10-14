@@ -1,0 +1,21 @@
+{
+    "tables": [
+        {
+            "name": "street_centerline",
+            "geometry": "linestring",
+            "srs": "+proj=lcc +lat_1=40.96666666666667 +lat_2=39.93333333333333 +lat_0=39.33333333333334 +lon_0=-77.75 +x_0=600000 +y_0=0 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs",
+            "table": "street_centerline"
+        }, {
+            "name": "pwd_parcels",
+            "geometry": "polygon",
+            "srs": "+proj=lcc +lat_1=40.96666666666667 +lat_2=39.93333333333333 +lat_0=39.33333333333334 +lon_0=-77.75 +x_0=600000 +y_0=0 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs",
+            "table": "pwd_parcels"
+
+        }, {
+            "name": "inlets",
+            "geometry": "point",
+            "srs": "+proj=longlat +datum=WGS84 +no_defs",
+            "table": "inlets"
+        }
+    ]
+}
