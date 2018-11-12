@@ -17,7 +17,7 @@ resource "aws_s3_bucket" "tile_cache" {
         "HttpErrorCodeReturnedEquals": "404"
       },
       "Redirect": {
-        "HostName" : "${local.api_hostname}",
+        "HostName" : "${aws_cloudfront_distribution.tilegarden_proxy.domain_name}",
         "HttpRedirectCode" : "302",
         "Protocol" : "https",
         "ReplaceKeyPrefixWith": "latest/"
