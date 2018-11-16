@@ -25,11 +25,11 @@ const HTML_RESPONSE = { success: { contentType: 'text/html' } }
 // Converts a req object to a set of coordinates
 const processCoords = (req) => {
     // Handle url params
-    const z = Number(req.pathParams.z)
-    const x = Number(req.pathParams.x)
+    const z = Number(req.pathParameters.z)
+    const x = Number(req.pathParameters.x)
 
     // strip .png off of y if necessary
-    const preY = req.pathParams.y
+    const preY = req.pathParameters.y
     const y = Number(preY.substr(0, preY.lastIndexOf('.')) || preY)
 
     // Check type of coords
@@ -42,12 +42,13 @@ const processCoords = (req) => {
 
 // Makes sure utf fields exist and returns them in the correct format
 const processUTFQuery = (req) => {
-    if (req.queryString.utf || req.queryString.fields || req.queryString.grid) {
+    if (req.queryStringParameters.utf || req.queryStringParameters.fields ||
+        req.queryStringParameters.grid) {
         /* eslint-disable-next-line quotes */
         throw HTTPError("Invalid argument, did you mean '&utfFields='?", 400)
     }
 
-    const queryString = req.queryString.utfFields
+    const queryString = req.queryStringParameters.utfFields
     if (!queryString) throw HTTPError('Error: UTF grid missing field query!', 400)
 
     return queryString.split(',')
@@ -56,8 +57,9 @@ const processUTFQuery = (req) => {
 // Returns a properly formatted list of layers
 // or an empty list if there are none
 const processLayers = (req) => {
-    if (req.queryString.layers) return JSON.parse(req.queryString.layers)
-    else if (req.queryString.layer || req.queryString.filter || req.queryString.filters) {
+    if (req.queryStringParameters.layers) return JSON.parse(req.queryStringParameters.layers)
+    else if (req.queryStringParameters.layer || req.queryStringParameters.filter ||
+            req.queryStringParameters.filters) {
         /* eslint-disable-next-line quotes */
         throw HTTPError("Invalid argument, did you mean '&layers='?", 400)
     }
@@ -67,12 +69,12 @@ const processLayers = (req) => {
 
 // Parses out the configuration specifications
 const processConfig = req => ({
-    s3bucket: req.queryString.s3bucket,
-    config: req.queryString.config,
+    s3bucket: req.queryStringParameters.s3bucket,
+    config: req.queryStringParameters.config,
 })
 
 // Create new lambda API
-const api = new APIBuilder()
+const api = new APIBuilder({ requestFormat: 'AWS_PROXY' })
 
 // Handles error by returning an API response object
 const handleError = (e) => {
