@@ -3,6 +3,7 @@
  */
 
 import APIBuilder from 'claudia-api-builder'
+import aws from 'aws-sdk'
 
 import { imageTile, utfGrid, vectorTile, createMap } from './tiler'
 import HTTPError from './util/error-builder'
@@ -87,6 +88,28 @@ const handleError = (e) => {
     )
 }
 
+const writeToS3 = (img, req) => {
+    const s3bucket = process.env.CACHE_BUCKET
+    if (s3bucket) {
+        const path = [req.requestContext.resourcePath.split('/')[1],
+            ...Object.values(req.pathParameters)].join('/')
+        const queryString = Object.entries(req.queryStringParameters)
+            .map(pair => pair.join('=')).join('&')
+        const key = [path, queryString].join('?')
+        /* eslint-disable-next-line no-console */
+        console.log(`Uploading to S3: {key}`)
+
+        new aws.S3().putObject({
+            Bucket: s3bucket,
+            Key: key,
+            Body: img,
+        }, (err) => {
+            /* eslint-disable-next-line no-console */
+            if (err) console.error('Error uploading to S3:', err)
+        })
+    }
+}
+
 // Get tile for some zxy bounds
 api.get(
     '/tile/{z}/{x}/{y}',
@@ -96,7 +119,9 @@ api.get(
             const layers = processLayers(req)
             const configOptions = processConfig(req)
 
-            return imageTile(createMap(z, x, y, layers, configOptions))
+            const tilePromise = imageTile(createMap(z, x, y, layers, configOptions))
+            tilePromise.then(img => writeToS3(img, req))
+            return tilePromise
                 .then(img => new APIBuilder.ApiResponse(img, IMAGE_HEADERS, 200))
                 .catch(handleError)
         } catch (e) {

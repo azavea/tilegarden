@@ -1,5 +1,5 @@
 locals {
-  cache_bucket_name = "${lower("${var.source_name}")}-cache"
+  cache_bucket_name = "${var.source_name}-cache"
   api_hostname = "${var.source_id}.execute-api.${var.region}.amazonaws.com"
 }
 

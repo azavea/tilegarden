@@ -24,6 +24,7 @@ services:
       - DEV_TILEGARDEN_DB=postgres
       - DEV_TILEGARDEN_HOST=database.lambnik.azavea.com
       - PROJECT_NAME=${PROJECT_NAME}-${USER}
+      - CACHE_BUCKET=${PROJECT_NAME}-${USER}-cache-local
     env_file: .env
     links:
       - database:database.lambnik.azavea.com
