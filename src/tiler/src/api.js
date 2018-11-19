@@ -79,7 +79,6 @@ const api = new APIBuilder({ requestFormat: 'AWS_PROXY' })
 
 // Handles error by returning an API response object
 const handleError = (e) => {
-    /* eslint-disable-next-line no-console */
     console.error(e)
     return new APIBuilder.ApiResponse(
         { message: e.message || e.toString() },

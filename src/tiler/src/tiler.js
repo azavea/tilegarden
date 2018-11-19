@@ -3,8 +3,6 @@
  * map drawing functionality
  */
 
-/* eslint-disable no-console */
-
 import mapnik from 'mapnik'
 import path from 'path'
 import aws from 'aws-sdk'
