@@ -88,26 +88,38 @@ const handleError = (e) => {
     )
 }
 
-const writeToS3 = (img, req) => {
-    const s3bucket = process.env.CACHE_BUCKET
-    if (s3bucket) {
-        const path = [req.requestContext.resourcePath.split('/')[1],
-            ...Object.values(req.pathParameters)].join('/')
-        const queryString = Object.entries(req.queryStringParameters)
-            .map(pair => pair.join('=')).join('&')
-        const key = [path, queryString].join('?')
-        /* eslint-disable-next-line no-console */
-        console.log(`Uploading to S3: {key}`)
+/* Uploads a tile to the S3 cache, using its request path as a key
+ *
+ * Does nothing unless there's a CACHE_BUCKET set in the environment.
+ * Returns the tile again for chaining.
+ * 
+ * Theoretically it should be possible to run the upload in parallel and not make the request
+ * wait for it before returning the tile, but in fact the process gets killed when the main promise
+ * resolves so the upload doesn't manage to finish.
+ */
+const writeToS3 = (tile, req) => {
+    const s3CacheBucket = process.env.CACHE_BUCKET
+    if (s3CacheBucket) {
+        let key = req.path
+        // API Gateway includes a 'path' property but claudia-local-api doesn't, currently,
+        // so this reconstructs it
+        if (!key) {
+            const { z, x, y } = req.pathParameters
+            const tileType = req.requestContext.resourcePath.split('/')[1]
+            key = `${tileType}/${z}/${x}/${y}`
+        }
 
-        new aws.S3().putObject({
-            Bucket: s3bucket,
+        const upload = new aws.S3().putObject({
+            Bucket: s3CacheBucket,
             Key: key,
-            Body: img,
-        }, (err) => {
-            /* eslint-disable-next-line no-console */
-            if (err) console.error('Error uploading to S3:', err)
+            Body: tile,
         })
+        return upload.promise().then(() => {
+            console.debug(`Uploaded tile to S3: ${key}`)
+            return tile
+        }).catch(err => console.error('Error uploading to S3:', err))
     }
+    return tile
 }
 
 // Get tile for some zxy bounds
@@ -119,10 +131,9 @@ api.get(
             const layers = processLayers(req)
             const configOptions = processConfig(req)
 
-            const tilePromise = imageTile(createMap(z, x, y, layers, configOptions))
-            tilePromise.then(img => writeToS3(img, req))
-            return tilePromise
-                .then(img => new APIBuilder.ApiResponse(img, IMAGE_HEADERS, 200))
+            return imageTile(createMap(z, x, y, layers, configOptions))
+                .then(tile => writeToS3(tile, req))
+                .then(tile => new APIBuilder.ApiResponse(tile, IMAGE_HEADERS, 200))
                 .catch(handleError)
         } catch (e) {
             return handleError(e)
@@ -143,7 +154,8 @@ api.get(
             const configOptions = processConfig(req)
 
             return utfGrid(createMap(z, x, y, layers, configOptions), utfFields)
-                .then(g => new APIBuilder.ApiResponse(g, UTF_HEADERS, 200))
+                .then(tile => writeToS3(tile, req))
+                .then(tile => new APIBuilder.ApiResponse(tile, UTF_HEADERS, 200))
                 .catch(handleError)
         } catch (e) {
             return handleError(e)
@@ -171,7 +183,8 @@ api.get(
             const configOptions = processConfig(req)
 
             return vectorTile(createMap(z, x, y, layers, configOptions), z, x, y)
-                .then(vector => new APIBuilder.ApiResponse(vector, VECTOR_HEADERS, 200))
+                .then(tile => writeToS3(tile, req))
+                .then(tile => new APIBuilder.ApiResponse(tile, VECTOR_HEADERS, 200))
                 .catch(handleError)
         } catch (e) {
             return handleError(e)
