@@ -4,15 +4,16 @@
   },
   "extends": "airbnb-base",
   "rules": {
-    "semi": [2, "never"],
-    "no-unexpected-multiline": 2,
-    "indent": ["error", 4],
-    "max-len": ["error", 100, { "ignoreComments": true}],
-    "quotes": ["error", "single"],
     "camelcase": 2,
-    "vars-on-top": 2,
-    "strict": 2,
+    "indent": ["error", 4],
+    "import/no-extraneous-dependencies": ["error", {"optionalDependencies": true}],
+    "no-console": 0,
+    "no-unexpected-multiline": 2,
+    "max-len": ["error", 100, { "ignoreComments": true}],
     "max-statements": ["error", 50],
-    "import/no-extraneous-dependencies": ["error", {"optionalDependencies": true}]
+    "quotes": ["error", "single"],
+    "semi": [2, "never"],
+    "strict": 2,
+    "vars-on-top": 2
   }
 }

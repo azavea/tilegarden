@@ -81,7 +81,6 @@ const api = new APIBuilder()
 
 // Handles error by returning an API response object
 const handleError = (e) => {
-    /* eslint-disable-next-line no-console */
     console.error(e)
     return new APIBuilder.ApiResponse(
         { message: e.message || e.toString() },

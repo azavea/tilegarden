@@ -3,8 +3,6 @@
  * map drawing functionality
  */
 
-/* eslint-disable no-console */
-
 const mapnik = require('mapnik')
 const path = require('path')
 const aws = require('aws-sdk')
