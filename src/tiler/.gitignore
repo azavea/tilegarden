@@ -2,9 +2,8 @@
 claudia.json
 .api-id
 
-# Ignore the folder of transpiled es6
-/bin/
-
 #Ignore coverage data from jest
 /coverage/
 
+# Ignore generated xml files
+src/config/*.xml
