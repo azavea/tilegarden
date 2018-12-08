@@ -19,6 +19,8 @@ const HTTPError = require('./util/error-builder')
 const TILE_HEIGHT = 256
 const TILE_WIDTH = 256
 
+const DEFAULT_CONFIG_FILENAME = 'map-config.xml'
+
 // Register plugins
 mapnik.register_default_input_plugins()
 
@@ -38,7 +40,7 @@ const postgisFilter = (e) => {
  * @returns {Promise<any>}
  */
 const fetchMapFile = (options) => {
-    const { s3bucket, config = 'map-config.xml' } = options
+    const { s3bucket, config = DEFAULT_CONFIG_FILENAME } = options
 
     // If an s3 bucket is specified, treat config as an object key and attempt to fetch
     if (s3bucket) {
@@ -58,7 +60,13 @@ const fetchMapFile = (options) => {
         __dirname,
         `config/${config}${path.extname(config) !== '.xml' ? '.xml' : ''}`,
     )
-    return readFile(configName, 'utf-8')
+    return readFile(configName, 'utf-8').catch((err) => {
+        if (err.code === 'ENOENT' && config === DEFAULT_CONFIG_FILENAME) {
+            /* eslint-disable-next-line no-param-reassign */
+            err.message = 'Error: No default configuration. Must provide a config= parameter.'
+        }
+        throw err
+    })
 }
 
 /**
