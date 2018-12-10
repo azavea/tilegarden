@@ -66,3 +66,7 @@ typings/
 
 # configs, if generated
 transpiled-configs/
+
+#demo html pages, if generated
+demo/*
+index.html

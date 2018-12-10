@@ -1,0 +1,56 @@
+extends ../../components/layout.pug
+
+mixin selectorOption(option)
+    option(value=option.value)= option.text
+
+block vars
+    - var pageTitle = 'Vector Tiles'
+    -
+        var options = [
+            {
+                value: 'inlets',
+                text: 'Points'
+            },
+            {
+                value: 'street_centerline',
+                text: 'Lines'
+            },
+            {
+                value: 'pwd_parcels',
+                text: 'Polygons'
+            }
+        ]
+
+block scripts
+    include ../../components/mapbox-scripts.pug
+    script(src='./scripts/vector.js')
+
+block content
+    h2.display-4 Vector Tiles
+    p.lead
+        | Serve your geospatial data as
+        |
+        a(href=href="https://www.mapbox.com/vector-tiles/") Mapbox Vector Tiles
+        |
+        | for client-side styling and manipulation.
+    .row
+        .m-auto
+            code#urlExample https://yourtiles.cloudfront.net/vector/{z}/{x}/{y}.png
+        .col-8
+            figure.figure
+                .figure-img#map
+                figcaption.figure-caption#dataDesc
+                    | This point layer contains all the wastewater and stormwater inlets in Philadelphia with latitude and longitude coordinates. |
+                    |
+                    a(href="https://www.opendataphilly.org/dataset/water-inlets") City of Philadelphia
+        .col
+            .form-group
+                label(for='selector') Data set:
+                select.custom-select#selector
+                    each option in options
+                        +selectorOption(option)
+            .form-group
+                label(for='stylebox') Style
+                textarea#stylebox.form-control
+            div
+                button.btn.btn-primary#btnChangeStyle Set style

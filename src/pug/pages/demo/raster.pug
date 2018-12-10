@@ -1,0 +1,51 @@
+extends ../../components/layout.pug
+
+mixin selectorOption(option)
+    option(value=option.value)= option.text
+
+block vars
+    - var pageTitle = 'Raster Tiles'
+    -
+        var options = [
+            {
+                value: 'inlets',
+                text: 'Points'
+            },
+            {
+                value: 'street_centerline',
+                text: 'Lines'
+            },
+            {
+                value: 'pwd_parcels',
+                text: 'Polygons'
+            }
+        ]
+
+block scripts
+    include ../../components/leaflet-scripts.pug
+    script(src='./scripts/raster.js')
+
+block content
+    h2.display-4 Raster Tiles
+    p.lead
+        | Serve your geospatial data as raster tiles, specified and styled via
+        |
+        a(href='https://cartocss.readthedocs.io/en/latest/index.html') CartoCSS
+        | .
+    .row
+        .m-auto
+            code#urlExample https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png
+        .col-8
+            figure.figure
+                .figure-img#map
+                figcaption.figure-caption#dataDesc
+                    | This point layer contains all the wastewater and stormwater inlets in Philadelphia with latitude and longitude coordinates. |
+                    |
+                    a(href="https://www.opendataphilly.org/dataset/water-inlets") City of Philadelphia
+        .col
+            .form-group
+                label(for='selector') Data set:
+                select.custom-select#selector
+                    each option in options
+                        +selectorOption(option)
+

@@ -1,0 +1,62 @@
+-
+    var pageList = [
+        {
+            path: 'raster.html',
+            title: 'Raster Tiles'
+        },
+        {
+            path: 'vector.html',
+            title: 'Vector Tiles'
+        },
+        {
+            path: 'layer-filter.html',
+            title: 'Queryable Layers'
+        },
+        {
+            path: 'client-filter.html',
+            title: 'Client-Side Filtering'
+        },
+        {
+            path: 'utf-grid.html',
+            title: 'UTF Grids'
+        }
+    ]
+- var onHomepage = pageTitle === 'Home'
+- var relPath = onHomepage ? 'demo/' : ''
+
+mixin homeLink()
+    if onHomepage
+        li.nav-item.active
+            a.nav-link(href='#') Home
+    else
+        li.nav-item
+            a.nav-link(href='../index.html') Home
+
+mixin dropdownItem(page)
+    - var path = pageTitle === page.name ? '#' : relPath + page.path
+    a.dropdown-item(href=path)= page.title
+
+header
+    .container
+        nav.navbar.navbar-expand-sm.navbar-light.bg-light
+            button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbar')
+                span.navbar-toggler-icon
+
+            .collapse.navbar-collapse#navbar
+                ul.navbar-nav.mr-auto
+                    +homeLink()
+                    li.nav-item.dropdown
+                        - var dropdownClasses = "nav-link dropdown-toggle" + (onHomepage ? '' : ' active')
+                        a#demoDropdown(href='#' role='button' data-toggle='dropdown' class=dropdownClasses) Demo
+                        .dropdown-menu
+                            each page in pageList
+                                +dropdownItem(page)
+                    li.nav-item
+                        a.nav-link(href='https://github.com/azavea/tilegarden/blob/develop/README.md') Documentation
+                a.navbar-brand(href='https://github.com/azavea/tilegarden/') View on GitHub
+                a.github-button(
+                    href='https://github.com/azavea/tilegarden/archive/master.zip'
+                    data-icon='octicon-cloud-download'
+                    data-size='large'
+                    aria-label='Download azavea/tilegarden on GitHub'
+                ) Download

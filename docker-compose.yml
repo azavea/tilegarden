@@ -44,6 +44,14 @@ services:
       - ./src/terraform:/home/terraform
       - $HOME/.aws:/root/.aws:ro
 
+  pug:
+    build:
+      context: ./src/pug
+      dockerfile: Dockerfile
+    volumes:
+      - ./src/pug:/home/pug
+      - ./src/pug/out:/home/pug/out
+
 volumes:
   node_modules:
   bin:
