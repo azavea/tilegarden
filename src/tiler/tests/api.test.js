@@ -1,5 +1,5 @@
-import rewire from 'rewire'
-const api = rewire('../bin/api'),
+const rewire = require('rewire')
+const api = rewire('../src/api'),
     processCoords = api.__get__('processCoords'),
     processUTFQuery = api.__get__('processUTFQuery'),
     processLayers = api.__get__('processLayers')

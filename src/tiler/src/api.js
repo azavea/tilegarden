@@ -4,7 +4,12 @@
 
 const APIBuilder = require('claudia-api-builder')
 
-const { imageTile, utfGrid, vectorTile, createMap } = require('./tiler')
+const {
+    imageTile,
+    utfGrid,
+    vectorTile,
+    createMap,
+} = require('./tiler')
 const HTTPError = require('./util/error-builder')
 
 const IMAGE_HEADERS = {

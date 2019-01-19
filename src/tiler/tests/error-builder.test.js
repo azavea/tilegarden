@@ -1,4 +1,4 @@
-import HTTPError from '../bin/util/error-builder'
+const HTTPError = require('../src/util/error-builder')
 
 describe('Error builder', () => {
     test('Check that an HTTPError gets built properly', () => {
