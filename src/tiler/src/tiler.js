@@ -22,22 +22,34 @@ const DEFAULT_CONFIG_FILENAME = 'map-config.xml'
 // Register plugins
 mapnik.register_default_input_plugins()
 
+/* Utility function to correctly promisify object methods
+ *
+ * Many methods use 'this' in a way that makes them break when you try to use util.promisify
+ * on them. There's a workaround, though (see https://github.com/ljharb/util.promisify/issues/12)
+ * This is a convenience function that implements it.
+ * The resulting syntax, `promisifyMethod(object, 'method')` is a bit weird, but still seems better
+ * than having to do object.method.bind(object) everywhere.
+ */
+function promisifyMethod(object, method) {
+    return promisify(object[method].bind(object))
+}
+
 // If there's a problem with the database, the details of that shouldn't be exposed to the user.
 const postgisFilter = (e) => {
     console.error(e)
     if (e.toString().indexOf('Postgis Plugin') > -1) {
-        throw HTTPError('Postgis Error', 500)
+        return HTTPError('Postgis Error', 500)
     }
-    throw e
+    return e
 }
 
 /**
  * Based off the config options object, search for a config.xml
  * file and return it as a Promise that evaluates to an XML string.
  * @param options
- * @returns {Promise<any>}
+ * @returns {Promise<string>}
  */
-const fetchMapFile = (options) => {
+function fetchMapFile(options) {
     const { s3bucket, config = DEFAULT_CONFIG_FILENAME } = options
 
     // If an s3 bucket is specified, treat config as an object key and attempt to fetch
@@ -69,127 +81,75 @@ const fetchMapFile = (options) => {
 
 /**
  * Creates a map based on configured datasource and style information
- * @param z
- * @param x
- * @param y
- * @returns {Promise<mapnik.Map>}
  */
-const createMap = (mapConfig) => {
+async function createMap(mapConfig) {
     const { z, x, y, layers, configOptions } = mapConfig
     // Create a webmercator map with specified bounds
     const map = new mapnik.Map(TILE_WIDTH, TILE_HEIGHT)
     map.bufferSize = 64
 
-    // Load map specification from xml string
-    return fetchMapFile(configOptions)
-        .then(xml => filterVisibleLayers(xml, layers))
-        .then(xml => new Promise((resolve, reject) => {
-            map.fromString(xml, (err, result) => {
-                if (err) {
-                    reject(err)
-                } else {
-                    /* eslint-disable-next-line no-param-reassign */
-                    result.extent = bbox(z, x, y, TILE_HEIGHT, result.srs)
-
-                    resolve(result)
-                }
-            })
-        }))
-        .catch(postgisFilter)
+    // Load map specificationu from xml string
+    try {
+        const mapConfigXml = await fetchMapFile(configOptions)
+        const filteredMapConfigXml = await filterVisibleLayers(mapConfigXml, layers)
+        const configuredMap = await promisifyMethod(map, 'fromString')(filteredMapConfigXml)
+        configuredMap.extent = bbox(z, x, y, TILE_HEIGHT, configuredMap.srs)
+        return configuredMap
+    } catch (err) {
+        throw postgisFilter(err)
+    }
 }
 
 /**
- * Returns a promise that renders a map tile for a given map coordinate
- * @param z
- * @param x
- * @param y
- * @returns {Promise<any>}
+ * Renders a map tile for a given map coordinate
  */
-module.exports.imageTile = (mapConfig) => {
+module.exports.imageTile = async (mapConfig) => {
     // create mapnik image
     const img = new mapnik.Image(TILE_WIDTH, TILE_HEIGHT)
 
     // render map to image
-    // return asynchronous rendering method as a promise
-    const map = createMap(mapConfig)
-    return map
-        .then(m => new Promise((resolve, reject) => {
-            m.render(img, {}, (err, result) => {
-                if (err) reject(err)
-                else resolve(result)
-            })
-        }))
-        .then(renderedTile => new Promise((resolve, reject) => {
-            renderedTile.encode('png', {}, (err, result) => {
-                if (err) reject(err)
-                else resolve(result)
-            })
-        }))
-        .catch(postgisFilter)
+    try {
+        const map = await createMap(mapConfig)
+        const tile = await promisifyMethod(map, 'render')(img, {})
+        const encoded = await promisifyMethod(tile, 'encode')('png', {})
+        return encoded
+    } catch (err) {
+        throw postgisFilter(err)
+    }
 }
 
 /**
- * Return a promise that renders a utf grid for a given map coordinate
- * @param z
- * @param x
- * @param y
- * @returns {Promise<any>}
+ * Renders a utf grid for a given map coordinate
  */
-module.exports.utfGrid = (mapConfig, utfFields) => {
+module.exports.utfGrid = async (mapConfig, utfFields) => {
     const grid = new mapnik.Grid(TILE_WIDTH, TILE_HEIGHT)
-
-    const map = createMap(mapConfig)
-    return map
-        .then(m => new Promise((resolve, reject) => {
-            m.render(grid, {
-                layer: 0,
-                fields: utfFields,
-            }, (err, rendered) => {
-                if (err) reject(err)
-                else resolve(rendered)
-            })
-        }))
-        .then(g => new Promise((resolve, reject) => {
-            g.encode({
-                resolution: 4,
-            }, (err, result) => {
-                if (err) reject(err)
-                else resolve(result)
-            })
-        }))
-        .catch(postgisFilter)
+    const map = await createMap(mapConfig)
+    try {
+        const tile = await promisifyMethod(map, 'render')(grid, { layer: 0, fields: utfFields })
+        const encoded = await promisifyMethod(tile, 'encode')({ resolution: 4 })
+        return encoded
+    } catch (err) {
+        throw postgisFilter(err)
+    }
 }
 
 /**
- * Return a promise that resolves to a vector tile of the input
- * coordinates, compressed as a gzip
- * @param z
- * @param x
- * @param y
- * @param layers
- * @returns {Promise<mapnik.Buffer>}
+ * Renders a vector tile of the input coordinates, compressed as a gzip
  */
-module.exports.vectorTile = (mapConfig, z, x, y) => {
+module.exports.vectorTile = async (mapConfig, z, x, y) => {
     const vt = new mapnik.VectorTile(z, x, y)
 
-    const map = createMap(mapConfig)
-    return map
-        .then(m => new Promise((resolve, reject) => {
-            m.render(vt, (err, tile) => {
-                if (err) reject(err)
-                else resolve(tile)
-            })
-        }))
-        .then(tile => new Promise((resolve, reject) => {
-            const compressionOptions = {
-                compression: 'gzip',
-                level: 9,
-                strategy: 'FILTERED',
-            }
-            tile.getData(compressionOptions, (err, data) => {
-                if (err) reject(err)
-                else resolve(data)
-            })
-        }))
-        .catch(postgisFilter)
+    const map = await createMap(mapConfig)
+    try {
+        const tile = await promisifyMethod(map, 'render')(vt)
+        const compressionOptions = {
+            compression: 'gzip',
+            level: 9,
+            strategy: 'FILTERED',
+        }
+        const compressed = await promisifyMethod(tile, 'getData')(compressionOptions)
+        return compressed
+    } catch (err) {
+        throw postgisFilter(err)
+    }
 }

@@ -1,22 +1,14 @@
 /**
- * Specifies a promise that accepts a string of XML and resolves
- * to a string of XML where all layers not in the list of enabled
- * layers have their "status" property set to false, excluding them
+ * Accepts a string of XML and filters it to produce a string of XML where all layers not in
+ * the list of enabled layers have their "status" property set to false, excluding them
  * from rendering.
  */
 
-const xmlParser = require('xml2js')
+const { promisify } = require('util')
 const sqlString = require('sql-escape-string')
+const xmlParser = require('xml2js')
 
 const HTTPError = require('./error-builder')
-
-// Promisified conversion of an xml string to a JSON object
-const parsePromise = xmlString => new Promise((resolve, reject) => {
-    xmlParser.parseString(xmlString, (err, result) => {
-        if (err) reject(err)
-        else resolve(result)
-    })
-})
 
 // Determine comparison mode (if more than one parameter)
 const processMode = (mode, i) => {
@@ -124,14 +116,12 @@ const returnToXml = (xmlJson) => {
     return builder.buildObject(xmlJson)
 }
 
-module.exports = (xmlString, enabledLayers) => {
+module.exports = async (xmlString, enabledLayers) => {
     // skip entire process if no layers are to be parsed
     if (!enabledLayers || enabledLayers.length < 1) {
-        return new Promise(resolve => resolve(xmlString))
+        return xmlString
     }
 
-    return parsePromise(xmlString)
-        .then(xmlJson => filter(xmlJson, enabledLayers))
-        .then(returnToXml)
+    const xmlJson = await promisify(xmlParser.parseString)(xmlString)
+    return returnToXml(filter(xmlJson, enabledLayers))
 }
-
