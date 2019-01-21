@@ -47,22 +47,19 @@ const postgisFilter = (e) => {
  * Based off the config options object, search for a config.xml
  * file and return it as a Promise that evaluates to an XML string.
  * @param options
- * @returns {Promise<string>}
+ * @returns XML string
  */
-function fetchMapFile(options) {
+async function fetchMapFile(options) {
     const { s3bucket, config = DEFAULT_CONFIG_FILENAME } = options
 
     // If an s3 bucket is specified, treat config as an object key and attempt to fetch
     if (s3bucket) {
-        return new Promise((resolve, reject) => {
-            new aws.S3().getObject({
-                Bucket: s3bucket,
-                Key: config,
-            }, (err, data) => {
-                if (err) reject(err)
-                else resolve(data.Body.toString())
-            })
+        const s3Client = new aws.S3()
+        const remoteConfigXml = await promisifyMethod(s3Client, 'getObject')({
+            Bucket: s3bucket,
+            Key: config,
         })
+        return remoteConfigXml.Body.toString()
     }
 
     // otherwise, load from the local directory, making sure to add .xml to the file name
@@ -70,13 +67,15 @@ function fetchMapFile(options) {
         __dirname,
         `config/${config}${path.extname(config) !== '.xml' ? '.xml' : ''}`,
     )
-    return readFile(configName, 'utf-8').catch((err) => {
+    try {
+        return await readFile(configName, 'utf-8')
+    } catch (err) {
         if (err.code === 'ENOENT' && config === DEFAULT_CONFIG_FILENAME) {
             /* eslint-disable-next-line no-param-reassign */
             err.message = 'Error: No default configuration. Must provide a config= parameter.'
         }
         throw err
-    })
+    }
 }
 
 /**
