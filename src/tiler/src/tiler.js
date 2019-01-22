@@ -135,7 +135,8 @@ module.exports.utfGrid = async (mapConfig, utfFields) => {
 /**
  * Renders a vector tile of the input coordinates, compressed as a gzip
  */
-module.exports.vectorTile = async (mapConfig, z, x, y) => {
+module.exports.vectorTile = async (mapConfig) => {
+    const { z, x, y } = mapConfig
     const vt = new mapnik.VectorTile(z, x, y)
 
     const map = await createMap(mapConfig)
