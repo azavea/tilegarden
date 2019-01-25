@@ -5,7 +5,7 @@
  * @param status - HTTP status
  * @returns {Error}
  */
-export default (text, status) => {
+module.exports = (text, status) => {
     const error = new Error(text)
     error.http_code = status
     return error

@@ -2,10 +2,15 @@
  * Entrypoint for APIGateway
  */
 
-import APIBuilder from 'claudia-api-builder'
+const APIBuilder = require('claudia-api-builder')
 
-import { imageTile, utfGrid, vectorTile, createMap } from './tiler'
-import HTTPError from './util/error-builder'
+const {
+    imageTile,
+    utfGrid,
+    vectorTile,
+    createMap,
+} = require('./tiler')
+const HTTPError = require('./util/error-builder')
 
 const IMAGE_HEADERS = {
     'Content-Type': 'image/png',
@@ -76,7 +81,6 @@ const api = new APIBuilder()
 
 // Handles error by returning an API response object
 const handleError = (e) => {
-    /* eslint-disable-next-line no-console */
     console.error(e)
     return new APIBuilder.ApiResponse(
         { message: e.message || e.toString() },

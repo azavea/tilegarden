@@ -5,10 +5,10 @@
  * from rendering.
  */
 
-import xmlParser from 'xml2js'
-import sqlString from 'sql-escape-string'
+const xmlParser = require('xml2js')
+const sqlString = require('sql-escape-string')
 
-import HTTPError from './error-builder'
+const HTTPError = require('./error-builder')
 
 // Promisified conversion of an xml string to a JSON object
 const parsePromise = xmlString => new Promise((resolve, reject) => {
@@ -124,7 +124,7 @@ const returnToXml = (xmlJson) => {
     return builder.buildObject(xmlJson)
 }
 
-export default (xmlString, enabledLayers) => {
+module.exports = (xmlString, enabledLayers) => {
     // skip entire process if no layers are to be parsed
     if (!enabledLayers || enabledLayers.length < 1) {
         return new Promise(resolve => resolve(xmlString))

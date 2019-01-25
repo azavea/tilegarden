@@ -3,19 +3,21 @@
  * map drawing functionality
  */
 
-/* eslint-disable no-console */
+const mapnik = require('mapnik')
+const path = require('path')
+const aws = require('aws-sdk')
 
-import mapnik from 'mapnik'
-import path from 'path'
-import aws from 'aws-sdk'
+const { promisify } = require('util')
+const readFile = promisify(require('fs').readFile)
 
-import { readFile } from './util/fs-promise'
-import filterVisibleLayers from './util/layer-filter'
-import bbox from './util/bounding-box'
-import HTTPError from './util/error-builder'
+const filterVisibleLayers = require('./util/layer-filter')
+const bbox = require('./util/bounding-box')
+const HTTPError = require('./util/error-builder')
 
 const TILE_HEIGHT = 256
 const TILE_WIDTH = 256
+
+const DEFAULT_CONFIG_FILENAME = 'map-config.xml'
 
 // Register plugins
 mapnik.register_default_input_plugins()
@@ -36,7 +38,7 @@ const postgisFilter = (e) => {
  * @returns {Promise<any>}
  */
 const fetchMapFile = (options) => {
-    const { s3bucket, config = 'map-config.xml' } = options
+    const { s3bucket, config = DEFAULT_CONFIG_FILENAME } = options
 
     // If an s3 bucket is specified, treat config as an object key and attempt to fetch
     if (s3bucket) {
@@ -56,7 +58,13 @@ const fetchMapFile = (options) => {
         __dirname,
         `config/${config}${path.extname(config) !== '.xml' ? '.xml' : ''}`,
     )
-    return readFile(configName, 'utf-8')
+    return readFile(configName, 'utf-8').catch((err) => {
+        if (err.code === 'ENOENT' && config === DEFAULT_CONFIG_FILENAME) {
+            /* eslint-disable-next-line no-param-reassign */
+            err.message = 'Error: No default configuration. Must provide a config= parameter.'
+        }
+        throw err
+    })
 }
 
 /**
@@ -66,7 +74,7 @@ const fetchMapFile = (options) => {
  * @param y
  * @returns {Promise<mapnik.Map>}
  */
-export const createMap = (z, x, y, layers, configOptions) => {
+module.exports.createMap = (z, x, y, layers, configOptions) => {
     // Create a webmercator map with specified bounds
     const map = new mapnik.Map(TILE_WIDTH, TILE_HEIGHT)
     map.bufferSize = 64
@@ -96,7 +104,7 @@ export const createMap = (z, x, y, layers, configOptions) => {
  * @param y
  * @returns {Promise<any>}
  */
-export const imageTile = (map) => {
+module.exports.imageTile = (map) => {
     // create mapnik image
     const img = new mapnik.Image(TILE_WIDTH, TILE_HEIGHT)
 
@@ -125,7 +133,7 @@ export const imageTile = (map) => {
  * @param y
  * @returns {Promise<any>}
  */
-export const utfGrid = (map, utfFields) => {
+module.exports.utfGrid = (map, utfFields) => {
     const grid = new mapnik.Grid(TILE_WIDTH, TILE_HEIGHT)
 
     return map
@@ -158,7 +166,7 @@ export const utfGrid = (map, utfFields) => {
  * @param layers
  * @returns {Promise<mapnik.Buffer>}
  */
-export const vectorTile = (map, z, x, y) => {
+module.exports.vectorTile = (map, z, x, y) => {
     const vt = new mapnik.VectorTile(z, x, y)
 
     return map

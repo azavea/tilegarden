@@ -16,7 +16,7 @@ then
     then
         usage
     else
-        docker-compose run tiler yarn test
+        docker-compose run --no-deps tiler yarn test
     fi
     exit
 fi

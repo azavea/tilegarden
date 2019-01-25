@@ -120,18 +120,27 @@ function load() {
     fi
 }
 
+function add_index {
+    table=${1}
+    column="geom"
+    ${PSQL} -c "CREATE INDEX IF NOT EXISTS ${table}_${column}_idx \
+                ON ${table} USING GIST (${column})"
+}
+
 function add_table() {
-    if table_exists "${2}"; then
+    filename=${1}
+    table=${2}
+    if table_exists "${table}"; then
         if [ "$force_reload" = true ]; then
-            drop ${tablename}
-            load "${1}" "${2}"
+            drop "${table}"
         else
-            echo "table ${2} exists"
+            echo "table ${table} exists"
+            return
         fi
-    else
-        echo "Loading ${2}"
-        load "${1}" "${2}"
     fi
+    echo "Loading ${table}"
+    load "${filename}" "${table}"
+    add_index "${table}"
 }
 
 
