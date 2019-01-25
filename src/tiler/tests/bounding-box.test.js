@@ -1,4 +1,4 @@
-import bbox from '../bin/util/bounding-box'
+const bbox = require('../src/util/bounding-box')
 
 describe('boundingBox', () => {
     const tileSize = 256,

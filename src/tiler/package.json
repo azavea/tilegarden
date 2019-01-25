@@ -20,27 +20,24 @@
     "url": "https://github.com/azavea/tilegarden.git"
   },
   "files": [
-    "bin"
+    "src"
   ],
   "scripts": {
-    "build-all-xml": "./scripts/build-all-xml.sh src/config bin/config",
-    "deploy": "yarn transpile && claudia update --no-optional-dependencies ${LAMBDA_TIMEOUT:+--timeout ${LAMBDA_TIMEOUT}} ${LAMBDA_MEMORY:+--memory ${LAMBDA_MEMORY}} ${LAMBDA_SECURITY_GROUPS:+--security-group-ids ${LAMBDA_SECURITY_GROUPS}} ${LAMBDA_SUBNETS:+--subnet-ids ${LAMBDA_SUBNETS}}",
-    "deploy-new": "yarn transpile && claudia create --no-optional-dependencies --api-module bin/api --name ${PROJECT_NAME} --region ${LAMBDA_REGION} ${LAMBDA_ROLE:+--role ${LAMBDA_ROLE}} ${LAMBDA_TIMEOUT:+--timeout ${LAMBDA_TIMEOUT}} ${LAMBDA_MEMORY:+--memory ${LAMBDA_MEMORY}} ${LAMBDA_SECURITY_GROUPS:+--security-group-ids ${LAMBDA_SECURITY_GROUPS}} ${LAMBDA_SUBNETS:+--subnet-ids ${LAMBDA_SUBNETS}} && yarn parse-id",
+    "build-all-xml": "./scripts/build-all-xml.sh src/config src/config",
+    "deploy": "yarn compile && claudia update --no-optional-dependencies ${LAMBDA_TIMEOUT:+--timeout ${LAMBDA_TIMEOUT}} ${LAMBDA_MEMORY:+--memory ${LAMBDA_MEMORY}} ${LAMBDA_SECURITY_GROUPS:+--security-group-ids ${LAMBDA_SECURITY_GROUPS}} ${LAMBDA_SUBNETS:+--subnet-ids ${LAMBDA_SUBNETS}}",
+    "deploy-new": "yarn compile && claudia create --no-optional-dependencies --api-module src/api --name ${PROJECT_NAME} --region ${LAMBDA_REGION} ${LAMBDA_ROLE:+--role ${LAMBDA_ROLE}} ${LAMBDA_TIMEOUT:+--timeout ${LAMBDA_TIMEOUT}} ${LAMBDA_MEMORY:+--memory ${LAMBDA_MEMORY}} ${LAMBDA_SECURITY_GROUPS:+--security-group-ids ${LAMBDA_SECURITY_GROUPS}} ${LAMBDA_SUBNETS:+--subnet-ids ${LAMBDA_SUBNETS}} && yarn parse-id",
     "destroy": "claudia destroy",
-    "dev": "nodemon -e js,mss,json,mml,mss --ignore bin/ --ignore '*.temp.mml' --exec yarn local",
+    "dev": "nodemon -e js,mss,json,mml,mss --ignore '*.temp.mml' --exec yarn local",
     "lint": "eslint src",
-    "local": "yarn transpile && node --inspect=0.0.0.0:9229 -- node_modules/claudia-local-api/bin/claudia-local-api --abbrev 300 --api-module bin/api | bunyan -o short",
+    "local": "yarn compile && node --inspect=0.0.0.0:9229 -- node_modules/claudia-local-api/bin/claudia-local-api --abbrev 300 --api-module src/api | bunyan -o short",
     "parse-id": "jq -r '.api.id' claudia.json > .api-id",
     "test": "eslint src && jest --coverage",
-    "transpile": "yarn build-all-xml && babel src -d bin --source-maps inline"
+    "compile": "yarn build-all-xml"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.7.0",
     "bunyan": "^1.8.12",
     "claudia": "^5.0.1",
-    "claudia-local-api": "https://github.com/mattdelsordo/claudia-local-api.git",
+    "claudia-local-api": "https://github.com/azavea/claudia-local-api.git",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.12.0",
@@ -49,7 +46,6 @@
     "rewire": "^4.0.1"
   },
   "dependencies": {
-    "babel-runtime": "6",
     "claudia-api-builder": "^4.1.0",
     "mapnik": "^3.7.2",
     "sql-escape-string": "^1.1.0",

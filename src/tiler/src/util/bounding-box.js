@@ -3,7 +3,7 @@
  * bounding box in the target projection.
  */
 
-import mapnik from 'mapnik'
+const mapnik = require('mapnik')
 
 const R2D = 180 / Math.PI
 
@@ -36,7 +36,7 @@ const pxToLonLat = (px, zoom, tileSize) => {
  * @param projection: as an srs
  * @returns [minX, minY, maxX, maxY]
  */
-export default (zoom, x, y, tileSize, projection) => {
+module.exports = (zoom, x, y, tileSize, projection) => {
     // convert pixels to wgs84 coordinates
     const lowerLeft = [x * tileSize, (y + 1) * tileSize]
     const upperRight = [(x + 1) * tileSize, y * tileSize]
