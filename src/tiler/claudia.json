@@ -6,6 +6,6 @@
   },
   "api": {
     "id": "2wmtql1cd6",
-    "module": "bin/api"
+    "module": "src/api"
   }
 }
