@@ -13,6 +13,7 @@ cd "${REPO_TEMP}"
 
 # checkout gh-pages and merge
 git checkout gh-pages
+echo "Checked out gh-pages@"`git rev-parse --short HEAD`
 echo "Merging with ${CURRENT_BRANCH}"
 git merge "${CURRENT_BRANCH}"
 # make sure there wasn't a merge conflict
@@ -20,16 +21,18 @@ git merge "${CURRENT_BRANCH}"
 # normally, but the actual tests haven't failed
 if [[ $(git ls-files -u) ]]; then
 	echo "WARNING: Merge conflict! This branch must have its conflicts resolved manually before deployment."
-	exit 0
+	exit 1
 fi
 
-# Decrypt .env
-openssl aes-256-cbc -K $encrypted_f456ba71c182_key -iv $encrypted_f456ba71c182_iv -in .env.enc -out .env -d
-
-# push
+# push merged branch
+# GITHUB_TOKEN needs to be in the Travis build environment.
+# It's a "Personal access token" (https://github.com/settings/tokens) with the 'public_repo' scope.
 PUSH_URI="https://${GITHUB_TOKEN}@github.com/azavea/tilegarden.git"
 echo "Pushing to origin"
 git push "${PUSH_URI}" >/dev/null 2>&1 # don't print secrets
+
+# Decrypt .env file. In a separate script so the command can be adjusted on the gh-pages branch.
+./scripts/decrypt-demo-env
 
 # Publish to AWS
 ./scripts/publish
