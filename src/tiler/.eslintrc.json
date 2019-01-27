@@ -11,6 +11,7 @@
     "no-unexpected-multiline": 2,
     "max-len": ["error", 100, { "ignoreComments": true}],
     "max-statements": ["error", 50],
+    "object-curly-newline": ["error", { "consistent": true }],
     "quotes": ["error", "single"],
     "semi": [2, "never"],
     "strict": 2,

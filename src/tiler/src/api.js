@@ -4,12 +4,7 @@
 
 const APIBuilder = require('claudia-api-builder')
 
-const {
-    imageTile,
-    utfGrid,
-    vectorTile,
-    createMap,
-} = require('./tiler')
+const { imageTile, utfGrid, vectorTile } = require('./tiler')
 const HTTPError = require('./util/error-builder')
 
 const IMAGE_HEADERS = {
@@ -97,8 +92,9 @@ api.get(
             const { z, x, y } = processCoords(req)
             const layers = processLayers(req)
             const configOptions = processConfig(req)
+            const mapConfig = { z, x, y, layers, configOptions }
 
-            return imageTile(createMap(z, x, y, layers, configOptions))
+            return imageTile(mapConfig)
                 .then(img => new APIBuilder.ApiResponse(img, IMAGE_HEADERS, 200))
                 .catch(handleError)
         } catch (e) {
@@ -118,8 +114,9 @@ api.get(
             const utfFields = processUTFQuery(req)
             const layers = processLayers(req)
             const configOptions = processConfig(req)
+            const mapConfig = { z, x, y, layers, configOptions }
 
-            return utfGrid(createMap(z, x, y, layers, configOptions), utfFields)
+            return utfGrid(mapConfig, utfFields)
                 .then(g => new APIBuilder.ApiResponse(g, UTF_HEADERS, 200))
                 .catch(handleError)
         } catch (e) {
@@ -146,8 +143,9 @@ api.get(
             const { z, x, y } = processCoords(req)
             const layers = processLayers(req)
             const configOptions = processConfig(req)
+            const mapConfig = { z, x, y, layers, configOptions }
 
-            return vectorTile(createMap(z, x, y, layers, configOptions), z, x, y)
+            return vectorTile(mapConfig)
                 .then(vector => new APIBuilder.ApiResponse(vector, VECTOR_HEADERS, 200))
                 .catch(handleError)
         } catch (e) {
