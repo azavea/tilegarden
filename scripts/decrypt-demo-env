@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Decrypt the .env file used by Travis for demo deployment
+# This is a separate script because the version of deploy-demo.sh that gets run is the one on
+# the branch being built, but we want to be able to change the env variables by pushing to
+# the gh-pages branch, so we need this part to be loaded after the branch is checked out.
+
+echo "Decrypting .env"
+openssl aes-256-cbc -K $encrypted_820f01995192_key -iv $encrypted_820f01995192_iv \
+    -in .env.enc -out .env -d
