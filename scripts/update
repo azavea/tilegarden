@@ -15,7 +15,7 @@ then
         usage
     else
         # Build containers.
-        docker-compose build
+        docker-compose build --pull
 
         # Download sample data if flag is set
         if [ "${1:-}" = "--download" ]

@@ -19,10 +19,10 @@ function main() {
         docker-compose run --rm --no-deps -e NODE_ENV=production tiler yarn deploy
     fi
 
-	# Deploy CloudFront proxy
-	docker-compose run terraform init
-	docker-compose run --rm -e TF_VAR_source_id=$(<src/tiler/.api-id) terraform apply -auto-approve && \
-	echo "Success! Your tiles will be available at the above URL shortly."
+    # Deploy CloudFront proxy
+    docker-compose run terraform init
+    docker-compose run --rm -e TF_VAR_source_id=$(<src/tiler/.api-id) terraform apply -auto-approve && \
+    echo "Success! Your tiles will be available at the above URL shortly."
 }
 
 if [ "${BASH_SOURCE[0]}" = "${0}" ]

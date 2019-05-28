@@ -20,8 +20,8 @@ git merge "${CURRENT_BRANCH}"
 # exit if there's a merge conflict, this can be handled
 # normally, but the actual tests haven't failed
 if [[ $(git ls-files -u) ]]; then
-	echo "WARNING: Merge conflict! This branch must have its conflicts resolved manually before deployment."
-	exit 1
+    echo "WARNING: Merge conflict! This branch must have its conflicts resolved manually before deployment."
+    exit 1
 fi
 
 # push merged branch

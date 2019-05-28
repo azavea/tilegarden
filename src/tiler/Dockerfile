@@ -1,4 +1,4 @@
-FROM node:8.10-slim
+FROM node:8.15-stretch-slim
 
 # Install git for git dependencies
 RUN apt-get update -y
