@@ -10,9 +10,10 @@ const aws = require('aws-sdk')
 const { promisify } = require('util')
 const readFile = promisify(require('fs').readFile)
 
-const filterVisibleLayers = require('./util/layer-filter')
 const bbox = require('./util/bounding-box')
+const filterVisibleLayers = require('./util/layer-filter')
 const HTTPError = require('./util/error-builder')
+const { parseXml, buildXml } = require('./util/xml-tools')
 
 const TILE_HEIGHT = 256
 const TILE_WIDTH = 256
@@ -87,10 +88,12 @@ async function createMap(mapConfig) {
     const map = new mapnik.Map(TILE_WIDTH, TILE_HEIGHT)
     map.bufferSize = 64
 
-    // Load map specificationu from xml string
+    // Load map specification from xml string
     try {
         const mapConfigXml = await fetchMapFile(configOptions)
-        const filteredMapConfigXml = await filterVisibleLayers(mapConfigXml, layers)
+        const xmlJsObj = await parseXml(mapConfigXml)
+        const filteredMapConfigJsObj = await filterVisibleLayers(xmlJsObj, layers)
+        const filteredMapConfigXml = buildXml(filteredMapConfigJsObj)
         const configuredMap = await promisifyMethod(map, 'fromString')(filteredMapConfigXml)
         configuredMap.extent = bbox(z, x, y, TILE_HEIGHT, configuredMap.srs)
         return configuredMap

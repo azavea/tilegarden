@@ -3,6 +3,7 @@ const rewire = require('rewire')
 const filterLayers = require('../src/util/layer-filter')
 const filterer = rewire('../src/util/layer-filter'),
     structureQuery = filterer.__get__('structureQuery')
+const { parseXml, buildXml } = require('../src/util/xml-tools')
 
 describe('structureQuery', () => {
     test('One value', () => {
@@ -156,7 +157,7 @@ describe('structureQuery', () => {
 })
 
 describe('filterLayers', () => {
-    test('Just a string name', () => {
+    test('Just a string name', async () => {
         const layers = ['PWD']
         expect.assertions(1)
 
@@ -175,11 +176,11 @@ describe('filterLayers', () => {
   <Layer name="STATE" status="false"/>
   <Layer name="AIRPRT" status="false"/>
 </Map>`
-
-        return expect(filterLayers(xml, layers)).resolves.toBe(expected)
+        const xmlJson = await parseXml(xml)
+        return expect(filterLayers(xmlJson, layers).then(buildXml)).resolves.toBe(expected)
     })
 
-    test('Several string names', () => {
+    test('Several string names', async () => {
         const layers = ['PWD', 'STATE']
         expect.assertions(1)
 
@@ -199,10 +200,11 @@ describe('filterLayers', () => {
   <Layer name="AIRPRT" status="false"/>
 </Map>`
 
-        return expect(filterLayers(xml, layers)).resolves.toBe(expected)
+        const xmlJson = await parseXml(xml)
+        return expect(filterLayers(xmlJson, layers).then(buildXml)).resolves.toBe(expected)
     })
 
-    test('Just an object name', () => {
+    test('Just an object name', async () => {
         const layers = [{name:'PWD'}]
         expect.assertions(1)
 
@@ -222,10 +224,11 @@ describe('filterLayers', () => {
   <Layer name="AIRPRT" status="false"/>
 </Map>`
 
-        return expect(filterLayers(xml, layers)).resolves.toBe(expected)
+        const xmlJson = await parseXml(xml)
+        return expect(filterLayers(xmlJson, layers).then(buildXml)).resolves.toBe(expected)
     })
 
-    test('Several object names', () => {
+    test('Several object names', async () => {
         const layers = [{name:'PWD'}, {name:'STATE'}]
         expect.assertions(1)
 
@@ -245,10 +248,11 @@ describe('filterLayers', () => {
   <Layer name="AIRPRT" status="false"/>
 </Map>`
 
-        return expect(filterLayers(xml, layers)).resolves.toBe(expected)
+        const xmlJson = await parseXml(xml)
+        return expect(filterLayers(xmlJson, layers).then(buildXml)).resolves.toBe(expected)
     })
 
-    test('Object name + 1 filter', () => {
+    test('Object name + 1 filter', async () => {
         const layers = [{name:'PWD', filters: [{col:'owner', val:'PWD'}]}]
         expect.assertions(1)
 
@@ -276,10 +280,11 @@ describe('filterLayers', () => {
   <Layer name="AIRPRT" status="false"/>
 </Map>`
 
-        return expect(filterLayers(xml, layers)).resolves.toBe(expected)
+        const xmlJson = await parseXml(xml)
+        return expect(filterLayers(xmlJson, layers).then(buildXml)).resolves.toBe(expected)
     })
 
-    test('Object name + 2 filters', () => {
+    test('Object name + 2 filters', async () => {
         const layers = [{name:'PWD', filters: [{col:'owner', val:'PWD'}, {col:'operator', val:'PWD'}]}]
         expect.assertions(1)
 
@@ -307,10 +312,11 @@ describe('filterLayers', () => {
   <Layer name="AIRPRT" status="false"/>
 </Map>`
 
-        return expect(filterLayers(xml, layers)).resolves.toBe(expected)
+        const xmlJson = await parseXml(xml)
+        return expect(filterLayers(xmlJson, layers).then(buildXml)).resolves.toBe(expected)
     })
 
-    test('dont filter if layer list is empty', () => {
+    test('dont filter if layer list is empty', async () => {
         const layers = []
         const xml =
 `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -320,10 +326,11 @@ describe('filterLayers', () => {
   <Layer name="AIRPRT"/>
 </Map>`
         expect.assertions(1)
-        return expect(filterLayers(xml, layers)).resolves.toBe(xml)
+        const xmlJson = await parseXml(xml)
+        return expect(filterLayers(xmlJson, layers).then(buildXml)).resolves.toBe(xml)
     })
 
-    test('dont filter if there is no layer list', () => {
+    test('dont filter if there is no layer list', async () => {
         const xml =
 `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Map>
@@ -332,10 +339,11 @@ describe('filterLayers', () => {
   <Layer name="AIRPRT"/>
 </Map>`
         expect.assertions(1)
-        return expect(filterLayers(xml)).resolves.toBe(xml)
+        const xmlJson = await parseXml(xml)
+        return expect(filterLayers(xmlJson).then(buildXml)).resolves.toBe(xml)
     })
 
-    test('Throw error if a layer doesn\'t exist', () => {
+    test('Throw error if a layer doesn\'t exist', async () => {
         const layers = ['dog']
         expect.assertions(1)
 
@@ -347,7 +355,8 @@ describe('filterLayers', () => {
   <Layer name="AIRPRT"/>
 </Map>`
 
-        return expect(filterLayers(xml, layers)).rejects.toBeInstanceOf(Error)
+        const xmlJson = await parseXml(xml)
+        return expect(filterLayers(xmlJson, layers).then(buildXml)).rejects.toBeInstanceOf(Error)
     })
 })
 
