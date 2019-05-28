@@ -24,8 +24,8 @@
   ],
   "scripts": {
     "build-all-xml": "./scripts/build-all-xml.sh src/config src/config",
-    "deploy": "yarn compile && claudia update --no-optional-dependencies ${LAMBDA_TIMEOUT:+--timeout ${LAMBDA_TIMEOUT}} ${LAMBDA_MEMORY:+--memory ${LAMBDA_MEMORY}} ${LAMBDA_SECURITY_GROUPS:+--security-group-ids ${LAMBDA_SECURITY_GROUPS}} ${LAMBDA_SUBNETS:+--subnet-ids ${LAMBDA_SUBNETS}}",
-    "deploy-new": "yarn compile && claudia create --no-optional-dependencies --api-module src/api --name ${PROJECT_NAME} --region ${LAMBDA_REGION} ${LAMBDA_ROLE:+--role ${LAMBDA_ROLE}} ${LAMBDA_TIMEOUT:+--timeout ${LAMBDA_TIMEOUT}} ${LAMBDA_MEMORY:+--memory ${LAMBDA_MEMORY}} ${LAMBDA_SECURITY_GROUPS:+--security-group-ids ${LAMBDA_SECURITY_GROUPS}} ${LAMBDA_SUBNETS:+--subnet-ids ${LAMBDA_SUBNETS}} && yarn parse-id",
+    "deploy": "yarn compile && ./scripts/deploy",
+    "deploy-new": "yarn compile && ./scripts/deploy-new",
     "destroy": "claudia destroy",
     "dev": "nodemon -e js,mss,json,mml,mss --ignore '*.temp.mml' --exec yarn local",
     "lint": "eslint src",
