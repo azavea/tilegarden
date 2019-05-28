@@ -1,12 +1,9 @@
 /**
- * Accepts a string of XML and filters it to produce a string of XML where all layers not in
- * the list of enabled layers have their "status" property set to false, excluding them
- * from rendering.
+ * Defines a function that accepts a config XML converted to an object and returns the same
+ * object with the "status" property set to false for all layers not in the list of enabled
+ * layers, excluding them from rendering.
  */
-
-const { promisify } = require('util')
 const sqlString = require('sql-escape-string')
-const xmlParser = require('xml2js')
 
 const HTTPError = require('./error-builder')
 
@@ -110,18 +107,11 @@ const filter = (xmlJson, enabledLayers) => {
     return xmlJson
 }
 
-// Convert json back to an xml string
-const returnToXml = (xmlJson) => {
-    const builder = new xmlParser.Builder()
-    return builder.buildObject(xmlJson)
-}
-
-module.exports = async (xmlString, enabledLayers) => {
+module.exports = async (xmlJsonObj, enabledLayers) => {
     // skip entire process if no layers are to be parsed
     if (!enabledLayers || enabledLayers.length < 1) {
-        return xmlString
+        return xmlJsonObj
     }
 
-    const xmlJson = await promisify(xmlParser.parseString)(xmlString)
-    return returnToXml(filter(xmlJson, enabledLayers))
+    return filter(xmlJsonObj, enabledLayers)
 }
