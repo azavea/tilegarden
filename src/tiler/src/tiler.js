@@ -88,15 +88,18 @@ async function createMap(mapConfig) {
     const map = new mapnik.Map(TILE_WIDTH, TILE_HEIGHT)
     map.bufferSize = 64
 
-    // Load map specification from xml string
+    // Load map specification from xml string and apply some transforms and filters
     try {
-        const mapConfigXml = await fetchMapFile(configOptions)
-        const xmlJsObj = await parseXml(mapConfigXml)
-        const filteredMapConfigJsObj = await filterVisibleLayers(xmlJsObj, layers)
-        const filteredMapConfigXml = buildXml(filteredMapConfigJsObj)
-        const configuredMap = await promisifyMethod(map, 'fromString')(filteredMapConfigXml)
-        configuredMap.extent = bbox(z, x, y, TILE_HEIGHT, configuredMap.srs)
-        return configuredMap
+        return await fetchMapFile(configOptions)
+            .then(parseXml)
+            .then(xmlJsObj => filterVisibleLayers(xmlJsObj, layers))
+            .then(buildXml)
+            .then(filteredMapConfigXml => promisifyMethod(map, 'fromString')(filteredMapConfigXml))
+            .then((configuredMap) => {
+                /* eslint-disable-next-line no-param-reassign */
+                configuredMap.extent = bbox(z, x, y, TILE_HEIGHT, configuredMap.srs)
+                return configuredMap
+            })
     } catch (err) {
         throw postgisFilter(err)
     }
