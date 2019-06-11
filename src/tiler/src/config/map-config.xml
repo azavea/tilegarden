@@ -23,6 +23,9 @@
       <Parameter name="table"><![CDATA[street_centerline]]></Parameter>
       <Parameter name="key_field"><![CDATA[]]></Parameter>
       <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+      <Parameter name="extent_from_subquery"><![CDATA[true]]></Parameter>
+      <Parameter name="srid"><![CDATA[2272]]></Parameter>
+      <Parameter name="persist_connection"><![CDATA[false]]></Parameter>
     </Datasource>
   </Layer>
   <Style filter-mode="first" name="pwd_parcels">
@@ -43,6 +46,9 @@
       <Parameter name="table"><![CDATA[pwd_parcels]]></Parameter>
       <Parameter name="key_field"><![CDATA[]]></Parameter>
       <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+      <Parameter name="extent_from_subquery"><![CDATA[true]]></Parameter>
+      <Parameter name="srid"><![CDATA[2272]]></Parameter>
+      <Parameter name="persist_connection"><![CDATA[false]]></Parameter>
     </Datasource>
   </Layer>
   <Style filter-mode="first" name="inlets">
@@ -62,6 +68,9 @@
       <Parameter name="table"><![CDATA[inlets]]></Parameter>
       <Parameter name="key_field"><![CDATA[]]></Parameter>
       <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+      <Parameter name="extent_from_subquery"><![CDATA[true]]></Parameter>
+      <Parameter name="srid"><![CDATA[4326]]></Parameter>
+      <Parameter name="persist_connection"><![CDATA[false]]></Parameter>
     </Datasource>
   </Layer>
 </Map>

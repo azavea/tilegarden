@@ -23,6 +23,9 @@
       <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'PWD') as q]]></Parameter>
       <Parameter name="key_field"><![CDATA[]]></Parameter>
       <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+      <Parameter name="extent_from_subquery"><![CDATA[true]]></Parameter>
+      <Parameter name="srid"><![CDATA[4326]]></Parameter>
+      <Parameter name="persist_connection"><![CDATA[false]]></Parameter>
     </Datasource>
   </Layer>
   <Style filter-mode="first" name="AIRPRT">
@@ -42,6 +45,9 @@
       <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'AIRPRT') as q]]></Parameter>
       <Parameter name="key_field"><![CDATA[]]></Parameter>
       <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+      <Parameter name="extent_from_subquery"><![CDATA[true]]></Parameter>
+      <Parameter name="srid"><![CDATA[4326]]></Parameter>
+      <Parameter name="persist_connection"><![CDATA[false]]></Parameter>
     </Datasource>
   </Layer>
   <Style filter-mode="first" name="STATE">
@@ -61,6 +67,9 @@
       <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'STATE') as q]]></Parameter>
       <Parameter name="key_field"><![CDATA[]]></Parameter>
       <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+      <Parameter name="extent_from_subquery"><![CDATA[true]]></Parameter>
+      <Parameter name="srid"><![CDATA[4326]]></Parameter>
+      <Parameter name="persist_connection"><![CDATA[false]]></Parameter>
     </Datasource>
   </Layer>
   <Style filter-mode="first" name="PARK">
@@ -80,6 +89,9 @@
       <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'PARK') as q]]></Parameter>
       <Parameter name="key_field"><![CDATA[]]></Parameter>
       <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+      <Parameter name="extent_from_subquery"><![CDATA[true]]></Parameter>
+      <Parameter name="srid"><![CDATA[4326]]></Parameter>
+      <Parameter name="persist_connection"><![CDATA[false]]></Parameter>
     </Datasource>
   </Layer>
   <Style filter-mode="first" name="LM">
@@ -99,6 +111,9 @@
       <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'LM') as q]]></Parameter>
       <Parameter name="key_field"><![CDATA[]]></Parameter>
       <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+      <Parameter name="extent_from_subquery"><![CDATA[true]]></Parameter>
+      <Parameter name="srid"><![CDATA[4326]]></Parameter>
+      <Parameter name="persist_connection"><![CDATA[false]]></Parameter>
     </Datasource>
   </Layer>
   <Style filter-mode="first" name="FEDERAL">
@@ -118,6 +133,9 @@
       <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'FEDERAL') as q]]></Parameter>
       <Parameter name="key_field"><![CDATA[]]></Parameter>
       <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+      <Parameter name="extent_from_subquery"><![CDATA[true]]></Parameter>
+      <Parameter name="srid"><![CDATA[4326]]></Parameter>
+      <Parameter name="persist_connection"><![CDATA[false]]></Parameter>
     </Datasource>
   </Layer>
   <Style filter-mode="first" name="PRIV">
@@ -137,6 +155,9 @@
       <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'PRIV') as q]]></Parameter>
       <Parameter name="key_field"><![CDATA[]]></Parameter>
       <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+      <Parameter name="extent_from_subquery"><![CDATA[true]]></Parameter>
+      <Parameter name="srid"><![CDATA[4326]]></Parameter>
+      <Parameter name="persist_connection"><![CDATA[false]]></Parameter>
     </Datasource>
   </Layer>
   <Style filter-mode="first" name="CHEL">
@@ -156,6 +177,9 @@
       <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'CHEL') as q]]></Parameter>
       <Parameter name="key_field"><![CDATA[]]></Parameter>
       <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+      <Parameter name="extent_from_subquery"><![CDATA[true]]></Parameter>
+      <Parameter name="srid"><![CDATA[4326]]></Parameter>
+      <Parameter name="persist_connection"><![CDATA[false]]></Parameter>
     </Datasource>
   </Layer>
   <Style filter-mode="first" name="USNAVY">
@@ -175,6 +199,9 @@
       <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'USNAVY') as q]]></Parameter>
       <Parameter name="key_field"><![CDATA[]]></Parameter>
       <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+      <Parameter name="extent_from_subquery"><![CDATA[true]]></Parameter>
+      <Parameter name="srid"><![CDATA[4326]]></Parameter>
+      <Parameter name="persist_connection"><![CDATA[false]]></Parameter>
     </Datasource>
   </Layer>
   <Style filter-mode="first" name="PRIVPWDMAINT">
@@ -194,6 +221,9 @@
       <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'PRIVPWDMAINT') as q]]></Parameter>
       <Parameter name="key_field"><![CDATA[]]></Parameter>
       <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+      <Parameter name="extent_from_subquery"><![CDATA[true]]></Parameter>
+      <Parameter name="srid"><![CDATA[4326]]></Parameter>
+      <Parameter name="persist_connection"><![CDATA[false]]></Parameter>
     </Datasource>
   </Layer>
 </Map>
