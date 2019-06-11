@@ -24,15 +24,14 @@
   ],
   "scripts": {
     "build-all-xml": "./scripts/build-all-xml.sh src/config src/config",
-    "deploy": "yarn compile && ./scripts/deploy",
-    "deploy-new": "yarn compile && ./scripts/deploy-new",
+    "deploy": "./scripts/deploy",
+    "deploy-new": "./scripts/deploy-new",
     "destroy": "claudia destroy",
     "dev": "nodemon -e js,mss,json,mml,mss --ignore '*.temp.mml' --exec yarn local",
     "lint": "eslint src",
-    "local": "yarn compile && node --inspect=0.0.0.0:9229 -- node_modules/claudia-local-api/bin/claudia-local-api --abbrev 300 --api-module src/api | bunyan -o short",
+    "local": "node --inspect=0.0.0.0:9229 -- node_modules/claudia-local-api/bin/claudia-local-api --abbrev 300 --api-module src/api | bunyan -o short",
     "parse-id": "jq -r '.api.id' claudia.json > .api-id",
-    "test": "eslint src && jest --coverage",
-    "compile": "yarn build-all-xml"
+    "test": "eslint src && jest --coverage"
   },
   "devDependencies": {
     "bunyan": "^1.8.12",

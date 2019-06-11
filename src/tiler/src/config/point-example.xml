@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Map[]>
+<Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs">
+  <Parameters>
+    <Parameter name="name"><![CDATA[Tilegarden Configuration]]></Parameter>
+    <Parameter name="description"><![CDATA[Carto MML file to configure Tilegarden settings]]></Parameter>
+    <Parameter name="format"><![CDATA[png]]></Parameter>
+  </Parameters>
+  <Style filter-mode="first" name="PWD">
+    <Rule>
+      <MarkersSymbolizer allow-overlap="true" fill="#add8e6" stroke="#0000ff" width="4" />
+    </Rule>
+  </Style>
+  <Layer name="PWD" srs="+proj=longlat +datum=WGS84 +no_defs">
+    <StyleName><![CDATA[PWD]]></StyleName>
+    <Datasource>
+      <Parameter name="host"><![CDATA[${TILEGARDEN_DB_HOST}]]></Parameter>
+      <Parameter name="port"><![CDATA[${TILEGARDEN_DB_PORT}]]></Parameter>
+      <Parameter name="dbname"><![CDATA[${TILEGARDEN_DB_NAME}]]></Parameter>
+      <Parameter name="user"><![CDATA[${TILEGARDEN_DB_USER}]]></Parameter>
+      <Parameter name="password"><![CDATA[${TILEGARDEN_DB_PASSWORD}]]></Parameter>
+      <Parameter name="type"><![CDATA[postgis]]></Parameter>
+      <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'PWD') as q]]></Parameter>
+      <Parameter name="key_field"><![CDATA[]]></Parameter>
+      <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+    </Datasource>
+  </Layer>
+  <Style filter-mode="first" name="AIRPRT">
+    <Rule>
+      <MarkersSymbolizer allow-overlap="true" fill="#ffffff" stroke="#808080" width="4" />
+    </Rule>
+  </Style>
+  <Layer name="AIRPRT" srs="+proj=longlat +datum=WGS84 +no_defs">
+    <StyleName><![CDATA[AIRPRT]]></StyleName>
+    <Datasource>
+      <Parameter name="host"><![CDATA[${TILEGARDEN_DB_HOST}]]></Parameter>
+      <Parameter name="port"><![CDATA[${TILEGARDEN_DB_PORT}]]></Parameter>
+      <Parameter name="dbname"><![CDATA[${TILEGARDEN_DB_NAME}]]></Parameter>
+      <Parameter name="user"><![CDATA[${TILEGARDEN_DB_USER}]]></Parameter>
+      <Parameter name="password"><![CDATA[${TILEGARDEN_DB_PASSWORD}]]></Parameter>
+      <Parameter name="type"><![CDATA[postgis]]></Parameter>
+      <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'AIRPRT') as q]]></Parameter>
+      <Parameter name="key_field"><![CDATA[]]></Parameter>
+      <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+    </Datasource>
+  </Layer>
+  <Style filter-mode="first" name="STATE">
+    <Rule>
+      <MarkersSymbolizer allow-overlap="true" fill="#ffd700" stroke="#0000ff" width="4" />
+    </Rule>
+  </Style>
+  <Layer name="STATE" srs="+proj=longlat +datum=WGS84 +no_defs">
+    <StyleName><![CDATA[STATE]]></StyleName>
+    <Datasource>
+      <Parameter name="host"><![CDATA[${TILEGARDEN_DB_HOST}]]></Parameter>
+      <Parameter name="port"><![CDATA[${TILEGARDEN_DB_PORT}]]></Parameter>
+      <Parameter name="dbname"><![CDATA[${TILEGARDEN_DB_NAME}]]></Parameter>
+      <Parameter name="user"><![CDATA[${TILEGARDEN_DB_USER}]]></Parameter>
+      <Parameter name="password"><![CDATA[${TILEGARDEN_DB_PASSWORD}]]></Parameter>
+      <Parameter name="type"><![CDATA[postgis]]></Parameter>
+      <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'STATE') as q]]></Parameter>
+      <Parameter name="key_field"><![CDATA[]]></Parameter>
+      <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+    </Datasource>
+  </Layer>
+  <Style filter-mode="first" name="PARK">
+    <Rule>
+      <MarkersSymbolizer allow-overlap="true" fill="#90ee90" stroke="#008000" width="4" />
+    </Rule>
+  </Style>
+  <Layer name="PARK" srs="+proj=longlat +datum=WGS84 +no_defs">
+    <StyleName><![CDATA[PARK]]></StyleName>
+    <Datasource>
+      <Parameter name="host"><![CDATA[${TILEGARDEN_DB_HOST}]]></Parameter>
+      <Parameter name="port"><![CDATA[${TILEGARDEN_DB_PORT}]]></Parameter>
+      <Parameter name="dbname"><![CDATA[${TILEGARDEN_DB_NAME}]]></Parameter>
+      <Parameter name="user"><![CDATA[${TILEGARDEN_DB_USER}]]></Parameter>
+      <Parameter name="password"><![CDATA[${TILEGARDEN_DB_PASSWORD}]]></Parameter>
+      <Parameter name="type"><![CDATA[postgis]]></Parameter>
+      <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'PARK') as q]]></Parameter>
+      <Parameter name="key_field"><![CDATA[]]></Parameter>
+      <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+    </Datasource>
+  </Layer>
+  <Style filter-mode="first" name="LM">
+    <Rule>
+      <MarkersSymbolizer allow-overlap="true" fill="#ffff00" stroke="#000000" width="4" />
+    </Rule>
+  </Style>
+  <Layer name="LM" srs="+proj=longlat +datum=WGS84 +no_defs">
+    <StyleName><![CDATA[LM]]></StyleName>
+    <Datasource>
+      <Parameter name="host"><![CDATA[${TILEGARDEN_DB_HOST}]]></Parameter>
+      <Parameter name="port"><![CDATA[${TILEGARDEN_DB_PORT}]]></Parameter>
+      <Parameter name="dbname"><![CDATA[${TILEGARDEN_DB_NAME}]]></Parameter>
+      <Parameter name="user"><![CDATA[${TILEGARDEN_DB_USER}]]></Parameter>
+      <Parameter name="password"><![CDATA[${TILEGARDEN_DB_PASSWORD}]]></Parameter>
+      <Parameter name="type"><![CDATA[postgis]]></Parameter>
+      <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'LM') as q]]></Parameter>
+      <Parameter name="key_field"><![CDATA[]]></Parameter>
+      <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+    </Datasource>
+  </Layer>
+  <Style filter-mode="first" name="FEDERAL">
+    <Rule>
+      <MarkersSymbolizer allow-overlap="true" fill="#ff0000" stroke="#0000ff" width="4" />
+    </Rule>
+  </Style>
+  <Layer name="FEDERAL" srs="+proj=longlat +datum=WGS84 +no_defs">
+    <StyleName><![CDATA[FEDERAL]]></StyleName>
+    <Datasource>
+      <Parameter name="host"><![CDATA[${TILEGARDEN_DB_HOST}]]></Parameter>
+      <Parameter name="port"><![CDATA[${TILEGARDEN_DB_PORT}]]></Parameter>
+      <Parameter name="dbname"><![CDATA[${TILEGARDEN_DB_NAME}]]></Parameter>
+      <Parameter name="user"><![CDATA[${TILEGARDEN_DB_USER}]]></Parameter>
+      <Parameter name="password"><![CDATA[${TILEGARDEN_DB_PASSWORD}]]></Parameter>
+      <Parameter name="type"><![CDATA[postgis]]></Parameter>
+      <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'FEDERAL') as q]]></Parameter>
+      <Parameter name="key_field"><![CDATA[]]></Parameter>
+      <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+    </Datasource>
+  </Layer>
+  <Style filter-mode="first" name="PRIV">
+    <Rule>
+      <MarkersSymbolizer allow-overlap="true" fill="#ffff00" stroke="#008000" width="4" />
+    </Rule>
+  </Style>
+  <Layer name="PRIV" srs="+proj=longlat +datum=WGS84 +no_defs">
+    <StyleName><![CDATA[PRIV]]></StyleName>
+    <Datasource>
+      <Parameter name="host"><![CDATA[${TILEGARDEN_DB_HOST}]]></Parameter>
+      <Parameter name="port"><![CDATA[${TILEGARDEN_DB_PORT}]]></Parameter>
+      <Parameter name="dbname"><![CDATA[${TILEGARDEN_DB_NAME}]]></Parameter>
+      <Parameter name="user"><![CDATA[${TILEGARDEN_DB_USER}]]></Parameter>
+      <Parameter name="password"><![CDATA[${TILEGARDEN_DB_PASSWORD}]]></Parameter>
+      <Parameter name="type"><![CDATA[postgis]]></Parameter>
+      <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'PRIV') as q]]></Parameter>
+      <Parameter name="key_field"><![CDATA[]]></Parameter>
+      <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+    </Datasource>
+  </Layer>
+  <Style filter-mode="first" name="CHEL">
+    <Rule>
+      <MarkersSymbolizer allow-overlap="true" fill="#a52a2a" stroke="#808080" width="4" />
+    </Rule>
+  </Style>
+  <Layer name="CHEL" srs="+proj=longlat +datum=WGS84 +no_defs">
+    <StyleName><![CDATA[CHEL]]></StyleName>
+    <Datasource>
+      <Parameter name="host"><![CDATA[${TILEGARDEN_DB_HOST}]]></Parameter>
+      <Parameter name="port"><![CDATA[${TILEGARDEN_DB_PORT}]]></Parameter>
+      <Parameter name="dbname"><![CDATA[${TILEGARDEN_DB_NAME}]]></Parameter>
+      <Parameter name="user"><![CDATA[${TILEGARDEN_DB_USER}]]></Parameter>
+      <Parameter name="password"><![CDATA[${TILEGARDEN_DB_PASSWORD}]]></Parameter>
+      <Parameter name="type"><![CDATA[postgis]]></Parameter>
+      <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'CHEL') as q]]></Parameter>
+      <Parameter name="key_field"><![CDATA[]]></Parameter>
+      <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+    </Datasource>
+  </Layer>
+  <Style filter-mode="first" name="USNAVY">
+    <Rule>
+      <MarkersSymbolizer allow-overlap="true" fill="#0000ff" stroke="#ffd700" width="4" />
+    </Rule>
+  </Style>
+  <Layer name="USNAVY" srs="+proj=longlat +datum=WGS84 +no_defs">
+    <StyleName><![CDATA[USNAVY]]></StyleName>
+    <Datasource>
+      <Parameter name="host"><![CDATA[${TILEGARDEN_DB_HOST}]]></Parameter>
+      <Parameter name="port"><![CDATA[${TILEGARDEN_DB_PORT}]]></Parameter>
+      <Parameter name="dbname"><![CDATA[${TILEGARDEN_DB_NAME}]]></Parameter>
+      <Parameter name="user"><![CDATA[${TILEGARDEN_DB_USER}]]></Parameter>
+      <Parameter name="password"><![CDATA[${TILEGARDEN_DB_PASSWORD}]]></Parameter>
+      <Parameter name="type"><![CDATA[postgis]]></Parameter>
+      <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'USNAVY') as q]]></Parameter>
+      <Parameter name="key_field"><![CDATA[]]></Parameter>
+      <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+    </Datasource>
+  </Layer>
+  <Style filter-mode="first" name="PRIVPWDMAINT">
+    <Rule>
+      <MarkersSymbolizer allow-overlap="true" fill="#a52a2a" stroke="#808080" width="4" />
+    </Rule>
+  </Style>
+  <Layer name="PRIVPWDMAINT" srs="+proj=longlat +datum=WGS84 +no_defs">
+    <StyleName><![CDATA[PRIVPWDMAINT]]></StyleName>
+    <Datasource>
+      <Parameter name="host"><![CDATA[${TILEGARDEN_DB_HOST}]]></Parameter>
+      <Parameter name="port"><![CDATA[${TILEGARDEN_DB_PORT}]]></Parameter>
+      <Parameter name="dbname"><![CDATA[${TILEGARDEN_DB_NAME}]]></Parameter>
+      <Parameter name="user"><![CDATA[${TILEGARDEN_DB_USER}]]></Parameter>
+      <Parameter name="password"><![CDATA[${TILEGARDEN_DB_PASSWORD}]]></Parameter>
+      <Parameter name="type"><![CDATA[postgis]]></Parameter>
+      <Parameter name="table"><![CDATA[(select geom,owner,inlettype from inlets where owner = 'PRIVPWDMAINT') as q]]></Parameter>
+      <Parameter name="key_field"><![CDATA[]]></Parameter>
+      <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+    </Datasource>
+  </Layer>
+</Map>
+

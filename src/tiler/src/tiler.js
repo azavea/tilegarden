@@ -79,6 +79,17 @@ async function fetchMapFile(options) {
     }
 }
 
+/* Substitutes environment variables into a string using a basic regex-driven template syntax.
+ *
+ * Any occurrence of ${ENV_VAR} will be replaced with the value of that environment variable.
+ */
+function fillVars(xmlString) {
+    return xmlString.replace(
+        /\$\{([A-Z0-9_]+)\}/g,
+        (_, envName) => `${process.env[envName]}`,
+    )
+}
+
 /**
  * Creates a map based on configured datasource and style information
  */
@@ -91,6 +102,7 @@ async function createMap(mapConfig) {
     // Load map specification from xml string and apply some transforms and filters
     try {
         return await fetchMapFile(configOptions)
+            .then(fillVars)
             .then(parseXml)
             .then(xmlJsObj => filterVisibleLayers(xmlJsObj, layers))
             .then(buildXml)

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Map[]>
+<Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs">
+  <Parameters>
+    <Parameter name="name"><![CDATA[Tilegarden Configuration]]></Parameter>
+    <Parameter name="description"><![CDATA[Carto MML file to configure Tilegarden settings]]></Parameter>
+    <Parameter name="format"><![CDATA[png]]></Parameter>
+  </Parameters>
+  <Style filter-mode="first" name="street_centerline">
+    <Rule>
+      <LineSymbolizer stroke="#808080" />
+    </Rule>
+  </Style>
+  <Layer name="street_centerline" srs="+proj=lcc +lat_1=40.96666666666667 +lat_2=39.93333333333333 +lat_0=39.33333333333334 +lon_0=-77.75 +x_0=600000 +y_0=0 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs">
+    <StyleName><![CDATA[street_centerline]]></StyleName>
+    <Datasource>
+      <Parameter name="host"><![CDATA[${TILEGARDEN_DB_HOST}]]></Parameter>
+      <Parameter name="port"><![CDATA[${TILEGARDEN_DB_PORT}]]></Parameter>
+      <Parameter name="dbname"><![CDATA[${TILEGARDEN_DB_NAME}]]></Parameter>
+      <Parameter name="user"><![CDATA[${TILEGARDEN_DB_USER}]]></Parameter>
+      <Parameter name="password"><![CDATA[${TILEGARDEN_DB_PASSWORD}]]></Parameter>
+      <Parameter name="type"><![CDATA[postgis]]></Parameter>
+      <Parameter name="table"><![CDATA[street_centerline]]></Parameter>
+      <Parameter name="key_field"><![CDATA[]]></Parameter>
+      <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+    </Datasource>
+  </Layer>
+  <Style filter-mode="first" name="pwd_parcels">
+    <Rule>
+      <LineSymbolizer stroke="#a9a9a9" />
+      <PolygonSymbolizer fill="#ffffff" />
+    </Rule>
+  </Style>
+  <Layer name="pwd_parcels" srs="+proj=lcc +lat_1=40.96666666666667 +lat_2=39.93333333333333 +lat_0=39.33333333333334 +lon_0=-77.75 +x_0=600000 +y_0=0 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs">
+    <StyleName><![CDATA[pwd_parcels]]></StyleName>
+    <Datasource>
+      <Parameter name="host"><![CDATA[${TILEGARDEN_DB_HOST}]]></Parameter>
+      <Parameter name="port"><![CDATA[${TILEGARDEN_DB_PORT}]]></Parameter>
+      <Parameter name="dbname"><![CDATA[${TILEGARDEN_DB_NAME}]]></Parameter>
+      <Parameter name="user"><![CDATA[${TILEGARDEN_DB_USER}]]></Parameter>
+      <Parameter name="password"><![CDATA[${TILEGARDEN_DB_PASSWORD}]]></Parameter>
+      <Parameter name="type"><![CDATA[postgis]]></Parameter>
+      <Parameter name="table"><![CDATA[pwd_parcels]]></Parameter>
+      <Parameter name="key_field"><![CDATA[]]></Parameter>
+      <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+    </Datasource>
+  </Layer>
+  <Style filter-mode="first" name="inlets">
+    <Rule>
+      <MarkersSymbolizer allow-overlap="true" fill="#ffffff" stroke="#000000" width="8" />
+    </Rule>
+  </Style>
+  <Layer name="inlets" srs="+proj=longlat +datum=WGS84 +no_defs">
+    <StyleName><![CDATA[inlets]]></StyleName>
+    <Datasource>
+      <Parameter name="host"><![CDATA[${TILEGARDEN_DB_HOST}]]></Parameter>
+      <Parameter name="port"><![CDATA[${TILEGARDEN_DB_PORT}]]></Parameter>
+      <Parameter name="dbname"><![CDATA[${TILEGARDEN_DB_NAME}]]></Parameter>
+      <Parameter name="user"><![CDATA[${TILEGARDEN_DB_USER}]]></Parameter>
+      <Parameter name="password"><![CDATA[${TILEGARDEN_DB_PASSWORD}]]></Parameter>
+      <Parameter name="type"><![CDATA[postgis]]></Parameter>
+      <Parameter name="table"><![CDATA[inlets]]></Parameter>
+      <Parameter name="key_field"><![CDATA[]]></Parameter>
+      <Parameter name="geometry_field"><![CDATA[geom]]></Parameter>
+    </Datasource>
+  </Layer>
+</Map>
+
