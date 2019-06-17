@@ -3,8 +3,8 @@
 set -e
 
 # cli args
-in_dir='src/tiler/src/config/'
-out_dir='transpiled-configs/'
+in_dir='src/tiler/src/config/carto/'
+out_dir='src/tiler/src/config/'
 s3_bucket=''
 node_env='production'
 

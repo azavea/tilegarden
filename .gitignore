@@ -64,5 +64,3 @@ typings/
 .directory
 .idea
 
-# configs, if generated
-transpiled-configs/

@@ -1,21 +1,8 @@
 #!/usr/bin/env bash
 
-# This script is never meant to be called directly by the user.
-# It should only be called by other scripts that pass MML strings
-# in to it, so that different environments can have access to the
-# version of carto installed on the docker container.
+# This script used to be more complicated, involving filling in environment variables.
+# Now they stay variables until later in the process, but it's easier to keep this as a
+# script than to put the command inline in the places where it's used, especially since
+# it seems possible that it could change again.
 
-function main() {
-    tempFile="${1%%.*}.temp.mml"
-
-    # fill in environment variables
-    node scripts/template-vars.js "${1}" > ${tempFile}
-
-    # compile with carto
-    carto ${tempFile}
-
-    # clean up
-    rm ${tempFile}
-}
-
-main "${1}" "${2}"
+carto "${1}"
