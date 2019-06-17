@@ -12,10 +12,11 @@ Layer:
   geometry: polygon
   srs: "+proj=longlat +datum=WGS84 +no_defs"
   Datasource:
-     host: ${TILEGARDEN_HOST}
-     dbname: ${TILEGARDEN_DB}
-     user: ${TILEGARDEN_USER}
-     password: ${TILEGARDEN_PASSWORD}
+     host: ${TILEGARDEN_DB_HOST}
+     port: ${TILEGARDEN_DB_PORT}
+     dbname: ${TILEGARDEN_DB_NAME}
+     user: ${TILEGARDEN_DB_USER}
+     password: ${TILEGARDEN_DB_PASSWORD}
      type: "postgis"
      table: "(select geom,owner,inlettype from inlets where owner = 'PWD') as q"
      key_field: ""
@@ -25,10 +26,11 @@ Layer:
   geometry: polygon
   srs: "+proj=longlat +datum=WGS84 +no_defs"
   Datasource:
-     host: ${TILEGARDEN_HOST}
-     dbname: ${TILEGARDEN_DB}
-     user: ${TILEGARDEN_USER}
-     password: ${TILEGARDEN_PASSWORD}
+     host: ${TILEGARDEN_DB_HOST}
+     port: ${TILEGARDEN_DB_PORT}
+     dbname: ${TILEGARDEN_DB_NAME}
+     user: ${TILEGARDEN_DB_USER}
+     password: ${TILEGARDEN_DB_PASSWORD}
      type: "postgis"
      table: "(select geom,owner,inlettype from inlets where owner = 'AIRPRT') as q"
      key_field: ""
@@ -38,10 +40,11 @@ Layer:
   geometry: polygon
   srs: "+proj=longlat +datum=WGS84 +no_defs"
   Datasource:
-     host: ${TILEGARDEN_HOST}
-     dbname: ${TILEGARDEN_DB}
-     user: ${TILEGARDEN_USER}
-     password: ${TILEGARDEN_PASSWORD}
+     host: ${TILEGARDEN_DB_HOST}
+     port: ${TILEGARDEN_DB_PORT}
+     dbname: ${TILEGARDEN_DB_NAME}
+     user: ${TILEGARDEN_DB_USER}
+     password: ${TILEGARDEN_DB_PASSWORD}
      type: "postgis"
      table: "(select geom,owner,inlettype from inlets where owner = 'STATE') as q"
      key_field: ""
@@ -51,10 +54,11 @@ Layer:
   geometry: polygon
   srs: "+proj=longlat +datum=WGS84 +no_defs"
   Datasource:
-     host: ${TILEGARDEN_HOST}
-     dbname: ${TILEGARDEN_DB}
-     user: ${TILEGARDEN_USER}
-     password: ${TILEGARDEN_PASSWORD}
+     host: ${TILEGARDEN_DB_HOST}
+     port: ${TILEGARDEN_DB_PORT}
+     dbname: ${TILEGARDEN_DB_NAME}
+     user: ${TILEGARDEN_DB_USER}
+     password: ${TILEGARDEN_DB_PASSWORD}
      type: "postgis"
      table: "(select geom,owner,inlettype from inlets where owner = 'PARK') as q"
      key_field: ""
@@ -64,10 +68,11 @@ Layer:
   geometry: polygon
   srs: "+proj=longlat +datum=WGS84 +no_defs"
   Datasource:
-     host: ${TILEGARDEN_HOST}
-     dbname: ${TILEGARDEN_DB}
-     user: ${TILEGARDEN_USER}
-     password: ${TILEGARDEN_PASSWORD}
+     host: ${TILEGARDEN_DB_HOST}
+     port: ${TILEGARDEN_DB_PORT}
+     dbname: ${TILEGARDEN_DB_NAME}
+     user: ${TILEGARDEN_DB_USER}
+     password: ${TILEGARDEN_DB_PASSWORD}
      type: "postgis"
      table: "(select geom,owner,inlettype from inlets where owner = 'LM') as q"
      key_field: ""
@@ -77,10 +82,11 @@ Layer:
   geometry: polygon
   srs: "+proj=longlat +datum=WGS84 +no_defs"
   Datasource:
-     host: ${TILEGARDEN_HOST}
-     dbname: ${TILEGARDEN_DB}
-     user: ${TILEGARDEN_USER}
-     password: ${TILEGARDEN_PASSWORD}
+     host: ${TILEGARDEN_DB_HOST}
+     port: ${TILEGARDEN_DB_PORT}
+     dbname: ${TILEGARDEN_DB_NAME}
+     user: ${TILEGARDEN_DB_USER}
+     password: ${TILEGARDEN_DB_PASSWORD}
      type: "postgis"
      table: "(select geom,owner,inlettype from inlets where owner = 'FEDERAL') as q"
      key_field: ""
@@ -90,10 +96,11 @@ Layer:
   geometry: polygon
   srs: "+proj=longlat +datum=WGS84 +no_defs"
   Datasource:
-     host: ${TILEGARDEN_HOST}
-     dbname: ${TILEGARDEN_DB}
-     user: ${TILEGARDEN_USER}
-     password: ${TILEGARDEN_PASSWORD}
+     host: ${TILEGARDEN_DB_HOST}
+     port: ${TILEGARDEN_DB_PORT}
+     dbname: ${TILEGARDEN_DB_NAME}
+     user: ${TILEGARDEN_DB_USER}
+     password: ${TILEGARDEN_DB_PASSWORD}
      type: "postgis"
      table: "(select geom,owner,inlettype from inlets where owner = 'PRIV') as q"
      key_field: ""
@@ -103,10 +110,11 @@ Layer:
   geometry: polygon
   srs: "+proj=longlat +datum=WGS84 +no_defs"
   Datasource:
-     host: ${TILEGARDEN_HOST}
-     dbname: ${TILEGARDEN_DB}
-     user: ${TILEGARDEN_USER}
-     password: ${TILEGARDEN_PASSWORD}
+     host: ${TILEGARDEN_DB_HOST}
+     port: ${TILEGARDEN_DB_PORT}
+     dbname: ${TILEGARDEN_DB_NAME}
+     user: ${TILEGARDEN_DB_USER}
+     password: ${TILEGARDEN_DB_PASSWORD}
      type: "postgis"
      table: "(select geom,owner,inlettype from inlets where owner = 'CHEL') as q"
      key_field: ""
@@ -116,10 +124,11 @@ Layer:
   geometry: polygon
   srs: "+proj=longlat +datum=WGS84 +no_defs"
   Datasource:
-     host: ${TILEGARDEN_HOST}
-     dbname: ${TILEGARDEN_DB}
-     user: ${TILEGARDEN_USER}
-     password: ${TILEGARDEN_PASSWORD}
+     host: ${TILEGARDEN_DB_HOST}
+     port: ${TILEGARDEN_DB_PORT}
+     dbname: ${TILEGARDEN_DB_NAME}
+     user: ${TILEGARDEN_DB_USER}
+     password: ${TILEGARDEN_DB_PASSWORD}
      type: "postgis"
      table: "(select geom,owner,inlettype from inlets where owner = 'USNAVY') as q"
      key_field: ""
@@ -129,10 +138,11 @@ Layer:
   geometry: polygon
   srs: "+proj=longlat +datum=WGS84 +no_defs"
   Datasource:
-     host: ${TILEGARDEN_HOST}
-     dbname: ${TILEGARDEN_DB}
-     user: ${TILEGARDEN_USER}
-     password: ${TILEGARDEN_PASSWORD}
+     host: ${TILEGARDEN_DB_HOST}
+     port: ${TILEGARDEN_DB_PORT}
+     dbname: ${TILEGARDEN_DB_NAME}
+     user: ${TILEGARDEN_DB_USER}
+     password: ${TILEGARDEN_DB_PASSWORD}
      type: "postgis"
      table: "(select geom,owner,inlettype from inlets where owner = 'PRIVPWDMAINT') as q"
      key_field: ""

@@ -13,27 +13,17 @@ COMMAND can be one of [start, stop, restart, status]. Default is start.
 }
 
 
-function restart_services() {
-    SERVICES=${@:2}
-
-    echo "Restarting service(s) in background..."
-    docker-compose restart ${SERVICES}
-    echo "Waiting for services to restart..."
-    sleep 5
-}
-
-
 function main() {
-
+    SERVICES='tiler database'
     if [ "${1}" = "start" ]
     then
-        docker-compose up
+        docker-compose up ${SERVICES}
     elif [ "${1}" = "stop" ]
     then
-        docker-compose stop
+        docker-compose stop ${SERVICES}
     elif [ "${1}" = "restart" ]
     then
-        docker-compose restart
+        docker-compose restart ${SERVICES}
     elif [ "${1}" = "status" ]
     then
         docker-compose ps

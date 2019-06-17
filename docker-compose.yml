@@ -18,15 +18,9 @@ services:
     ports:
       - "3000:3000"
       - "9229:9229"
-    environment:
-      - DEV_TILEGARDEN_USER=postgres
-      - DEV_TILEGARDEN_PASSWORD=postgres
-      - DEV_TILEGARDEN_DB=postgres
-      - DEV_TILEGARDEN_HOST=database.lambnik.azavea.com
-      - PROJECT_NAME=${PROJECT_NAME}-${USER}
-    env_file: .env
+    env_file: .env.local
     links:
-      - database:database.lambnik.azavea.com
+      - database:database.internal.tilegarden
     volumes:
       - ./src/tiler:/home/tiler
       - node_modules:/home/tiler/node_modules

@@ -9,7 +9,6 @@ branches:
 language: node_js
 before_install: cd src/tiler
 install: yarn install
-before_script: yarn compile
 script: yarn test
 deploy:
   - provider: script
