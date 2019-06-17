@@ -27,7 +27,7 @@ then
     then
         usage
     else
-        SERVER_COMMAND=${1:-start}
+        SERVER_COMMAND=${1:-tiler}
         main $SERVER_COMMAND
     fi
     exit
