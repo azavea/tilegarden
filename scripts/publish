@@ -3,6 +3,7 @@
 set -e
 
 DEPLOY_NEW=""
+ENVIRON="dev"
 
 function usage() {
     echo -n "Usage: $(basename "${0}") [OPTION]
@@ -15,6 +16,7 @@ Options:
 
 function main() {
     docker-compose -f docker-compose.yml \
+                   --env-file ".env.${ENVIRON}" \
                    run --rm --no-deps -e NODE_ENV=production tiler yarn deploy${DEPLOY_NEW:+-new}
 
     # Deploy CloudFront proxy
@@ -33,6 +35,11 @@ then
         -h| --help)
             usage
             exit
+            ;;
+        *)
+            ENVIRON=$1
+            shift
     esac
-    main
+    echo "Deploying to environment '${ENVIRON}'"
+    main ENVIRON
 fi

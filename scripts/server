@@ -15,18 +15,19 @@ COMMAND can be one of [start, stop, restart, status]. Default is start.
 
 function main() {
     SERVICES='tiler database'
+    DC_COMMAND='docker-compose --env-file .env.local'
     if [ "${1}" = "start" ]
     then
-        docker-compose up ${SERVICES}
+        ${DC_COMMAND} up ${SERVICES}
     elif [ "${1}" = "stop" ]
     then
-        docker-compose stop ${SERVICES}
+        ${DC_COMMAND} stop ${SERVICES}
     elif [ "${1}" = "restart" ]
     then
-        docker-compose restart ${SERVICES}
+        ${DC_COMMAND} restart ${SERVICES}
     elif [ "${1}" = "status" ]
     then
-        docker-compose ps
+        ${DC_COMMAND} ps
     else
         echo "Unknown option ${1}! Must be one of [start, stop, restart, status ]."
         exit 1

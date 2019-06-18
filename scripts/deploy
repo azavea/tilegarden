@@ -4,6 +4,7 @@ set -e
 
 DEPLOY_NEW=""
 NO_CACHE=""
+ENVIRON="dev"
 
 function usage() {
     echo -n "Usage: $(basename "${0}") [OPTION]
@@ -24,10 +25,12 @@ function main() {
 
     docker-compose build --pull terraform
 
+    echo "Building tiler for environment '$ENVIRON'"
     docker-compose -f docker-compose.yml \
+                   --env-file ".env.${ENVIRON}" \
                    build --pull ${NO_CACHE:+$NO_CACHE} tiler
 
-    ./scripts/publish ${DEPLOY_NEW:+$DEPLOY_NEW}
+    ./scripts/publish ${DEPLOY_NEW:+$DEPLOY_NEW} "${ENVIRON}"
 }
 
 
@@ -45,12 +48,14 @@ then
                 NO_CACHE='--no-cache'
                 shift
                 ;;
-            -h| --help| *)
+            -h| --help)
                 usage
                 ;;
+            *)
+                ENVIRON=$1
+                shift
         esac
     done
 
-    main
+    main ENVIRON
 fi
-

@@ -18,7 +18,22 @@ services:
     ports:
       - "3000:3000"
       - "9229:9229"
-    env_file: .env
+    environment:
+      # Variables to pass through from environment-specific .env files
+      - USER
+      - AWS_PROFILE
+      - PROJECT_NAME
+      - TILEGARDEN_DB_NAME
+      - TILEGARDEN_DB_HOST
+      - TILEGARDEN_DB_PORT
+      - TILEGARDEN_DB_USER
+      - TILEGARDEN_DB_PASSWORD
+      - LAMBDA_REGION
+      - LAMBDA_ROLE
+      - LAMBDA_TIMEOUT
+      - LAMBDA_MEMORY
+      - LAMBDA_SUBNETS
+      - LAMBDA_SECURITY_GROUPS
     links:
       - database:database.internal.tilegarden
     volumes:
