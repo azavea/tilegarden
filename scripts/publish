@@ -3,10 +3,9 @@
 set -e
 
 DEPLOY_NEW=""
-ENVIRON="dev"
 
 function usage() {
-    echo -n "Usage: $(basename "${0}") [OPTION]
+    echo -n "Usage: $(basename "${0}") [OPTION] ENVIRON
 Publish project in development to AWS Lambda
 Options:
     --new     Deploy as a new lambda
@@ -15,31 +14,43 @@ Options:
 }
 
 function main() {
+    ENVIRON="${1}"
+
     docker-compose -f docker-compose.yml \
                    --env-file ".env.${ENVIRON}" \
                    run --rm --no-deps -e NODE_ENV=production tiler yarn deploy${DEPLOY_NEW:+-new}
 
     # Deploy CloudFront proxy
-    docker-compose run terraform init
-    docker-compose run --rm -e TF_VAR_source_id=$(<src/tiler/.api-id) terraform apply -auto-approve && \
-    echo "Success! Your tiles will be available at the above URL shortly."
+    docker-compose --env-file ".env.${ENVIRON}" run terraform init
+    docker-compose --env-file ".env.${ENVIRON}" \
+            run --rm -e TF_VAR_source_id=$(<src/tiler/.api-id-${ENVIRON}) \
+            terraform apply -auto-approve && \
+        echo "Success! Your tiles will be available at the above URL shortly."
 }
 
 if [ "${BASH_SOURCE[0]}" = "${0}" ]
 then
-    case "$1" in
-        -n| --new)
-            DEPLOY_NEW='--new'
-            shift
-            ;;
-        -h| --help)
-            usage
-            exit
-            ;;
-        *)
-            ENVIRON=$1
-            shift
-    esac
-    echo "Deploying to environment '${ENVIRON}'"
-    main ENVIRON
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            -n| --new)
+                DEPLOY_NEW='--new'
+                shift
+                ;;
+            -h| --help)
+                usage
+                exit
+                ;;
+            *)
+                ENVIRON=$1
+                shift
+        esac
+    done
+    if [ -z "${ENVIRON}" ]; then
+        echo "Required ENVIRON argument is missing."
+        usage
+        exit 1
+    else
+        echo "Deploying to environment '${ENVIRON}'"
+    fi
+    main $ENVIRON
 fi

@@ -1,6 +1,13 @@
 #!/bin/bash
 
-yarn claudia update --no-optional-dependencies \
+if [ -z "${ENVIRON}" ]; then
+   echo 'Required $ENVIRON variable not set.'
+   exit 1
+fi
+
+yarn claudia update \
+   --config claudia/claudia-${ENVIRON}.json \
+   --no-optional-dependencies \
    ${LAMBDA_TIMEOUT:+--timeout ${LAMBDA_TIMEOUT}} \
    ${LAMBDA_MEMORY:+--memory ${LAMBDA_MEMORY}} \
    ${LAMBDA_SECURITY_GROUPS:+--security-group-ids ${LAMBDA_SECURITY_GROUPS}} \

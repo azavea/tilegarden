@@ -3,32 +3,36 @@
 set -e
 
 function usage() {
-    echo -n "Usage: $(basename "${0}")
-Removes all published resources from AWS
+    echo -n "Usage: $(basename "${0}") ENVIRON
+Removes all published resources from AWS for the specified deployment.
 Options:
     --help      Display this help text
 "
 }
 
 function main() {
-    echo "WARNING: you are about to destroy all your deployed resources!"
+    ENVIRON=${1}
+    echo "WARNING: you are about to destroy all your deployed resources for '${ENVIRON}'!"
     printf "That includes:\n - Associated AWS Lambda functions\n - Associated API Gateways\n - Associated IAM roles (if automatically generated)\n - Associated CloudFront distributions\n"
     read -p "If this is what you want, type 'yes' to continue: " -r
     echo
     if [[ $REPLY =~ ^[yY][eE][sS]$ ]]
     then
-
         # Destroy deployed resources
         # If any part of this fails, the parts that didn't fail
         # remain destroyed, so it's best to just carry on and
         # follow through.
-        docker-compose run --no-deps tiler yarn destroy || true
-        docker-compose run -e TF_VAR_source_id=$(<src/tiler/.api-id) terraform destroy -auto-approve
+        docker-compose --env-file ".env.${ENVIRON}" run --rm --no-deps \
+            tiler yarn destroy || true
+        docker-compose --env-file ".env.${ENVIRON}" run --rm \
+            -e TF_VAR_source_id=$(<src/tiler/.api-id-${ENVIRON}) \
+            terraform destroy -auto-approve
 
         # Remove local config files
-        docker-compose run --no-deps tiler rm claudia.json .api-id
-        docker-compose run --entrypoint rm terraform -rf .terraform terraform.tfstate terraform.tfstate.backup
-
+        docker-compose run --rm --no-deps tiler \
+            rm claudia/claudia-${ENVIRON}.json .api-id-${ENVIRON}
+        docker-compose run --rm --entrypoint rm terraform \
+            -rf .terraform "${PROJECT_NAME}-${USER}-${ENVIRON}.tfstate*"
     else
         echo "Aborting destroy"
     fi
@@ -36,11 +40,10 @@ function main() {
 
 if [ "${BASH_SOURCE[0]}" = "${0}" ]
 then
-    if [ "${1:-}" = "--help" ]
-    then
+    if [ "${1:-}" = "--help" ] || [ -z "${1}" ]; then
         usage
     else
-        main
+        main ${1}
     fi
     exit
 fi

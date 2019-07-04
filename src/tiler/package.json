@@ -26,11 +26,11 @@
     "build-all-xml": "./scripts/build-all-xml.sh src/config src/config",
     "deploy": "./scripts/deploy",
     "deploy-new": "./scripts/deploy-new",
-    "destroy": "claudia destroy",
+    "destroy": "claudia destroy --config claudia/claudia-${ENVIRON}.json",
     "dev": "nodemon -e js,mss,json,mml,mss --ignore '*.temp.mml' --exec yarn local",
     "lint": "eslint src",
     "local": "node --inspect=0.0.0.0:9229 -- node_modules/claudia-local-api/bin/claudia-local-api --abbrev 300 --api-module src/api | bunyan -o short",
-    "parse-id": "jq -r '.api.id' claudia.json > .api-id",
+    "parse-id": "jq -r '.api.id' claudia/claudia-${ENVIRON}.json > .api-id-${ENVIRON}",
     "test": "eslint src && jest --coverage"
   },
   "devDependencies": {

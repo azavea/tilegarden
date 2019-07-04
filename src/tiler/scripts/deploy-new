@@ -1,11 +1,21 @@
 #!/bin/bash
 
-yarn claudia create --no-optional-dependencies --api-module src/api \
-    --name ${PROJECT_NAME} --region ${LAMBDA_REGION} \
+if [ -z "${ENVIRON}" ]; then
+   echo 'Required $ENVIRON variable not set.'
+   exit 1
+elif [ -z "${PROJECT_NAME}" ]; then
+   echo 'Required $PROJECT_NAME variable not set.'
+   exit 1
+fi
+
+yarn claudia create \
+    --config claudia/claudia-${ENVIRON}.json \
+    --no-optional-dependencies --api-module src/api \
+    --name "${PROJECT_NAME}-${USER}-${ENVIRON}" --region ${LAMBDA_REGION} \
     ${LAMBDA_ROLE:+--role ${LAMBDA_ROLE}} \
     ${LAMBDA_TIMEOUT:+--timeout ${LAMBDA_TIMEOUT}} \
     ${LAMBDA_MEMORY:+--memory ${LAMBDA_MEMORY}} \
     ${LAMBDA_SECURITY_GROUPS:+--security-group-ids ${LAMBDA_SECURITY_GROUPS}} \
     ${LAMBDA_SUBNETS:+--subnet-ids ${LAMBDA_SUBNETS}} \
     --set-env TILEGARDEN_DB_HOST=${TILEGARDEN_DB_HOST},TILEGARDEN_DB_NAME=${TILEGARDEN_DB_NAME},TILEGARDEN_DB_PASSWORD=${TILEGARDEN_DB_PASSWORD},TILEGARDEN_DB_PORT=${TILEGARDEN_DB_PORT},TILEGARDEN_DB_USER=${TILEGARDEN_DB_USER} \
-&& yarn parse-id
+&& jq -r '.api.id' claudia/claudia-${ENVIRON}.json > .api-id-${ENVIRON}
