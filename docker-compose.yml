@@ -44,7 +44,6 @@ services:
 
   terraform:
     image: hashicorp/terraform:0.11.14
-    env_file: .env
     environment:
       - TF_VAR_region=${LAMBDA_REGION}
       - TF_VAR_source_name=${PROJECT_NAME}-${USER}
