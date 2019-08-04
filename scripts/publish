@@ -2,6 +2,8 @@
 
 set -e
 
+DEPLOY_NEW=""
+
 function usage() {
     echo -n "Usage: $(basename "${0}") [OPTION]
 Publish project in development to AWS Lambda
@@ -12,12 +14,8 @@ Options:
 }
 
 function main() {
-    if [ "${1}" = "--new" ]
-    then
-        docker-compose run --rm --no-deps -e NODE_ENV=production tiler yarn deploy-new
-    else
-        docker-compose run --rm --no-deps -e NODE_ENV=production tiler yarn deploy
-    fi
+    docker-compose -f docker-compose.yml \
+                   run --rm --no-deps -e NODE_ENV=production tiler yarn deploy${DEPLOY_NEW:+-new}
 
     # Deploy CloudFront proxy
     docker-compose run terraform init
@@ -27,12 +25,14 @@ function main() {
 
 if [ "${BASH_SOURCE[0]}" = "${0}" ]
 then
-    if [ "${1:-}" = "--help" ]
-    then
-        usage
-    else
-        SERVER_COMMAND=${1:-start}
-        main $SERVER_COMMAND
-    fi
-    exit
+    case "$1" in
+        -n| --new)
+            DEPLOY_NEW='--new'
+            shift
+            ;;
+        -h| --help)
+            usage
+            exit
+    esac
+    main
 fi

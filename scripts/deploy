@@ -2,8 +2,8 @@
 
 set -e
 
-deploy_new=""
-no_cache=""
+DEPLOY_NEW=""
+NO_CACHE=""
 
 function usage() {
     echo -n "Usage: $(basename "${0}") [OPTION]
@@ -17,21 +17,17 @@ Options:
 }
 
 function main() {
-    if [[ $deploy_new != "--new" && ! -f ./src/tiler/claudia.json ]]; then
+    if [[ $DEPLOY_NEW != "--new" && ! -f ./src/tiler/claudia.json ]]; then
         echo "No existing deployment found to update! (did you mean to use '--new'?)"
         exit 1
     fi
 
     docker-compose build --pull terraform
 
-    if [ "${no_cache}" == "--no-cache" ]; then
-        docker-compose build --pull --no-cache tiler
-    else
-        docker-compose build --pull tiler
-    fi
+    docker-compose -f docker-compose.yml \
+                   build --pull ${NO_CACHE:+$NO_CACHE} tiler
 
-    # Capture output to check for specific error
-    ./scripts/publish "${deploy_new}"
+    ./scripts/publish ${DEPLOY_NEW:+$DEPLOY_NEW}
 }
 
 
@@ -42,11 +38,11 @@ then
     while [ $# -gt 0 ]; do
         case "$1" in
             -n| --new)
-                deploy_new='--new'
+                DEPLOY_NEW='--new'
                 shift
                 ;;
             --no-cache)
-                no_cache='--no-cache'
+                NO_CACHE='--no-cache'
                 shift
                 ;;
             -h| --help| *)
