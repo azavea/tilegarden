@@ -18,7 +18,7 @@ services:
     ports:
       - "3000:3000"
       - "9229:9229"
-    env_file: .env.local
+    env_file: .env
     links:
       - database:database.internal.tilegarden
     volumes:
