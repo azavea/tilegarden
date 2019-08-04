@@ -6,6 +6,10 @@ provider "aws" {
   region	= "${var.region}"
 }
 
+terraform {
+  backend "local" { }
+}
+
 output "domain" {
   value = "${aws_cloudfront_distribution.tilegarden_test.domain_name}"
 }

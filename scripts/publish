@@ -21,11 +21,29 @@ function main() {
                    run --rm --no-deps -e NODE_ENV=production tiler yarn deploy${DEPLOY_NEW:+-new}
 
     # Deploy CloudFront proxy
-    docker-compose --env-file ".env.${ENVIRON}" run terraform init
-    docker-compose --env-file ".env.${ENVIRON}" \
-            run --rm -e TF_VAR_source_id=$(<src/tiler/.api-id-${ENVIRON}) \
-            terraform apply -auto-approve && \
-        echo "Success! Your tiles will be available at the above URL shortly."
+    # First clear any existing terraform initialization, which could be for a different deployment
+    docker-compose --env-file ".env.${ENVIRON}" run --rm --entrypoint rm terraform -rf .terraform/
+    # Then initialize terraform with the target tfstate file (which might not exist)
+    docker-compose --env-file ".env.${ENVIRON}" run --rm terraform init \
+        -backend-config="path=${ENVIRON}.tfstate"
+    # Then plan and apply
+    docker-compose --env-file ".env.${ENVIRON}" run --rm \
+            -e TF_VAR_source_id=$(<src/tiler/.api-id-${ENVIRON}) \
+            terraform plan -out="${ENVIRON}.tfplan"
+
+    # A compromise between 'apply -auto-approve' and requiring confirmation or separate plan
+    # and apply commands: show a countdown before applying to provide a chance to cancel out.
+    countdown=10
+    while [[ ${countdown} -gt 0 ]];
+    do
+        printf "\rApplying in ${countdown}s"
+        sleep 1
+        ((countdown--))
+    done
+
+    docker-compose --env-file ".env.${ENVIRON}" run --rm \
+            terraform apply "${ENVIRON}.tfplan" && \
+    echo "Success! Your tiles will be available at the above URL shortly."
 }
 
 if [ "${BASH_SOURCE[0]}" = "${0}" ]
