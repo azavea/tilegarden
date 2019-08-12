@@ -57,7 +57,7 @@ const processUTFQuery = (req) => {
 // or an empty list if there are none
 const processLayers = (req) => {
     if (req.queryString.layers) return JSON.parse(req.queryString.layers)
-    else if (req.queryString.layer || req.queryString.filter || req.queryString.filters) {
+    if (req.queryString.layer || req.queryString.filter || req.queryString.filters) {
         /* eslint-disable-next-line quotes */
         throw HTTPError("Invalid argument, did you mean '&layers='?", 400)
     }
@@ -66,7 +66,7 @@ const processLayers = (req) => {
 }
 
 // Parses out the configuration specifications
-const processConfig = req => ({
+const processConfig = (req) => ({
     s3bucket: req.queryString.s3bucket,
     config: req.queryString.config,
 })
@@ -95,7 +95,7 @@ api.get(
             const mapConfig = { z, x, y, layers, configOptions }
 
             return imageTile(mapConfig)
-                .then(img => new APIBuilder.ApiResponse(img, IMAGE_HEADERS, 200))
+                .then((img) => new APIBuilder.ApiResponse(img, IMAGE_HEADERS, 200))
                 .catch(handleError)
         } catch (e) {
             return handleError(e)
@@ -117,7 +117,7 @@ api.get(
             const mapConfig = { z, x, y, layers, configOptions }
 
             return utfGrid(mapConfig, utfFields)
-                .then(g => new APIBuilder.ApiResponse(g, UTF_HEADERS, 200))
+                .then((g) => new APIBuilder.ApiResponse(g, UTF_HEADERS, 200))
                 .catch(handleError)
         } catch (e) {
             return handleError(e)
@@ -146,7 +146,7 @@ api.get(
             const mapConfig = { z, x, y, layers, configOptions }
 
             return vectorTile(mapConfig)
-                .then(vector => new APIBuilder.ApiResponse(vector, VECTOR_HEADERS, 200))
+                .then((vector) => new APIBuilder.ApiResponse(vector, VECTOR_HEADERS, 200))
                 .catch(handleError)
         } catch (e) {
             return handleError(e)

@@ -41,7 +41,7 @@ const processOp = (op) => {
 }
 
 // Escape col but replace outer '-s with "-s to make a delimited identifier
-const processCol = col => `"${sqlString(col).slice(1, -1)}"`
+const processCol = (col) => `"${sqlString(col).slice(1, -1)}"`
 
 /**
  * Structures sql based on existing query and json options
@@ -57,8 +57,8 @@ const structureQuery = (existingQuery, currentLayer) => {
         const col = processCol(filterObj.col)
         const val = sqlString(filterObj.val)
 
-        query += `${mode ? ` ${mode}` : ''} ` +
-            `${col} ${op} ${val}`
+        query += `${mode ? ` ${mode}` : ''} `
+            + `${col} ${op} ${val}`
     })
 
     // Wrap in variable and set in xml
@@ -73,7 +73,9 @@ const filter = (xmlJson, enabledLayers) => {
 
     xmlJson.Map.Layer.forEach((layer) => {
         // Filter list of enabled layers by the name of the current layer
-        const current = enabledLayers.filter(e => e === layer.$.name || e.name === layer.$.name)[0]
+        const current = enabledLayers.filter(
+            (e) => e === layer.$.name || e.name === layer.$.name,
+        )[0]
 
         // If there is no matching enabledLayers entry, disable the current layer
         if (!current) {
@@ -81,13 +83,14 @@ const filter = (xmlJson, enabledLayers) => {
             layer.$.status = 'false'
         } else {
             // Remove layer from the list to mark it as "seen"
-            givenLayers = givenLayers.filter(l => l !== current)
+            givenLayers = givenLayers.filter((l) => l !== current)
 
             // If there IS a matching entry, wrap SQL accordingly
             if (current.filters) {
-                // This locates the query field in the data structure, trust me
-                // also I'm sorry for how janked up this is
-                const queryObj = layer.Datasource[0].Parameter.filter(p => p.$.name === 'table')[0]
+                // This locates the query field in the data structure
+                const queryObj = layer.Datasource[0].Parameter.filter(
+                    (p) => p.$.name === 'table',
+                )[0]
 
                 if (queryObj) {
                     queryObj._ = structureQuery(queryObj._, current)
