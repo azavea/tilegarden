@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "claudia-api-builder": "^4.1.2",
-    "mapnik": "^3.7.2",
+    "mapnik": "^4.2.1",
     "sql-escape-string": "^1.1.0",
     "xml2js": "^0.4.19"
   },
