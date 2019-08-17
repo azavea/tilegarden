@@ -14,4 +14,5 @@ deploy:
     skip-cleanup: true
     script: bash scripts/deploy-demo.sh
     on:
-      branch: develop
+      all_branches: true
+      condition: $TRAVIS_BRANCH =~ ^(develop|test_.*)$
