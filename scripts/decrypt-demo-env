@@ -7,6 +7,11 @@ set -e
 # the branch being built, but we want to be able to change the env variables by pushing to
 # the gh-pages branch, so we need this part to be loaded after the branch is checked out.
 
+# Instructions for how to encrypt the file are at
+# https://docs.travis-ci.com/user/encrypting-files#automated-encryption
+# It needs to be called `.env` (not e.g. `.env.demo`), i.e.
+#   $ travis encrypt-file .env
+
 echo "Decrypting .env"
 openssl aes-256-cbc -K $encrypted_820f01995192_key -iv $encrypted_820f01995192_iv \
     -in .env.enc -out .env -d
