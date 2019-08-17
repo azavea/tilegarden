@@ -6,13 +6,13 @@ git:
 branches:
   except:
   - gh-pages
-language: node_js
-before_install: cd src/tiler
-install: yarn install
-script: yarn test
+before_install: echo PROJECT_NAME=test > .env && echo LAMBDA_REGION=us-east-1 >> .env
+install: docker-compose build --pull tiler
+script: scripts/test
 deploy:
   - provider: script
     skip-cleanup: true
-    script: cd ../.. && bash scripts/deploy-demo.sh
+    script: bash scripts/deploy-demo.sh
     on:
-      branch: develop
+      all_branches: true
+      condition: $TRAVIS_BRANCH =~ ^(develop|test_.*)$
