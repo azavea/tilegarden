@@ -104,9 +104,11 @@ async function createMap(mapConfig) {
         return await fetchMapFile(configOptions)
             .then(fillVars)
             .then(parseXml)
-            .then(xmlJsObj => filterVisibleLayers(xmlJsObj, layers))
+            .then((xmlJsObj) => filterVisibleLayers(xmlJsObj, layers))
             .then(buildXml)
-            .then(filteredMapConfigXml => promisifyMethod(map, 'fromString')(filteredMapConfigXml))
+            .then(
+                (filteredMapConfigXml) => promisifyMethod(map, 'fromString')(filteredMapConfigXml),
+            )
             .then((configuredMap) => {
                 /* eslint-disable-next-line no-param-reassign */
                 configuredMap.extent = bbox(z, x, y, TILE_HEIGHT, configuredMap.srs)
