@@ -37,7 +37,7 @@
     "bunyan": "^1.8.12",
     "claudia": "^5.6.0",
     "claudia-local-api": "https://github.com/azavea/claudia-local-api.git",
-    "eslint": "^6.1.0",
+    "eslint": "^6.3.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
     "jest": "^24.8.0",
@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "claudia-api-builder": "^4.1.2",
-    "mapnik": "^4.2.1",
+    "mapnik": "^4.3.1",
     "sql-escape-string": "^1.1.0",
     "xml2js": "^0.4.19"
   },
