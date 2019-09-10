@@ -67,7 +67,9 @@ const processLayers = (req) => {
 
 // Parses out the configuration specifications
 const processConfig = (req) => ({
-    s3bucket: req.queryString.s3bucket,
+    // Get the settings bucket from the querystring if it's set, else from the environment.
+    // Both can be blank, in which case the tiler will fall back to looking on the filesystem.
+    s3bucket: req.queryString.s3bucket || process.env.TILEGARDEN_CONFIG_BUCKET,
     config: req.pathParams.config,
 })
 
