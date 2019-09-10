@@ -18,8 +18,6 @@ const { parseXml, buildXml } = require('./util/xml-tools')
 const TILE_HEIGHT = 256
 const TILE_WIDTH = 256
 
-const DEFAULT_CONFIG_FILENAME = 'map-config.xml'
-
 // Register plugins
 mapnik.register_default_input_plugins()
 
@@ -51,29 +49,29 @@ const postgisFilter = (e) => {
  * @returns XML string
  */
 async function fetchMapFile(options) {
-    const { s3bucket, config = DEFAULT_CONFIG_FILENAME } = options
+    const { s3bucket, config } = options
+
+    // Add an .xml extension to the config name (but not if it already has one)
+    const configFilename = `${config}${path.extname(config) !== '.xml' ? '.xml' : ''}`
 
     // If an s3 bucket is specified, treat config as an object key and attempt to fetch
     if (s3bucket) {
         const s3Client = new aws.S3()
         const remoteConfigXml = await promisifyMethod(s3Client, 'getObject')({
             Bucket: s3bucket,
-            Key: config,
+            Key: configFilename,
         })
         return remoteConfigXml.Body.toString()
     }
 
     // otherwise, load from the local directory, making sure to add .xml to the file name
-    const configName = path.join(
-        __dirname,
-        `config/${config}${path.extname(config) !== '.xml' ? '.xml' : ''}`,
-    )
+    const configName = path.join(__dirname, `config/${configFilename}`)
     try {
         return await readFile(configName, 'utf-8')
     } catch (err) {
-        if (err.code === 'ENOENT' && config === DEFAULT_CONFIG_FILENAME) {
+        if (err.code === 'ENOENT') {
             /* eslint-disable-next-line no-param-reassign */
-            err.message = 'Error: No default configuration. Must provide a config= parameter.'
+            err.message = `Error: Config '${config}' not found.`
         }
         throw err
     }

@@ -38,8 +38,8 @@
             if (!host || host === 'localhost') TILESERVER_PATH = DEV_PATH;
             else TILESERVER_PATH = PROD_PATH;
 
-            L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?config=data-type-example&layers=["inlets"]').addTo(map);
-            var grid = L.utfGrid(TILESERVER_PATH + 'grid/{z}/{x}/{y}?config=data-type-example&layers=["inlets"]&utfFields=owner,operator', { useJsonP: false })
+            L.tileLayer(TILESERVER_PATH + 'tile/data-type-example/{z}/{x}/{y}.png?layers=["inlets"]').addTo(map);
+            var grid = L.utfGrid(TILESERVER_PATH + 'grid/data-type-example/{z}/{x}/{y}?layers=["inlets"]&utfFields=owner,operator', { useJsonP: false })
 
             // keep track of currently active marker
             //var marker
