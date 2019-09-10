@@ -38,10 +38,10 @@
 
             // add filtered layers
             function newLayer (filters) {
-                return L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?config=data-type-example&layers=' + encodeURIComponent(JSON.stringify(filters)))
+                return L.tileLayer(TILESERVER_PATH + 'tile/data-type-example/{z}/{x}/{y}.png?layers=' + encodeURIComponent(JSON.stringify(filters)))
             }
 
-            var EXAMPLE_PATH = 'https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?layers='
+            var EXAMPLE_PATH = 'https://yourtiles.cloudfront.net/tile/CONFIG/{z}/{x}/{y}.png?layers='
 
             var INITIAL_QUERY = [
                 {
@@ -125,7 +125,7 @@
         <p class="lead">Allow users to modify pre-defined layers by specifying filter conditions.</p>
         <div class="row">
             <div class="m-auto">
-                <code id="urlExample">https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?layers=PARK,PRIV</code>
+                <code id="urlExample">https://yourtiles.cloudfront.net/tile/CONFIG/{z}/{x}/{y}.png?layers=PARK,PRIV</code>
             </div>
             <div class="col-8">
                 <figure class="figure">

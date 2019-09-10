@@ -45,7 +45,7 @@
             else TILESERVER_PATH = PROD_PATH;
 
             function makeLayer (layer) {
-                return L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?config=data-type-example&layers=["' + layer + '"]');
+                return L.tileLayer(TILESERVER_PATH + 'tile/data-type-example/{z}/{x}/{y}.png?layers=["' + layer + '"]');
             }
 
             var currentLayer;

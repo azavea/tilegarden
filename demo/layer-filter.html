@@ -38,10 +38,10 @@
 
             // add filtered layers
             function newLayer (filters) {
-                return L.tileLayer(TILESERVER_PATH + 'tile/{z}/{x}/{y}.png?config=point-example&layers=' + filters)
+                return L.tileLayer(TILESERVER_PATH + 'tile/point-example/{z}/{x}/{y}.png?layers=' + filters)
             }
 
-            var EXAMPLE_PATH = 'https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?layers='
+            var EXAMPLE_PATH = 'https://yourtiles.cloudfront.net/tile/config/{z}/{x}/{y}.png?layers='
 
             // keep track of active layers so
             var currentSelection;
@@ -104,7 +104,7 @@
         <p class="lead">Define customizable map layers that can be queried by your users.</p>
         <div class="row">
             <div class="m-auto">
-                <code id="urlExample">https://yourtiles.cloudfront.net/tile/{z}/{x}/{y}.png?layers=["PARK","PRIV"]</code>
+                <code id="urlExample">https://yourtiles.cloudfront.net/tile/{config}/{z}/{x}/{y}.png?layers=["PARK","PRIV"]</code>
             </div>
             <div class="col-8">
                 <figure class="figure">
