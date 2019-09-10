@@ -25,6 +25,6 @@ then
 
         # Launch database container so we can populate it.
         docker-compose up -d database
-        docker-compose exec database bash -c "./load_sample_data"
+        docker-compose exec database bash -c "./load_sample_data > /dev/null"
     fi
 fi
