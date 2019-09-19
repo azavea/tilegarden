@@ -1,9 +1,9 @@
-FROM node:8.16-buster-slim
+FROM lambci/lambda:build-nodejs10.x
 
-# Install git for git dependencies
-RUN apt-get update -y
-RUN apt-get install git jq -y
-RUN yarn global add carto
+RUN yum -y install jq
+
+RUN curl -o- -L https://yarnpkg.com/install.sh | bash
+ENV PATH="/root/.yarn/bin:/root/.config/yarn/global/node_modules/.bin:${PATH}"
 
 # Copy files needed for installing packages first
 COPY package.json yarn.lock /home/tiler/
