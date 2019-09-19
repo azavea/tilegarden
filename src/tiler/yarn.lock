@@ -1054,7 +1054,7 @@ claudia-api-builder@^4.1.2:
     express "^4.16.1"
     path-parser "^4.0.4"
 
-claudia@^5.6.0:
+claudia@^5.8.0:
   version "5.8.0"
   resolved "https://registry.yarnpkg.com/claudia/-/claudia-5.8.0.tgz#5979cc4f2456f7383de2ffee3c3ed99a6c0c9599"
   integrity sha512-jAf1qihNIGkBvAmlBDhuVTBG6SyKTG/fo75qaE5m55+AVNrzQja46O9TnuYmMcsVkDcdNuv3zP48R+uMrAnJUw==
@@ -3518,7 +3518,7 @@ mapnik-vector-tile@2.2.1:
   resolved "https://registry.yarnpkg.com/mapnik-vector-tile/-/mapnik-vector-tile-2.2.1.tgz#9c70f07f2497ae2728679c7528f07c35bf7a62e9"
   integrity sha512-+oasa2DfqArIMC7F71ca8CXpDt0rEcq9sJDv+AuhBCZJg+3m2ikDAs/oskEpPpUOwta1hH48Qr+0deCkyB/0Jg==
 
-mapnik@^4.2.1:
+mapnik@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/mapnik/-/mapnik-4.3.1.tgz#eb7fd04e2c7ed12333ac08bbe64a397d8bc4d0d2"
   integrity sha512-ialXG9fqjR/M+c7Duq6kRI5CAU2L/YWYNYOjW+tatwgZeU9hTqyZkuXhDAL7G3Kk5vE/SqDRaQ9Cxe3N+bOUXA==
