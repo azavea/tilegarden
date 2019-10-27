@@ -18,7 +18,23 @@ services:
     ports:
       - "3000:3000"
       - "9229:9229"
-    env_file: .env
+    environment:
+      # Variables to pass through from environment-specific .env files
+      - ENVIRON
+      - USER
+      - AWS_PROFILE
+      - PROJECT_NAME
+      - TILEGARDEN_DB_NAME
+      - TILEGARDEN_DB_HOST
+      - TILEGARDEN_DB_PORT
+      - TILEGARDEN_DB_USER
+      - TILEGARDEN_DB_PASSWORD
+      - LAMBDA_REGION
+      - LAMBDA_ROLE
+      - LAMBDA_TIMEOUT
+      - LAMBDA_MEMORY
+      - LAMBDA_SUBNETS
+      - LAMBDA_SECURITY_GROUPS
     links:
       - database:database.internal.tilegarden
     volumes:
@@ -29,10 +45,12 @@ services:
 
   terraform:
     image: hashicorp/terraform:0.11.14
-    env_file: .env
     environment:
-      - TF_VAR_region=${LAMBDA_REGION}
-      - TF_VAR_source_name=${PROJECT_NAME}-${USER}
+      - AWS_PROFILE
+      # Providing placeholder defaults here stops docker-compose from warning about missing
+      # variables every time you run it.
+      - TF_VAR_region=${LAMBDA_REGION:-us-east-1}
+      - TF_VAR_source_name=${PROJECT_NAME:-tilegarden}-${USER}-${ENVIRON:-unknown}
     working_dir: /home/terraform
     volumes:
       - ./src/terraform:/home/terraform

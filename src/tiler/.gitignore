@@ -1,7 +1,8 @@
 # Ignore lambda settings to avoid blocking new users
-claudia.json
-.api-id
+.api-id*
 
 #Ignore coverage data from jest
 /coverage/
 
+# Claudia configs
+claudia/

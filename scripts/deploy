@@ -4,6 +4,7 @@ set -e
 
 DEPLOY_NEW=""
 NO_CACHE=""
+ENVIRON="dev"
 
 function usage() {
     echo -n "Usage: $(basename "${0}") [OPTION]
@@ -17,17 +18,19 @@ Options:
 }
 
 function main() {
-    if [[ $DEPLOY_NEW != "--new" && ! -f ./src/tiler/claudia.json ]]; then
-        echo "No existing deployment found to update! (did you mean to use '--new'?)"
+    if [[ $DEPLOY_NEW != "--new" && ! -f "./src/tiler/claudia/claudia-${ENVIRON}.json" ]]; then
+        echo "No existing '$ENVIRON' deployment found to update! (did you mean to use '--new'?)"
         exit 1
     fi
 
     docker-compose build --pull terraform
 
+    echo "Building tiler for environment '$ENVIRON'"
     docker-compose -f docker-compose.yml \
+                   --env-file ".env.${ENVIRON}" \
                    build --pull ${NO_CACHE:+$NO_CACHE} tiler
 
-    ./scripts/publish ${DEPLOY_NEW:+$DEPLOY_NEW}
+    ./scripts/publish ${DEPLOY_NEW:+$DEPLOY_NEW} "${ENVIRON}"
 }
 
 
@@ -45,12 +48,14 @@ then
                 NO_CACHE='--no-cache'
                 shift
                 ;;
-            -h| --help| *)
+            -h| --help)
                 usage
                 ;;
+            *)
+                ENVIRON=$1
+                shift
         esac
     done
 
-    main
+    main $ENVIRON
 fi
-
