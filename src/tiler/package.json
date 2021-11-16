@@ -51,6 +51,6 @@
     "xml2js": "^0.4.19"
   },
   "optionalDependencies": {
-    "aws-sdk": "^2.507.0"
+    "aws-sdk": "^2.814.0"
   }
 }
